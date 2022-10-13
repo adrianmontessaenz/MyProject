@@ -74,7 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(ProjectDir)Source\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -86,7 +86,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(ProjectDir)Source\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -163,7 +163,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Core\Base\RunTime.cpp" />
+    <ClCompile Include="Source\Core\Base\Singleton.cpp" />
+    <ClCompile Include="Source\Core\Events\SDLEvents.cpp" />
+    <ClCompile Include="Source\Core\Platform\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Core\Base\RunTime.hpp" />
+    <ClInclude Include="Source\Core\Base\Singleton.hpp" />
+    <ClInclude Include="Source\Core\Events\SDLEvents.hpp" />
+    <ClInclude Include="Source\Core\Platform\Window.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
