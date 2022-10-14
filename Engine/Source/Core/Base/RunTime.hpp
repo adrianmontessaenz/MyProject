@@ -1,5 +1,12 @@
+/*// -----------------------------------------------------------------
+*  File:		RunTime.hpp
+*  Brief:		Header of runtime functions
+*  Creation:	13/10/2022
+*  Last Update:	13/10/2022
+*
+*  © 2022 Adrian Montes. All right reserved
+// -----------------------------------------------------------------*/
 #pragma once
-
 namespace Engine
 {
 	class RunTime
@@ -19,7 +26,7 @@ namespace Engine
 		RunTime() = default;
 
 	private:
-		bool mIsEnabled;
-		bool mIsShutdown;
+		bool mIsEnabled = true;
+		bool mIsShutdown = false;
 	};
 }

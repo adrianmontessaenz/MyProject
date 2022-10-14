@@ -11,9 +11,6 @@
     <ClCompile Include="Source\Core\Events\SDLEvents.cpp">
       <Filter>Core\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\Base\Singleton.cpp">
-      <Filter>Core\Base</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -26,7 +23,7 @@
       <UniqueIdentifier>{d53e1c8d-8e02-4455-8dfe-c2c08a9f31be}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\Events">
-      <UniqueIdentifier>{459c8856-4fdf-4742-a8f0-24f5fd941c6d}</UniqueIdentifier>
+      <UniqueIdentifier>{d4407723-755e-461a-9f31-2e476cf740fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,11 +33,11 @@
     <ClInclude Include="Source\Core\Base\RunTime.hpp">
       <Filter>Core\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Events\SDLEvents.hpp">
-      <Filter>Core\Events</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Core\Base\Singleton.hpp">
       <Filter>Core\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Events\SDLEvents.hpp">
+      <Filter>Core\Events</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

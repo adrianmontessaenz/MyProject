@@ -20,3 +20,8 @@ void Engine::SDLEventSystem::LateUpdate()
 void Engine::SDLEventSystem::Shutdown()
 {
 }
+
+const std::vector<SDL_Event>& Engine::SDLEventSystem::GetEventsOfType(Uint32 type)
+{
+	return mEvents[type];
+}
