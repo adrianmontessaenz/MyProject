@@ -1,8 +1,8 @@
 /*// -----------------------------------------------------------------
-*  File:		main.cpp
+*  File:		Window.hpp
 *  Brief:		Header of Window class
 *  Creation:	13/10/2022
-*  Last Update:	13/10/2022
+*  Last Update:	14/10/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/

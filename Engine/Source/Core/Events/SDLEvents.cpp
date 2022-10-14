@@ -1,3 +1,11 @@
+/*// -----------------------------------------------------------------
+*  File:		SDLEvents.cpp
+*  Brief:		Implementation of sdlevents gatherer
+*  Creation:	14/10/2022
+*  Last Update:	14/10/2022
+*
+*  © 2022 Adrian Montes. All right reserved
+// -----------------------------------------------------------------*/
 #include "SDLEvents.hpp"
 
 void Engine::SDLEventSystem::Initialize()

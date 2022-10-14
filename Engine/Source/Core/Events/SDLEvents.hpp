@@ -1,3 +1,11 @@
+/*// -----------------------------------------------------------------
+*  File:		SDLEvents.hpp
+*  Brief:		Header of sdlevents gatherer
+*  Creation:	14/10/2022
+*  Last Update:	14/10/2022
+*
+*  © 2022 Adrian Montes. All right reserved
+// -----------------------------------------------------------------*/
 #pragma once
 #include <Core/Base/RunTime.hpp>
 #include <Core/Base/Singleton.hpp>
