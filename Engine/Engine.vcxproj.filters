@@ -11,6 +11,13 @@
     <ClCompile Include="Source\Core\Events\SDLEvents.cpp">
       <Filter>Core\Events</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\Platform\InputManager.cpp">
+      <Filter>Core\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\Core\Time\TimeSystem.cpp">
+      <Filter>Core\Time</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -25,6 +32,9 @@
     <Filter Include="Core\Events">
       <UniqueIdentifier>{d4407723-755e-461a-9f31-2e476cf740fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Time">
+      <UniqueIdentifier>{2d82d123-4bf2-4deb-b61b-b0a303d42a2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\Platform\Window.hpp">
@@ -38,6 +48,13 @@
     </ClInclude>
     <ClInclude Include="Source\Core\Events\SDLEvents.hpp">
       <Filter>Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Platform\InputManager.hpp">
+      <Filter>Core\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\Core\Time\TimeSystem.hpp">
+      <Filter>Core\Time</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,11 +7,6 @@
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #pragma once
-#include <Core/Base/RunTime.hpp>
-#include <Core/Base/Singleton.hpp>
-
-class SDL_Window;
-class SDL_Renderer;
 
 namespace Engine
 {
@@ -28,7 +23,7 @@ namespace Engine
 		Window();
 		virtual void Initialize() override;
 		virtual void Update() override;
-		virtual void LateUpdate() override;
+		virtual void Render() override;
 		virtual void Shutdown() override;
 
 		void SetWindowMode(WindowMode state);
@@ -37,9 +32,11 @@ namespace Engine
 	private:
 		SDL_Window* mWindow;
 		SDL_Renderer* mRenderer;
-		unsigned mWidth;
-		unsigned mHeight;
+		glm::vec<2, int> mSize;
+		glm::vec<2, int> mFullSize;
 		WindowMode mMode;
+
+		void UpdateWindowMode();
 	};
 }
 #define gWindow (&Engine::Window::GetInstance())

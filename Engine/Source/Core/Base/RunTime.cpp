@@ -6,7 +6,20 @@
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
+#include <pch.h>
 #include "RunTime.hpp"
+
+void Engine::RunTime::Update()
+{
+}
+
+void Engine::RunTime::LogicUpdate()
+{
+}
+
+void Engine::RunTime::Render()
+{
+}
 
 void Engine::RunTime::SetShutdown(const bool shutdown)
 {

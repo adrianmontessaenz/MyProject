@@ -7,14 +7,16 @@
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #pragma once
+
 namespace Engine
 {
 	class RunTime
 	{
 	public:
 		virtual void Initialize() = 0;
-		virtual void Update() = 0;
-		virtual void LateUpdate() = 0;
+		virtual void Update();
+		virtual void LogicUpdate();
+		virtual void Render();
 		virtual void Shutdown() = 0;
 
 		void SetShutdown(const bool shutdown);
