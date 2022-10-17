@@ -36,7 +36,7 @@ namespace Engine
 		SDL_Window* mWindow;
 		SDL_Renderer* mRenderer;
 		glm::vec<2, int> mSize;
-		glm::vec<2, int> mFullSize;
+		glm::vec<2, int> mPos;
 		WindowMode mMode;
 		unsigned mDisplayIdx;
 

@@ -9,14 +9,14 @@
 #include <pch.h>
 #include "Window.hpp"
 
-Engine::Window::Window() : mWindow(nullptr), mRenderer(nullptr), mSize(1280, 720), mFullSize(0), mMode(WindowMode::WINDOW_NORMAL), mDisplayIdx(0)
+Engine::Window::Window() : mWindow(nullptr), mRenderer(nullptr), mSize(1280, 720), mMode(WindowMode::WINDOW_NORMAL), mDisplayIdx(0)
 {
 }
 
 void Engine::Window::Initialize()
 {
 	//Initialize window
-	Uint32 window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
+	Uint32 window_flags = SDL_WINDOW_RESIZABLE;
 	SDL_Init(SDL_INIT_EVERYTHING);
 	mWindow = SDL_CreateWindow("MyProject", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mSize.x, mSize.y, window_flags);
 	//If error, throw
@@ -47,15 +47,12 @@ void Engine::Window::Update()
 				break;
 		}
 	}
-	
 	if (mMode == Engine::WindowMode::WINDOW_NORMAL)
 	{
 		SDL_GetWindowSize(mWindow, &mSize.x, &mSize.y);
 		mDisplayIdx = SDL_GetWindowDisplayIndex(mWindow);
+		SDL_GetWindowPosition(mWindow, &mPos.x, &mPos.y);
 	}
-	SDL_DisplayMode dm;
-	SDL_GetDesktopDisplayMode(mDisplayIdx, &dm);
-	mFullSize = { dm.w, dm.h };
 }
 
 void Engine::Window::Render()
@@ -63,6 +60,18 @@ void Engine::Window::Render()
 	int windowIdx = SDL_GetWindowDisplayIndex(mWindow);
 	SDL_SetRenderDrawColor(mRenderer, 40, 43, 200, 255);
 	SDL_RenderClear(mRenderer);
+	SDL_Rect rect;
+	if (mMode == Engine::WindowMode::WINDOW_NORMAL)
+	{
+		rect.w = mSize.x;
+		rect.h = mSize.y;
+		rect.x = mPos.x;
+		rect.y = mPos.y;
+	}
+	else
+		SDL_GetDisplayBounds(mDisplayIdx, &rect);
+
+	SDL_RenderFillRect(mRenderer, &rect);
 	SDL_RenderPresent(mRenderer);
 }
 
@@ -98,30 +107,23 @@ void Engine::Window::SetSize(const glm::vec<2, int> new_size)
 
 void Engine::Window::UpdateWindowMode()
 {
-	int x = 0, y = 0;
-	SDL_GetWindowSize(mWindow, &x, &y);
-
+	SDL_DisplayMode dm;
 	switch (mMode)
 	{
 	case WindowMode::WINDOW_NORMAL:
 		SDL_SetWindowFullscreen(mWindow, 0);
-		if(x != mSize.x || y != mSize.y)
-			SDL_SetWindowSize(mWindow, mSize.x, mSize.y);
-		SDL_SetWindowBordered(mWindow, SDL_TRUE);
+		SDL_SetWindowSize(mWindow, mSize.x, mSize.y);
+		SDL_SetWindowPosition(mWindow, mPos.x, mPos.y);
 		break;
 	case WindowMode::WINDOW_BORDERLESS:
-		SDL_SetWindowBordered(mWindow, SDL_FALSE);
 		SDL_SetWindowFullscreen(mWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		SDL_GetDesktopDisplayMode(mDisplayIdx, &dm);
+		SDL_SetWindowSize(mWindow, dm.w, dm.h);
 		break;
 	case WindowMode::WINDOW_FULLSCREEN:
-		SDL_SetWindowBordered(mWindow, SDL_FALSE);
 		SDL_SetWindowFullscreen(mWindow, SDL_WINDOW_FULLSCREEN);
-		if (x != mFullSize.x || y != mFullSize.y)
-			SDL_SetWindowSize(mWindow, mFullSize.x, mFullSize.y);
-		break;
-	default:
-		SDL_SetWindowBordered(mWindow, SDL_TRUE);
-		SDL_SetWindowFullscreen(mWindow, 0);
+		SDL_GetDesktopDisplayMode(mDisplayIdx, &dm);
+		SDL_SetWindowSize(mWindow, dm.w, dm.h);
 		break;
 	}
 }
