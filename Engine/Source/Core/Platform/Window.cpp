@@ -49,8 +49,11 @@ void Engine::Window::Update()
 	}
 	if (mMode == Engine::WindowMode::WINDOW_NORMAL)
 	{
-		SDL_GetWindowSize(mWindow, &mSize.x, &mSize.y);
 		mDisplayIdx = SDL_GetWindowDisplayIndex(mWindow);
+		SDL_DisplayMode dm;
+		SDL_GetDesktopDisplayMode(mDisplayIdx, &dm);
+		SDL_SetWindowDisplayMode(mWindow, &dm);
+		SDL_GetWindowSize(mWindow, &mSize.x, &mSize.y);
 		SDL_GetWindowPosition(mWindow, &mPos.x, &mPos.y);
 	}
 }
@@ -112,18 +115,12 @@ void Engine::Window::UpdateWindowMode()
 	{
 	case WindowMode::WINDOW_NORMAL:
 		SDL_SetWindowFullscreen(mWindow, 0);
-		SDL_SetWindowSize(mWindow, mSize.x, mSize.y);
-		SDL_SetWindowPosition(mWindow, mPos.x, mPos.y);
 		break;
 	case WindowMode::WINDOW_BORDERLESS:
 		SDL_SetWindowFullscreen(mWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
-		SDL_GetDesktopDisplayMode(mDisplayIdx, &dm);
-		SDL_SetWindowSize(mWindow, dm.w, dm.h);
 		break;
 	case WindowMode::WINDOW_FULLSCREEN:
 		SDL_SetWindowFullscreen(mWindow, SDL_WINDOW_FULLSCREEN);
-		SDL_GetDesktopDisplayMode(mDisplayIdx, &dm);
-		SDL_SetWindowSize(mWindow, dm.w, dm.h);
 		break;
 	}
 }

@@ -26,10 +26,10 @@ int main(void)
 		//Logic Update
 		if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_F11))
 		{
-			if (gWindow->GetWindowMode() == Engine::WindowMode::WINDOW_FULLSCREEN)
+			if (gWindow->GetWindowMode() == Engine::WindowMode::WINDOW_BORDERLESS)
 				gWindow->SetWindowMode(Engine::WindowMode::WINDOW_NORMAL);
 			else
-				gWindow->SetWindowMode(Engine::WindowMode::WINDOW_FULLSCREEN);
+				gWindow->SetWindowMode(Engine::WindowMode::WINDOW_BORDERLESS);
 		}
 		else if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_ESCAPE))
 			gWindow->SetEnabled(false);
