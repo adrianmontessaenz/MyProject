@@ -29,12 +29,16 @@ namespace Engine
 		void SetWindowMode(WindowMode state);
 		const WindowMode GetWindowMode() const;
 
+		const glm::vec<2, int> GetSize() const;
+		void SetSize(const glm::vec<2, int> new_size);
+
 	private:
 		SDL_Window* mWindow;
 		SDL_Renderer* mRenderer;
 		glm::vec<2, int> mSize;
 		glm::vec<2, int> mFullSize;
 		WindowMode mMode;
+		unsigned mDisplayIdx;
 
 		void UpdateWindowMode();
 	};

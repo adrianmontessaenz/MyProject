@@ -8,6 +8,7 @@
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "InputManager.hpp"
+#include <Core/Time/TimeSystem.hpp>
 
 void Engine::InputManager::Initialize()
 {
@@ -27,9 +28,9 @@ void Engine::InputManager::Update()
 	for (const auto& k : keysDown)
 	{
 		if (mKeyboard[k.key.keysym.scancode] == 0.f)
-			mKeyboard[k.key.keysym.scancode] = 0.016f;
+			mKeyboard[k.key.keysym.scancode] = gTimeSys->GetDeltaTime();
 		else
-			mKeyboard[k.key.keysym.scancode] += 0.016f;
+			mKeyboard[k.key.keysym.scancode] += gTimeSys->GetDeltaTime();
 	}
 
 	//Update key up keys
@@ -45,9 +46,9 @@ void Engine::InputManager::Update()
 	for (const auto& m : mouseDown)
 	{
 		if (mMouse[m.button.button] == 0.f)
-			mMouse[m.button.button] = 0.016f;
+			mMouse[m.button.button] = gTimeSys->GetDeltaTime();
 		else
-			mMouse[m.button.button] += 0.016f;
+			mMouse[m.button.button] += gTimeSys->GetDeltaTime();
 	}
 
 	//Update key up keys
@@ -66,9 +67,8 @@ bool Engine::InputManager::IsKeyTriggered(SDL_Scancode key)
 
 bool Engine::InputManager::IsKeyPressed(SDL_Scancode key)
 {
-	return mKeyboard[key] > 1.f;
+	return mKeyboard[key] > gTimeSys->GetDeltaTime() * 1.10f && mPrevKeyboard[key] > 0.f;
 }
-
 bool Engine::InputManager::IsKeyReleased(SDL_Scancode key)
 {
 	return mKeyboard[key] <= 0.f && mPrevKeyboard[key] > 0.f;
@@ -81,7 +81,7 @@ bool Engine::InputManager::IsMouseTriggered(Uint8 mouse)
 
 bool Engine::InputManager::IsMousePressed(Uint8 mouse)
 {
-	return mMouse[mouse] > 1.f;
+	return mMouse[mouse] > gTimeSys->GetDeltaTime() * 1.10f && mMouse[mouse] > 0.f;;
 }
 
 bool Engine::InputManager::IsMouseReleased(Uint8 mouse)

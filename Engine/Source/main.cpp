@@ -9,11 +9,13 @@
 #include <pch.h>
 #include <Core/Platform/Window.hpp>
 #include <Core/Platform/InputManager.hpp>
+#include <Core/Time/TimeSystem.hpp>
+#include <iostream>
 
 int main(void)
 {
 	gWindow->Initialize();
-
+	gTimeSys->Initialize();
 	while (gWindow->IsEnabled())
 	{
 		//Update
@@ -32,8 +34,18 @@ int main(void)
 		else if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_ESCAPE))
 			gWindow->SetEnabled(false);
 
+		if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_A))
+			std::cout << "A key is triggered" << std::endl;
+		else if (gInputMgr->IsKeyPressed(SDL_SCANCODE_A))
+			std::cout << "A key is pressed" << std::endl;
+		else if (gInputMgr->IsKeyReleased(SDL_SCANCODE_A))
+			std::cout << "A key is released" << std::endl;
+
 		//Render
+		/*std::cout << "Delta Time (Seconds): " << gTimeSys->GetDeltaTime() << std::endl;*/
+		//std::cout << "FrameRate: " << gTimeSys->GetFrameRate() << "/ms" << std::endl;
 		gWindow->Render();
+		gTimeSys->Update();
 	}
 
 	gWindow->Shutdown();

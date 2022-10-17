@@ -9,7 +9,7 @@
 #include <pch.h>
 #include "Window.hpp"
 
-Engine::Window::Window() : mWindow(nullptr), mRenderer(nullptr), mSize(1280, 720), mFullSize(0), mMode(WindowMode::WINDOW_NORMAL)
+Engine::Window::Window() : mWindow(nullptr), mRenderer(nullptr), mSize(1280, 720), mFullSize(0), mMode(WindowMode::WINDOW_NORMAL), mDisplayIdx(0)
 {
 }
 
@@ -28,6 +28,7 @@ void Engine::Window::Initialize()
 	if (mRenderer == nullptr)
 		throw "Could not create window %s\n", SDL_GetError();
 
+	SDL_RenderSetVSync(mRenderer, 1);
 	SDL_SetWindowMinimumSize(mWindow, 128, 78);
 }
 
@@ -48,29 +49,20 @@ void Engine::Window::Update()
 	}
 	
 	if (mMode == Engine::WindowMode::WINDOW_NORMAL)
+	{
 		SDL_GetWindowSize(mWindow, &mSize.x, &mSize.y);
-
+		mDisplayIdx = SDL_GetWindowDisplayIndex(mWindow);
+	}
 	SDL_DisplayMode dm;
-	SDL_GetDesktopDisplayMode(SDL_GetWindowDisplayIndex(mWindow), &dm);
+	SDL_GetDesktopDisplayMode(mDisplayIdx, &dm);
 	mFullSize = { dm.w, dm.h };
 }
 
 void Engine::Window::Render()
 {
+	int windowIdx = SDL_GetWindowDisplayIndex(mWindow);
 	SDL_SetRenderDrawColor(mRenderer, 40, 43, 200, 255);
-	SDL_Rect rect;
-	rect.x = rect.y = 0;
-	if (mMode == Engine::WindowMode::WINDOW_NORMAL)
-	{
-		rect.w = mSize.x;
-		rect.h = mSize.y;
-	}
-	else
-	{
-		rect.w = mFullSize.x;
-		rect.h = mFullSize.y;
-	}
-	SDL_RenderFillRect(mRenderer, &rect);
+	SDL_RenderClear(mRenderer);
 	SDL_RenderPresent(mRenderer);
 }
 
@@ -92,6 +84,16 @@ void Engine::Window::SetWindowMode(Engine::WindowMode state)
 const Engine::WindowMode Engine::Window::GetWindowMode() const
 {
 	return mMode;
+}
+
+const glm::vec<2, int> Engine::Window::GetSize() const
+{
+	return mSize;
+}
+
+void Engine::Window::SetSize(const glm::vec<2, int> new_size)
+{
+	mSize = new_size;
 }
 
 void Engine::Window::UpdateWindowMode()
