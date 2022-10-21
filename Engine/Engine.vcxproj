@@ -167,7 +167,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Core\Base\Identity.cpp" />
+    <ClCompile Include="Source\Core\Base\RTTI.cpp" />
     <ClCompile Include="Source\Core\Base\RunTime.cpp" />
+    <ClCompile Include="Source\Core\Entity-Component\Components.cpp" />
+    <ClCompile Include="Source\Core\Entity-Component\Object.cpp" />
     <ClCompile Include="Source\Core\Events\SDLEvents.cpp" />
     <ClCompile Include="Source\Core\Platform\InputManager.cpp" />
     <ClCompile Include="Source\Core\Platform\Window.cpp" />
@@ -182,14 +186,22 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Core\Base\Identity.hpp" />
+    <ClInclude Include="Source\Core\Base\RTTI.hpp" />
+    <ClInclude Include="Source\Core\Entity-Component\Components.hpp" />
     <ClInclude Include="Source\Core\Platform\InputManager.hpp" />
     <ClInclude Include="Source\Core\Base\RunTime.hpp" />
     <ClInclude Include="Source\Core\Base\Singleton.hpp" />
     <ClInclude Include="Source\Core\Events\SDLEvents.hpp" />
     <ClInclude Include="Source\Core\Platform\Window.hpp" />
     <ClInclude Include="Source\Debug\DebugSystem.hpp" />
+    <ClInclude Include="Source\Core\Entity-Component\Object.hpp" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Core\Time\TimeSystem.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Core\Base\RTTI.inl" />
+    <None Include="Source\Core\Entity-Component\Object.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

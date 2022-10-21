@@ -80,7 +80,7 @@ void Engine::Window::Render()
 	else
 		SDL_GetDisplayBounds(mDisplayIdx, &rect);
 
-	//SDL_RenderFillRect(mRenderer, &rect);
+	SDL_RenderFillRect(mRenderer, &rect);
 	SDL_RenderPresent(mRenderer);
 }
 

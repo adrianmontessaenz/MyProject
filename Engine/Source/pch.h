@@ -17,7 +17,9 @@
 //other
 #include <ctime>
 #include <iostream>
+#include <sstream>
 #include <chrono>
+#include <typeinfo>
 
 //ThirdParty
 #include <SDL.h>
@@ -28,7 +30,10 @@
 //Core
 #include <Core/Base/RunTime.hpp>
 #include <Core/Base/Singleton.hpp>
+#include <Core/Base/Identity.hpp>
+#include <Core/Base/RTTI.hpp>
 #include <Core/Events/SDLEvents.hpp>
+#include <Core/Entity-Component/Components.hpp>
 
 //Debug
 #include <Debug/DebugSystem.hpp>

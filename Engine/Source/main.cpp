@@ -11,6 +11,7 @@
 #include <Core/Platform/InputManager.hpp>
 #include <Core/Time/TimeSystem.hpp>
 #include <iostream>
+#include <Core/Entity-Component/Object.hpp>
 
 int main(void)
 {
