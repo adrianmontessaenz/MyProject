@@ -35,6 +35,7 @@ namespace Engine
 	private:
 		SDL_Window* mWindow;
 		SDL_Renderer* mRenderer;
+		SDL_DisplayMode mDisplay;
 		glm::vec<2, int> mSize;
 		glm::vec<2, int> mPos;
 		WindowMode mMode;

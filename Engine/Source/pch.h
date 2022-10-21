@@ -12,6 +12,12 @@
 #include <map>
 #include <string>
 #include <array>
+#include <queue>
+
+//other
+#include <ctime>
+#include <iostream>
+#include <chrono>
 
 //ThirdParty
 #include <SDL.h>
@@ -19,6 +25,10 @@
 #include <glm.hpp>
 
 //Engine
+//Core
 #include <Core/Base/RunTime.hpp>
 #include <Core/Base/Singleton.hpp>
 #include <Core/Events/SDLEvents.hpp>
+
+//Debug
+#include <Debug/DebugSystem.hpp>

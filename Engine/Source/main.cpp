@@ -26,20 +26,20 @@ int main(void)
 		//Logic Update
 		if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_F11))
 		{
-			if (gWindow->GetWindowMode() == Engine::WindowMode::WINDOW_BORDERLESS)
+			if (gWindow->GetWindowMode() == Engine::WindowMode::WINDOW_FULLSCREEN)
 				gWindow->SetWindowMode(Engine::WindowMode::WINDOW_NORMAL);
 			else
-				gWindow->SetWindowMode(Engine::WindowMode::WINDOW_BORDERLESS);
+				gWindow->SetWindowMode(Engine::WindowMode::WINDOW_FULLSCREEN);
 		}
 		else if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_ESCAPE))
 			gWindow->SetEnabled(false);
 
 		if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_A))
-			std::cout << "A key is triggered" << std::endl;
+			gDebugSys->Log("A key is triggered");
 		else if (gInputMgr->IsKeyPressed(SDL_SCANCODE_A))
-			std::cout << "A key is pressed" << std::endl;
+			gDebugSys->Log("A key is pressed");
 		else if (gInputMgr->IsKeyReleased(SDL_SCANCODE_A))
-			std::cout << "A key is released" << std::endl;
+			gDebugSys->Log("A key is released");
 
 		//Render
 		/*std::cout << "Delta Time (Seconds): " << gTimeSys->GetDeltaTime() << std::endl;*/

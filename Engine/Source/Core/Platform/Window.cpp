@@ -9,31 +9,36 @@
 #include <pch.h>
 #include "Window.hpp"
 
-Engine::Window::Window() : mWindow(nullptr), mRenderer(nullptr), mSize(1280, 720), mMode(WindowMode::WINDOW_NORMAL), mDisplayIdx(0)
+Engine::Window::Window() : mWindow(nullptr), mRenderer(nullptr), mDisplay(SDL_DisplayMode()), mSize(1280, 720), mPos(0,0), 
+						   mMode(WindowMode::WINDOW_NORMAL), mDisplayIdx(0)
 {
 }
 
 void Engine::Window::Initialize()
 {
-	//Initialize window
+	//Initialize window. If error, throw
 	Uint32 window_flags = SDL_WINDOW_RESIZABLE;
 	SDL_Init(SDL_INIT_EVERYTHING);
 	mWindow = SDL_CreateWindow("MyProject", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mSize.x, mSize.y, window_flags);
-	//If error, throw
 	if (mWindow == nullptr)
 		throw "Could not create window %s\n", SDL_GetError();
 	
-	mRenderer = SDL_CreateRenderer(mWindow, 0, 0);
-	//If error, throw
+	//Create renderer. If errow, throw
+	mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
 	if (mRenderer == nullptr)
 		throw "Could not create window %s\n", SDL_GetError();
 
 	SDL_RenderSetVSync(mRenderer, 1);
 	SDL_SetWindowMinimumSize(mWindow, 128, 78);
+
+	//Get current display
+	mDisplayIdx = SDL_GetWindowDisplayIndex(mWindow);
+	SDL_GetDesktopDisplayMode(mDisplayIdx, &mDisplay);
 }
 
 void Engine::Window::Update()
 {
+	//Get window events and update
 	auto vector = gSDLSys->GetEventsOfType(SDL_EventType::SDL_WINDOWEVENT);
 	for (auto& we : vector)
 	{
@@ -42,25 +47,26 @@ void Engine::Window::Update()
 			case SDL_WINDOWEVENT_CLOSE:
 				SetEnabled(false);
 				return;
-
+			case SDL_WINDOWEVENT_RESIZED:
+				mSize.x = we.window.data1;
+				mSize.y = we.window.data2;
+				break;
+			case SDL_WINDOWEVENT_MOVED:
+				mPos.x = we.window.data1;
+				mPos.y = we.window.data2;
+				break;
+			case SDL_WINDOWEVENT_DISPLAY_CHANGED:
+				gDebugSys->Log("Window Changed Screen", "Window");
+				mDisplayIdx = we.window.data1;
+				SDL_GetCurrentDisplayMode(mDisplayIdx, &mDisplay);
 			default:
 				break;
 		}
-	}
-	if (mMode == Engine::WindowMode::WINDOW_NORMAL)
-	{
-		mDisplayIdx = SDL_GetWindowDisplayIndex(mWindow);
-		SDL_DisplayMode dm;
-		SDL_GetDesktopDisplayMode(mDisplayIdx, &dm);
-		SDL_SetWindowDisplayMode(mWindow, &dm);
-		SDL_GetWindowSize(mWindow, &mSize.x, &mSize.y);
-		SDL_GetWindowPosition(mWindow, &mPos.x, &mPos.y);
 	}
 }
 
 void Engine::Window::Render()
 {
-	int windowIdx = SDL_GetWindowDisplayIndex(mWindow);
 	SDL_SetRenderDrawColor(mRenderer, 40, 43, 200, 255);
 	SDL_RenderClear(mRenderer);
 	SDL_Rect rect;
@@ -74,7 +80,7 @@ void Engine::Window::Render()
 	else
 		SDL_GetDisplayBounds(mDisplayIdx, &rect);
 
-	SDL_RenderFillRect(mRenderer, &rect);
+	//SDL_RenderFillRect(mRenderer, &rect);
 	SDL_RenderPresent(mRenderer);
 }
 
@@ -110,7 +116,6 @@ void Engine::Window::SetSize(const glm::vec<2, int> new_size)
 
 void Engine::Window::UpdateWindowMode()
 {
-	SDL_DisplayMode dm;
 	switch (mMode)
 	{
 	case WindowMode::WINDOW_NORMAL:
