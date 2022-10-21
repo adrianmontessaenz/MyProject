@@ -1,5 +1,12 @@
+/*// -----------------------------------------------------------------
+*  File:		RTTI.hpp
+*  Brief:		Header for RTTI implementation
+*  Creation:	21/10/2022
+*  Last Update:	21/10/2022
+*
+*  © 2022 Adrian Montes. All right reserved
+// -----------------------------------------------------------------*/
 #pragma once
-
 namespace Engine
 {
 	class TypeInfo

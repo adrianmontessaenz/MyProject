@@ -31,9 +31,19 @@ namespace Engine
 		template<typename Type>
 		const int GetLogicComp(LogicComp* comp);
 
+		//Hierarchy
+		void AddChildren(Object* child);
+		Object* GetChildByName(const std::string name) const;
+		std::vector<Object*> GetChildrenByName(const std::string name) const;
+
+		void SetParent(Object* parent);
+		Object* GetParent() const;
 	private:
 		std::vector<EngineComp*> mEngineComps;
 		std::vector<LogicComp*> mLogicComps;
+
+		Object* mParent;
+		std::vector<Object*> mChildren;
 	};
 }
 #include "Object.inl"

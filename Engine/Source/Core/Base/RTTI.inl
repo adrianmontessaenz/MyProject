@@ -1,4 +1,11 @@
-#include "RTTI.hpp"
+/*// -----------------------------------------------------------------
+*  File:		RTTI.inl
+*  Brief:		Implementation for templated RTTI
+*  Creation:	21/10/2022
+*  Last Update:	21/10/2022
+*
+*  © 2022 Adrian Montes. All right reserved
+// -----------------------------------------------------------------*/
 template<typename Child>
 inline void Engine::RTTI::AddType()
 {
