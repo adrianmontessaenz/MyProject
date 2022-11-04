@@ -79,9 +79,6 @@ void Engine::Window::Update()
 /// -----------------------------------------------------------------
 void Engine::Window::Render()
 {
-	glViewport(0, 0, mSize.x, mSize.y);
-	glClearColor(0.07f, 0.13f, 0.17f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT);
 	SDL_GL_SwapWindow(mWindow);
 }
 

@@ -18,6 +18,7 @@
 #include <ctime>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <chrono>
 #include <typeinfo>
 #include <assert.h>
@@ -27,6 +28,7 @@
 #include <glad/glad.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
 
 #include <Importer.hpp>
 #include <scene.h>
@@ -40,9 +42,13 @@
 #include <Core/Base/RTTI.hpp>
 #include <Core/Events/SDLEvents.hpp>
 #include <Core/Entity-Component/Components.hpp>
+#include <Core/Platform/Window.hpp>
 
 //Debug
 #include <Debug/DebugSystem.hpp>
 
 //Math
 #include <Math/Transform.hpp>
+
+//Graphics
+#include <Graphics/Shader.hpp>

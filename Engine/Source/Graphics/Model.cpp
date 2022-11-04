@@ -91,7 +91,8 @@ void Engine::Model::Render()
 void Engine::Model::SetModel(std::string name)
 {
 	mMeshes.clear();
-	std::string full_path = "../data/" + name;
+	SetName(name);
+	std::string full_path = "../Data/Models/" + name;
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(full_path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -113,13 +114,32 @@ const std::vector<Engine::Mesh>& Engine::Model::GetMeshes() const
 }
 
 /// -----------------------------------------------------------------
+/// Sets model color
+/// -----------------------------------------------------------------
+void Engine::Model::SetColor(const vec3 col)
+{
+	mColor = col;
+}
+
+/// -----------------------------------------------------------------
+/// Gets model color
+/// -----------------------------------------------------------------
+const vec3 Engine::Model::GetColor() const
+{
+	return mColor;
+}
+
+/// -----------------------------------------------------------------
 /// Loads meshes read from file
 /// -----------------------------------------------------------------
 void Engine::Model::LoadMeshes(const aiNode* node, const aiScene* scene)
 {
 	//Create all the meshes from this node
 	for (unsigned i = 0; i < node->mNumMeshes; i++)
-		mMeshes.push_back(CreateMesh(scene->mMeshes[node->mMeshes[i]]));
+	{
+		Mesh mesh = CreateMesh(scene->mMeshes[node->mMeshes[i]]);
+		mMeshes.push_back(mesh);
+	}
 
 	//Go to children nodes
 	for (unsigned i = 0; i < node->mNumChildren; i++)
@@ -129,7 +149,7 @@ void Engine::Model::LoadMeshes(const aiNode* node, const aiScene* scene)
 /// -----------------------------------------------------------------
 /// Creates engine mesh from importer mesh data
 /// -----------------------------------------------------------------
-const Engine::Mesh& Engine::Model::CreateMesh(const aiMesh* mesh)
+Engine::Mesh Engine::Model::CreateMesh(const aiMesh* mesh)
 {
 	std::vector<Vertex> vtxs;
 	std::vector<unsigned> idxs;
@@ -159,5 +179,6 @@ const Engine::Mesh& Engine::Model::CreateMesh(const aiMesh* mesh)
 	}
 
 	//Create mesh
-	return Mesh(vtxs, idxs);
+	Mesh result(vtxs, idxs);
+	return result;
 }

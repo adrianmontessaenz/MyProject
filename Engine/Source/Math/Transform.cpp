@@ -166,17 +166,17 @@ void Engine::Transform::UpdateWorld()
 		mWMat = mLMat;
 	}
 
-	//Update world with parent locals too
+	//Update world with parent
 	else
 	{
 		int debug = 0;
 		Transform* pTrans = parent->GetEngineComp<Transform>(&debug);
-		assert(debug != 1); //Objects by default should have transform
+		assert(debug == 1); //Objects by default should have transform
 		if (pTrans != nullptr)
 		{
-			mWPos = mLPos + pTrans->mLPos;
+			mWPos = mLPos + pTrans->mWPos;
 			mWScale = mLScale * pTrans->mWScale;
-			mWRot = mWRot + pTrans->mWRot;
+			mWRot = mLRot + pTrans->mWRot;
 		}
 		ComputeWorldMat();
 	}
@@ -185,8 +185,8 @@ void Engine::Transform::UpdateWorld()
 	for (auto child : GetOwner()->GetChildren())
 	{
 		int debug = 0;
-		Transform* cTrans = parent->GetEngineComp<Transform>(&debug);
-		assert(debug != 1); //Objects by default should have transform
+		Transform* cTrans = child->GetEngineComp<Transform>(&debug);
+		assert(debug == 1); //Objects by default should have transform
 		cTrans->UpdateWorld();
 	}
 }
@@ -218,13 +218,12 @@ void Engine::Transform::UpdateLocal()
 		mLRot = mWRot;
 		mLMat = mWMat;
 	}
-
 	//Update local with parent world too
 	else
 	{
 		int debug = 0;
 		Transform* pTrans = parent->GetEngineComp<Transform>(&debug);
-		assert(debug != 1); //Objects by default should have transform
+		assert(debug == 1); //Objects by default should have transform
 		if (pTrans != nullptr)
 		{
 			mLPos = mWPos - pTrans->mWPos;
@@ -238,9 +237,9 @@ void Engine::Transform::UpdateLocal()
 	for (auto child : GetOwner()->GetChildren())
 	{
 		int debug = 0;
-		Transform* cTrans = parent->GetEngineComp<Transform>(&debug);
-		assert(debug != 1); //Objects by default should have transform
-		cTrans->UpdateLocal();
+		Transform* cTrans = child->GetEngineComp<Transform>(&debug);
+		assert(debug == 1); //Objects by default should have transform
+		cTrans->UpdateWorld();
 	}
 }
 

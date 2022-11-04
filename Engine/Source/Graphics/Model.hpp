@@ -1,3 +1,11 @@
+/*// -----------------------------------------------------------------
+*  File:		Model.hpp
+*  Brief:		Header file of models, vertices and meshes
+*  Creation:	04/11/2022
+*  Last Update:	04/11/2022
+*
+*  © 2022 Adrian Montes. All right reserved
+// -----------------------------------------------------------------*/
 #pragma once
 
 using glm::vec2;
@@ -28,13 +36,15 @@ namespace Engine
 		void CreateBuffers();
 	};
 
-	class Model
+	class Model : public Identity
 	{
 	public:
 		Model();
 		void Render();
 		void SetModel(std::string name);
 		const std::vector<Mesh>& GetMeshes() const;
+		void SetColor(const vec3 col);
+		const vec3 GetColor() const;
 		
 	private:
 		std::vector<Mesh> mMeshes;
@@ -42,6 +52,6 @@ namespace Engine
 
 		//For assimp loader
 		void LoadMeshes(const aiNode* node, const aiScene* scene);
-		const Mesh& CreateMesh(const aiMesh* mesh);
+		Mesh CreateMesh(const aiMesh* mesh);
 	};
 }

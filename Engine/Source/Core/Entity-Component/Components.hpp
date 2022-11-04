@@ -19,7 +19,7 @@ namespace Engine
 		virtual void Shutdown() override = 0;
 
 		void SetOwner(Object* owner);
-		const Object* GetOwner() const;
+		Object* GetOwner() const;
 	private:
 		Object* mOwner = nullptr;
 	};

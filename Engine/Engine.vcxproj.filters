@@ -43,6 +43,12 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Source\Graphics\GraphicsManager.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Shader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -115,6 +121,12 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Model.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\GraphicsManager.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Shader.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>

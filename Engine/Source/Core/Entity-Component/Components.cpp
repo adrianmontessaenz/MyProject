@@ -22,7 +22,7 @@ void Engine::Component::SetOwner(Engine::Object* owner)
 /// -----------------------------------------------------------------
 /// Returns owner of components
 /// -----------------------------------------------------------------
-const Engine::Object* Engine::Component::GetOwner() const
+Engine::Object* Engine::Component::GetOwner() const
 {
 	return mOwner;
 }

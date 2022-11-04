@@ -66,6 +66,7 @@ void Engine::Object::AddChildren(Object* child)
 	if (std::find(mChildren.begin(), mChildren.end(), child) != mChildren.end())
 		return;
 	mChildren.push_back(child);
+	child->SetParent(this);
 }
 
 /// -----------------------------------------------------------------
