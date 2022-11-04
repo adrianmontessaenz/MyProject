@@ -2,7 +2,7 @@
 *  File:		Object.hpp
 *  Brief:		Header of Object class
 *  Creation:	21/10/2022
-*  Last Update:	21/10/2022
+*  Last Update:	04/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -43,7 +43,7 @@ namespace Engine
 		std::vector<EngineComp*> mEngineComps;
 		std::vector<LogicComp*> mLogicComps;
 
-		Object* mParent;
+		Object* mParent = nullptr;
 		std::vector<Object*> mChildren;
 	};
 }

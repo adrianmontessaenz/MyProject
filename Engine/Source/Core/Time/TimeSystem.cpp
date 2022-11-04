@@ -2,19 +2,12 @@
 *  File:		TimeSystem.cpp
 *  Brief:		Implementation of TimeSystem class
 *  Creation:	17/10/2022
-*  Last Update:	17/10/2022
+*  Last Update:	04/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "TimeSystem.hpp"
-
-/// -----------------------------------------------------------------
-/// Variable initialization
-/// -----------------------------------------------------------------
-Engine::TimeSystem::TimeSystem() : mPrevTicks(0), mTicks(0), mPausedTicks(0), mStarted(false), mPaused(false), mFrameCounter(0), mFrameRate(0)
-{
-}
 
 /// -----------------------------------------------------------------
 /// Initializes time system

@@ -37,7 +37,7 @@ namespace Engine
 		//Mouse
 		std::map<Uint8, float> mMouse;
 		std::map<Uint8, float> mPrevMouse;
-		glm::vec<2, int> mMousePos;
+		glm::vec<2, int> mMousePos = glm::vec<2,int>(0,0);
 
 	};
 }

@@ -2,7 +2,7 @@
 *  File:		Window.hpp
 *  Brief:		Header of Window class
 *  Creation:	13/10/2022
-*  Last Update:	14/10/2022
+*  Last Update:	04/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -20,7 +20,6 @@ namespace Engine
 	class Window : public RunTime, public Singleton<Window>
 	{
 	public:
-		Window();
 		virtual void Initialize() override;
 		virtual void Update() override;
 		virtual void Render() override;
@@ -33,13 +32,13 @@ namespace Engine
 		void SetSize(const glm::vec<2, int> new_size);
 
 	private:
-		SDL_Window* mWindow;
-		SDL_Renderer* mRenderer;
-		SDL_DisplayMode mDisplay;
-		glm::vec<2, int> mSize;
-		glm::vec<2, int> mPos;
-		WindowMode mMode;
-		unsigned mDisplayIdx;
+		SDL_Window* mWindow = nullptr;
+		SDL_GLContext mContext = SDL_GLContext();
+		SDL_DisplayMode mDisplay = SDL_DisplayMode();
+		glm::vec<2, int> mSize = { 1280,720 };
+		glm::vec<2, int> mPos = { 0,0 };
+		WindowMode mMode = WindowMode::WINDOW_NORMAL;
+		unsigned mDisplayIdx = 0;
 
 		void UpdateWindowMode();
 	};

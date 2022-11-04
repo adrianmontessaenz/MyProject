@@ -2,7 +2,7 @@
 *  File:		RTTI.hpp
 *  Brief:		Implementation for RTTI
 *  Creation:	21/10/2022
-*  Last Update:	21/10/2022
+*  Last Update:	04/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/

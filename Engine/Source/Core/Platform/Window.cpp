@@ -2,7 +2,7 @@
 *  File:		Window.cpp
 *  Brief:		Implementation of Engine Window
 *  Creation:	13/10/2022
-*  Last Update:	13/10/2022
+*  Last Update:	04/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -10,36 +10,37 @@
 #include "Window.hpp"
 
 /// -----------------------------------------------------------------
-/// Constructor to initialize all variables
-/// -----------------------------------------------------------------
-Engine::Window::Window() : mWindow(nullptr), mRenderer(nullptr), mDisplay(SDL_DisplayMode()), mSize(1280, 720), mPos(0,0), 
-						   mMode(WindowMode::WINDOW_NORMAL), mDisplayIdx(0)
-{
-}
-
-/// -----------------------------------------------------------------
 /// Window creation and SDL initialization
 /// -----------------------------------------------------------------
 void Engine::Window::Initialize()
 {
 	//Initialize window. If error, throw
-	Uint32 window_flags = SDL_WINDOW_RESIZABLE;
+	Uint32 window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
 	SDL_Init(SDL_INIT_EVERYTHING);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
 	mWindow = SDL_CreateWindow("MyProject", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mSize.x, mSize.y, window_flags);
 	if (mWindow == nullptr)
 		throw "Could not create window %s\n", SDL_GetError();
 	
 	//Create renderer. If errow, throw
-	mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
-	if (mRenderer == nullptr)
-		throw "Could not create window %s\n", SDL_GetError();
-
-	SDL_RenderSetVSync(mRenderer, 1);
+	mContext = SDL_GL_CreateContext(mWindow);
+	SDL_GL_MakeCurrent(mWindow, mContext);
 	SDL_SetWindowMinimumSize(mWindow, 128, 78);
 
 	//Get current display
 	mDisplayIdx = SDL_GetWindowDisplayIndex(mWindow);
 	SDL_GetDesktopDisplayMode(mDisplayIdx, &mDisplay);
+
+	//Set up initial openGL
+	gladLoadGL();
+	glViewport(0, 0, mSize.x, mSize.y);
+	glClearColor(0.07f, 0.13f, 0.17f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 /// -----------------------------------------------------------------
@@ -68,7 +69,6 @@ void Engine::Window::Update()
 				gDebugSys->Log("Window Changed Screen", "Window");
 				mDisplayIdx = we.window.data1;
 				SDL_GetCurrentDisplayMode(mDisplayIdx, &mDisplay);
-			default:
 				break;
 		}
 	}
@@ -79,21 +79,10 @@ void Engine::Window::Update()
 /// -----------------------------------------------------------------
 void Engine::Window::Render()
 {
-	SDL_SetRenderDrawColor(mRenderer, 40, 43, 200, 255);
-	SDL_RenderClear(mRenderer);
-	SDL_Rect rect;
-	if (mMode == Engine::WindowMode::WINDOW_NORMAL)
-	{
-		rect.w = mSize.x;
-		rect.h = mSize.y;
-		rect.x = mPos.x;
-		rect.y = mPos.y;
-	}
-	else
-		SDL_GetDisplayBounds(mDisplayIdx, &rect);
-
-	SDL_RenderFillRect(mRenderer, &rect);
-	SDL_RenderPresent(mRenderer);
+	glViewport(0, 0, mSize.x, mSize.y);
+	glClearColor(0.07f, 0.13f, 0.17f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_GL_SwapWindow(mWindow);
 }
 
 /// -----------------------------------------------------------------
@@ -103,7 +92,6 @@ void Engine::Window::Shutdown()
 {
 	//Destroy sdl window
 	SDL_DestroyWindow(mWindow);
-	SDL_DestroyRenderer(mRenderer);
 	SDL_Quit();
 	SetShutdown(true);
 }

@@ -36,6 +36,13 @@
     <ClCompile Include="Source\Math\Transform.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\Renderable.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Model.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -61,6 +68,9 @@
     </Filter>
     <Filter Include="Math">
       <UniqueIdentifier>{af8ef237-1414-41b1-9814-6e4e498b4f71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{ac76e0c0-db87-4eb8-9366-b52595f72a17}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +110,12 @@
     </ClInclude>
     <ClInclude Include="Source\Math\Transform.hpp">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Renderable.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Model.hpp">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
