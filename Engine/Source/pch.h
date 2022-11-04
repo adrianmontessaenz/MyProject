@@ -20,11 +20,13 @@
 #include <sstream>
 #include <chrono>
 #include <typeinfo>
+#include <assert.h>
 
 //ThirdParty
 #include <SDL.h>
 
 #include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
 
 //Engine
 //Core
@@ -37,3 +39,6 @@
 
 //Debug
 #include <Debug/DebugSystem.hpp>
+
+//Math
+#include <Math/Transform.hpp>

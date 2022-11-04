@@ -9,33 +9,48 @@
 #include <pch.h>
 #include "RunTime.hpp"
 
-void Engine::RunTime::Update()
-{
-}
+/// -----------------------------------------------------------------
+/// Empty Update
+/// -----------------------------------------------------------------
+void Engine::RunTime::Update(){}
 
-void Engine::RunTime::LogicUpdate()
-{
-}
+/// -----------------------------------------------------------------
+/// Empty Logic Update
+/// -----------------------------------------------------------------
+void Engine::RunTime::LogicUpdate(){}
 
-void Engine::RunTime::Render()
-{
-}
+/// -----------------------------------------------------------------
+/// Empty Render
+/// -----------------------------------------------------------------
+void Engine::RunTime::Render(){}
 
+/// -----------------------------------------------------------------
+/// Sets shutdown state
+/// -----------------------------------------------------------------
 void Engine::RunTime::SetShutdown(const bool shutdown)
 {
 	mIsShutdown = shutdown;
 }
 
+/// -----------------------------------------------------------------
+/// Gets shutdown state
+/// -----------------------------------------------------------------
 bool Engine::RunTime::IsShutdown() const
 {
 	return mIsShutdown;
 }
 
+/// -----------------------------------------------------------------
+/// Sets enabled state
+/// -----------------------------------------------------------------
 void Engine::RunTime::SetEnabled(const bool enable)
 {
 	mIsEnabled = enable;
 }
 
+/// -----------------------------------------------------------------
+/// Gets enabled state
+/// -----------------------------------------------------------------
 bool Engine::RunTime::IsEnabled() const
 {
 	return mIsEnabled;

@@ -18,7 +18,7 @@ namespace Engine
 
 		//Gettors
 		const std::string GetTypeName() const;
-		const std::vector<const char*>& GetParentNames() const;
+		const std::vector<std::string> GetParentNames() const;
 		bool HasParent(const std::string name) const;
 
 	private:

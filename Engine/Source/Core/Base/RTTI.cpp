@@ -10,6 +10,9 @@
 #include "RTTI.hpp"
 std::vector<Engine::TypeInfo*> Engine::RTTI::sTypes;
 
+/// -----------------------------------------------------------------
+/// Sets name of typeinfo
+/// -----------------------------------------------------------------
 void Engine::TypeInfo::SetTypeName(const std::string name)
 {
 	//If not new, throw (since a type name shouldn't change)
@@ -25,6 +28,9 @@ void Engine::TypeInfo::SetTypeName(const std::string name)
 	mTypeName = new_name;
 }
 
+/// -----------------------------------------------------------------
+/// Adds parent name to type info
+/// -----------------------------------------------------------------
 void Engine::TypeInfo::AddParentType(const std::string parent)
 {
 	//If it is already in the list, don't add it
@@ -37,16 +43,28 @@ void Engine::TypeInfo::AddParentType(const std::string parent)
 	mParentNames.push_back(name);
 }
 
+/// -----------------------------------------------------------------
+/// Gets typename as string
+/// -----------------------------------------------------------------
 const std::string Engine::TypeInfo::GetTypeName() const
 {
 	return std::string(mTypeName);
 }
 
-const std::vector<const char*>& Engine::TypeInfo::GetParentNames() const
+/// -----------------------------------------------------------------
+/// Gets list of parents
+/// -----------------------------------------------------------------
+const std::vector<std::string> Engine::TypeInfo::GetParentNames() const
 {
-	return mParentNames;
+	std::vector<std::string> copy_vec;
+	for (auto parent : mParentNames)
+		copy_vec.push_back(std::string(parent));
+	return copy_vec;
 }
 
+/// -----------------------------------------------------------------
+/// Checks if object has parent of given name
+/// -----------------------------------------------------------------
 bool Engine::TypeInfo::HasParent(const std::string name) const
 {
 	//If found, it is child of

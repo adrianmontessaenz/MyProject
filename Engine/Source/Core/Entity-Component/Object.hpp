@@ -21,20 +21,21 @@ namespace Engine
 
 		//Engine Components
 		template<typename Type>
-		const int AddEngineComp();
+		Type* AddEngineComp(int* debug = nullptr);
 		template<typename Type>
-		const int GetEngineComp(EngineComp* comp);
+		Type* GetEngineComp(int* debug = nullptr);
 
 		//Logic Components
 		template<typename Type>
-		const int AddLogicComp();
+		Type* AddLogicComp(int* debug = nullptr);
 		template<typename Type>
-		const int GetLogicComp(LogicComp* comp);
+		Type* GetLogicComp(int* debug = nullptr);
 
 		//Hierarchy
 		void AddChildren(Object* child);
 		Object* GetChildByName(const std::string name) const;
 		std::vector<Object*> GetChildrenByName(const std::string name) const;
+		const std::vector<Object*> GetChildren() const;
 
 		void SetParent(Object* parent);
 		Object* GetParent() const;

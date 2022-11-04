@@ -11,12 +11,18 @@
 #include "Components.hpp"
 #include <Core/Entity-Component/Object.hpp>
 
+/// -----------------------------------------------------------------
+/// Sets owner of component
+/// -----------------------------------------------------------------
 void Engine::Component::SetOwner(Engine::Object* owner)
 {
 	mOwner = owner;
 }
 
+/// -----------------------------------------------------------------
+/// Returns owner of components
+/// -----------------------------------------------------------------
 const Engine::Object* Engine::Component::GetOwner() const
 {
-	return nullptr;
+	return mOwner;
 }

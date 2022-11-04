@@ -24,6 +24,9 @@ namespace Engine
 		Singleton() = default;
 	};
 
+	/// -----------------------------------------------------------------
+	/// Gets singleton instance. If first time, creates it
+	/// -----------------------------------------------------------------
 	template<typename Type>
 	inline Type& Engine::Singleton<Type>::GetInstance()
 	{

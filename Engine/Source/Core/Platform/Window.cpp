@@ -9,11 +9,17 @@
 #include <pch.h>
 #include "Window.hpp"
 
+/// -----------------------------------------------------------------
+/// Constructor to initialize all variables
+/// -----------------------------------------------------------------
 Engine::Window::Window() : mWindow(nullptr), mRenderer(nullptr), mDisplay(SDL_DisplayMode()), mSize(1280, 720), mPos(0,0), 
 						   mMode(WindowMode::WINDOW_NORMAL), mDisplayIdx(0)
 {
 }
 
+/// -----------------------------------------------------------------
+/// Window creation and SDL initialization
+/// -----------------------------------------------------------------
 void Engine::Window::Initialize()
 {
 	//Initialize window. If error, throw
@@ -36,6 +42,9 @@ void Engine::Window::Initialize()
 	SDL_GetDesktopDisplayMode(mDisplayIdx, &mDisplay);
 }
 
+/// -----------------------------------------------------------------
+/// Window update
+/// -----------------------------------------------------------------
 void Engine::Window::Update()
 {
 	//Get window events and update
@@ -65,6 +74,9 @@ void Engine::Window::Update()
 	}
 }
 
+/// -----------------------------------------------------------------
+/// Window renderization
+/// -----------------------------------------------------------------
 void Engine::Window::Render()
 {
 	SDL_SetRenderDrawColor(mRenderer, 40, 43, 200, 255);
@@ -84,6 +96,9 @@ void Engine::Window::Render()
 	SDL_RenderPresent(mRenderer);
 }
 
+/// -----------------------------------------------------------------
+/// Window shutdown
+/// -----------------------------------------------------------------
 void Engine::Window::Shutdown()
 {
 	//Destroy sdl window
@@ -93,27 +108,42 @@ void Engine::Window::Shutdown()
 	SetShutdown(true);
 }
 
+/// -----------------------------------------------------------------
+/// Sets window mode to fullscreen, borderless or normal
+/// -----------------------------------------------------------------
 void Engine::Window::SetWindowMode(Engine::WindowMode state)
 {
 	mMode = state;
 	UpdateWindowMode();
 }
 
+/// -----------------------------------------------------------------
+/// Gets window mode
+/// -----------------------------------------------------------------
 const Engine::WindowMode Engine::Window::GetWindowMode() const
 {
 	return mMode;
 }
 
+/// -----------------------------------------------------------------
+/// Gets window size.
+/// -----------------------------------------------------------------
 const glm::vec<2, int> Engine::Window::GetSize() const
 {
 	return mSize;
 }
 
+/// -----------------------------------------------------------------
+/// Sets window size
+/// -----------------------------------------------------------------
 void Engine::Window::SetSize(const glm::vec<2, int> new_size)
 {
 	mSize = new_size;
 }
 
+/// -----------------------------------------------------------------
+/// Updates window based on its current mode
+/// -----------------------------------------------------------------
 void Engine::Window::UpdateWindowMode()
 {
 	switch (mMode)

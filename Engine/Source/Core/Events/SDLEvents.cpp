@@ -9,10 +9,14 @@
 #include <pch.h>
 #include "SDLEvents.hpp"
 
-void Engine::SDLEventSystem::Initialize()
-{
-}
+/// -----------------------------------------------------------------
+/// Empty Initialization
+/// -----------------------------------------------------------------
+void Engine::SDLEventSystem::Initialize(){}
 
+/// -----------------------------------------------------------------
+/// Gets all the events that happened in frame and stores them
+/// -----------------------------------------------------------------
 void Engine::SDLEventSystem::Update()
 {
 	//Get all events
@@ -22,10 +26,14 @@ void Engine::SDLEventSystem::Update()
 		mEvents[sdl_event.type].push_back(sdl_event);
 }
 
-void Engine::SDLEventSystem::Shutdown()
-{
-}
+/// -----------------------------------------------------------------
+/// Empty shutdown
+/// -----------------------------------------------------------------
+void Engine::SDLEventSystem::Shutdown(){}
 
+/// -----------------------------------------------------------------
+/// Gets requested events
+/// -----------------------------------------------------------------
 const std::vector<SDL_Event>& Engine::SDLEventSystem::GetEventsOfType(Uint32 type)
 {
 	return mEvents[type];

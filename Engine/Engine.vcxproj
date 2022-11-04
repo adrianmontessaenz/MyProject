@@ -178,6 +178,7 @@
     <ClCompile Include="Source\Core\Time\TimeSystem.cpp" />
     <ClCompile Include="Source\Debug\DebugSystem.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Math\Transform.cpp" />
     <ClCompile Include="Source\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
@@ -196,6 +197,7 @@
     <ClInclude Include="Source\Core\Platform\Window.hpp" />
     <ClInclude Include="Source\Debug\DebugSystem.hpp" />
     <ClInclude Include="Source\Core\Entity-Component\Object.hpp" />
+    <ClInclude Include="Source\Math\Transform.hpp" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Core\Time\TimeSystem.hpp" />
   </ItemGroup>

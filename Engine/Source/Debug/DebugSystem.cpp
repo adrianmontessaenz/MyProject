@@ -9,6 +9,9 @@
 #include <pch.h>
 #include "DebugSystem.hpp"
 
+/// -----------------------------------------------------------------
+/// Prints detailed message
+/// -----------------------------------------------------------------
 void Engine::DebugSystem::Log(const std::string msg, const std::string typeName)
 {
 	std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());

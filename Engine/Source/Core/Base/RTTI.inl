@@ -6,6 +6,9 @@
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
+/// -----------------------------------------------------------------
+/// Adds type info to RTTI
+/// -----------------------------------------------------------------
 template<typename Child>
 inline void Engine::RTTI::AddType()
 {
@@ -18,6 +21,9 @@ inline void Engine::RTTI::AddType()
 	sTypes.push_back(type);
 }
 
+/// -----------------------------------------------------------------
+/// Adds type with parent to RTTI
+/// -----------------------------------------------------------------
 template<typename Child, typename Parent>
 inline void Engine::RTTI::AddParentedType()
 {
@@ -34,12 +40,18 @@ inline void Engine::RTTI::AddParentedType()
 	sTypes.push_back(type);
 }
 
+/// -----------------------------------------------------------------
+/// Gets requested type info
+/// -----------------------------------------------------------------
 template<typename Type>
 inline const Engine::TypeInfo* Engine::RTTI::GetTypeInfo()
 {
 	return FindType<Type>();
 }
 
+/// -----------------------------------------------------------------
+/// Gets name of type
+/// -----------------------------------------------------------------
 template<typename Type>
 inline const std::string Engine::RTTI::TypeName()
 {
@@ -54,6 +66,9 @@ inline const std::string Engine::RTTI::TypeName()
 	return name;
 }
 
+/// -----------------------------------------------------------------
+/// Looks for the type on RTTI
+/// -----------------------------------------------------------------
 template<typename Type>
 inline Engine::TypeInfo* Engine::RTTI::FindType()
 {

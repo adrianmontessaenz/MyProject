@@ -13,6 +13,7 @@ namespace Engine
 	class Object;
 	class Component : public RunTime
 	{
+		RTTI_BASE(Component)
 	public:
 		virtual void Initialize() override = 0;
 		virtual void Shutdown() override = 0;
@@ -20,11 +21,12 @@ namespace Engine
 		void SetOwner(Object* owner);
 		const Object* GetOwner() const;
 	private:
-		Object* mOwner;
+		Object* mOwner = nullptr;
 	};
 
 	class EngineComp : public Component
 	{
+		RTTI_BASE(EngineComp)
 	public:
 		virtual void Initialize() override = 0;
 		virtual void Shutdown() override = 0;
@@ -32,6 +34,7 @@ namespace Engine
 
 	class LogicComp : public Component
 	{
+		RTTI_BASE(LogicComp)
 	public:
 		virtual void Initialize() override = 0;
 		virtual void Shutdown() override = 0;

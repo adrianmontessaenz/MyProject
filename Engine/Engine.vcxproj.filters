@@ -33,6 +33,9 @@
     <ClCompile Include="Source\Core\Base\RTTI.cpp">
       <Filter>Core\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Math\Transform.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -55,6 +58,9 @@
     </Filter>
     <Filter Include="Core\Entity-Component">
       <UniqueIdentifier>{027ea382-ad6f-4e49-ae71-8071ded9540b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{af8ef237-1414-41b1-9814-6e4e498b4f71}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="Source\Core\Base\RTTI.hpp">
       <Filter>Core\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\Transform.hpp">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,9 @@
 #include <pch.h>
 #include "Identity.hpp"
 
+/// -----------------------------------------------------------------
+/// Sets name of identity
+/// -----------------------------------------------------------------
 void Engine::Identity::SetName(const std::string name)
 {
 	//Delete previous name
@@ -28,16 +31,25 @@ void Engine::Identity::SetName(const std::string name)
 	strcpy(mName, name.c_str());
 }
 
+/// -----------------------------------------------------------------
+/// Gets name as string
+/// -----------------------------------------------------------------
 std::string Engine::Identity::GetName() const
 {
 	return std::string(mName);
 }
 
+/// -----------------------------------------------------------------
+/// Sets unique id of identity
+/// -----------------------------------------------------------------
 void Engine::Identity::SetUniqueID(const unsigned id)
 {
 	mUID = id;
 }
 
+/// -----------------------------------------------------------------
+/// Gets its unique id
+/// -----------------------------------------------------------------
 const unsigned Engine::Identity::GetUniqueID() const
 {
 	return mUID;

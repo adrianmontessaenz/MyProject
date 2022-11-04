@@ -17,6 +17,16 @@ int main(void)
 {
 	gWindow->Initialize();
 	gTimeSys->Initialize();
+
+	//Test for components
+	{
+		//Engine::Object* obj = new Engine::Object();
+		//obj->Initialize();
+		//Engine::Transform* comp2 = obj->GetEngineComp<Engine::Transform>();
+		//Engine::Transform* comp = obj->AddEngineComp<Engine::Transform>();
+		//assert(comp == comp2);
+	}
+
 	while (gWindow->IsEnabled())
 	{
 		//Update

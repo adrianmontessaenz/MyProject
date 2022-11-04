@@ -10,10 +10,14 @@
 #include "InputManager.hpp"
 #include <Core/Time/TimeSystem.hpp>
 
-void Engine::InputManager::Initialize()
-{
-}
+/// -----------------------------------------------------------------
+/// Empty initialization
+/// -----------------------------------------------------------------
+void Engine::InputManager::Initialize(){}
 
+/// -----------------------------------------------------------------
+/// Input update. Checks keys to be updated
+/// -----------------------------------------------------------------
 void Engine::InputManager::Update()
 {
 	//Update previous state
@@ -56,39 +60,62 @@ void Engine::InputManager::Update()
 		mMouse[m.button.button] = 0.f;
 }
 
-void Engine::InputManager::Shutdown()
-{
-}
+/// -----------------------------------------------------------------
+/// Empty shutdown
+/// -----------------------------------------------------------------
+void Engine::InputManager::Shutdown(){}
 
+/// -----------------------------------------------------------------
+/// Checks if key was triggered
+/// -----------------------------------------------------------------
 bool Engine::InputManager::IsKeyTriggered(SDL_Scancode key)
 {
 	return mKeyboard[key] > 0.f && mPrevKeyboard[key] <= 0.f;
 }
 
+/// -----------------------------------------------------------------
+/// Checks if key was pressed
+/// -----------------------------------------------------------------
 bool Engine::InputManager::IsKeyPressed(SDL_Scancode key)
 {
 	return mKeyboard[key] > gTimeSys->GetDeltaTime() * 1.10f && mPrevKeyboard[key] > 0.f;
 }
+
+/// -----------------------------------------------------------------
+/// Checks if key was released
+/// -----------------------------------------------------------------
 bool Engine::InputManager::IsKeyReleased(SDL_Scancode key)
 {
 	return mKeyboard[key] <= 0.f && mPrevKeyboard[key] > 0.f;
 }
 
+/// -----------------------------------------------------------------
+/// Checks if mouse was triggered
+/// -----------------------------------------------------------------
 bool Engine::InputManager::IsMouseTriggered(Uint8 mouse)
 {
 	return mPrevMouse[mouse] <= 0.f && mMouse[mouse] > 0.f;
 }
 
+/// -----------------------------------------------------------------
+/// Checks if mouse was pressed
+/// -----------------------------------------------------------------
 bool Engine::InputManager::IsMousePressed(Uint8 mouse)
 {
 	return mMouse[mouse] > gTimeSys->GetDeltaTime() * 1.10f && mMouse[mouse] > 0.f;;
 }
 
+/// -----------------------------------------------------------------
+/// Checks if mouse was released
+/// -----------------------------------------------------------------
 bool Engine::InputManager::IsMouseReleased(Uint8 mouse)
 {
 	return mMouse[mouse] <= 0.f && mPrevMouse[mouse] > 0.f;
 }
 
+/// -----------------------------------------------------------------
+/// Gets mouse position
+/// -----------------------------------------------------------------
 const glm::vec<2, int> Engine::InputManager::GetMousePos() const
 {
 	return mMousePos;
