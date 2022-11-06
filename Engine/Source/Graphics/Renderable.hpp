@@ -21,8 +21,10 @@ namespace Engine
 
 		void SetModel(const std::string name);
 		const std::string GetModel() const;
-		void SetColor(const vec3 col);
-		const vec3 GetColor() const;
+		void SetColor(const vec4 col);
+		const vec4 GetColor() const;
+		void SetTexture(const std::string name);
+		const std::string GetTexture() const;
 
 		//For gfx manager
 		void SetIndexOnManager(const int idx);
@@ -30,5 +32,6 @@ namespace Engine
 	private:
 		int mIdx = -1;
 		Model* mModel = new Model();
+		Texture* mTexture = nullptr;
 	};
 }

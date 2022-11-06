@@ -10,6 +10,7 @@
 
 using glm::vec2;
 using glm::vec3;
+using glm::vec4;
 namespace Engine
 {
 	struct Vertex
@@ -43,12 +44,12 @@ namespace Engine
 		void Render();
 		void SetModel(std::string name);
 		const std::vector<Mesh>& GetMeshes() const;
-		void SetColor(const vec3 col);
-		const vec3 GetColor() const;
+		void SetColor(const vec4 col);
+		const vec4 GetColor() const;
 		
 	private:
 		std::vector<Mesh> mMeshes;
-		glm::vec3 mColor = vec3(1.f);
+		glm::vec4 mColor = vec4(1.f);
 
 		//For assimp loader
 		void LoadMeshes(const aiNode* node, const aiScene* scene);

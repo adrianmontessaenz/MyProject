@@ -19,6 +19,8 @@ namespace Engine
 
 		void UniformMat4(glm::mat4 mat4_, std::string name, int layout_loc = -1);
 		void UniformVec3(glm::vec3 vec3_, std::string name, int layout_loc = -1);
+		void UniformVec4(glm::vec4 vec4_, std::string name, int layout_loc = -1);
+		void UniformInt(int int_, std::string name, int layout_loc = -1);
 
 	private:
 		GLuint mShaderID = 0;

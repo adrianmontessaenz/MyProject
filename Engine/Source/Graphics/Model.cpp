@@ -73,7 +73,7 @@ void Engine::Mesh::CreateBuffers()
 /// -----------------------------------------------------------------
 Engine::Model::Model()
 {
-	SetModel("cube.obj");
+	SetModel("plane.obj");
 }
 
 /// -----------------------------------------------------------------
@@ -116,7 +116,7 @@ const std::vector<Engine::Mesh>& Engine::Model::GetMeshes() const
 /// -----------------------------------------------------------------
 /// Sets model color
 /// -----------------------------------------------------------------
-void Engine::Model::SetColor(const vec3 col)
+void Engine::Model::SetColor(const vec4 col)
 {
 	mColor = col;
 }
@@ -124,7 +124,7 @@ void Engine::Model::SetColor(const vec3 col)
 /// -----------------------------------------------------------------
 /// Gets model color
 /// -----------------------------------------------------------------
-const vec3 Engine::Model::GetColor() const
+const vec4 Engine::Model::GetColor() const
 {
 	return mColor;
 }
@@ -159,8 +159,8 @@ Engine::Mesh Engine::Model::CreateMesh(const aiMesh* mesh)
 	{
 		Vertex vtx;
 		const aiVector3D& aiPos = mesh->mVertices[i];
-		const aiVector3D& aiUV = mesh->mNormals[i];
-		const aiVector3D& aiNormal = mesh->mTextureCoords[0][i];
+		const aiVector3D& aiUV = mesh->mTextureCoords[0][i];
+		const aiVector3D& aiNormal = mesh->mNormals[i];
 		vtx.mPos = vec3(aiPos.x, aiPos.y, aiPos.z);
 		vtx.mNormal = vec3(aiNormal.x, aiNormal.y, aiNormal.z);
 

@@ -27,6 +27,8 @@ void Engine::GraphicsManager::Render()
 	glViewport(0, 0, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y));
 	glClearColor(0.07f, 0.13f, 0.17f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Get view and projection matrices (Temporal)
 	glm::mat4 view = glm::translate(glm::identity<mat4>(), glm::vec3(0.f, -0.5f, -2.f));

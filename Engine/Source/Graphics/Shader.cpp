@@ -105,6 +105,28 @@ void Engine::Shader::UniformVec3(glm::vec3 vec3_, std::string name, int layout_l
 }
 
 /// -----------------------------------------------------------------
+/// Add vec4 as uniform to shader
+/// -----------------------------------------------------------------
+void Engine::Shader::UniformVec4(glm::vec4 vec4_, std::string name, int layout_loc)
+{
+	int loc = layout_loc;
+	if (loc < 0)
+		loc = glGetUniformLocation(mShaderID, name.c_str());
+	glUniform4fv(loc, 1, glm::value_ptr(vec4_));
+}
+
+/// -----------------------------------------------------------------
+/// Add int as uniform to shader
+/// -----------------------------------------------------------------
+void Engine::Shader::UniformInt(int int_, std::string name, int layout_loc)
+{
+	int loc = layout_loc;
+	if (loc < 0)
+		loc = glGetUniformLocation(mShaderID, name.c_str());
+	glUniform1i(loc, int_);
+}
+
+/// -----------------------------------------------------------------
 /// Reads shader from file (Temporal until resource manager)
 /// -----------------------------------------------------------------
 const std::string Engine::Shader::ReadFromFile(const std::string shaderfile)

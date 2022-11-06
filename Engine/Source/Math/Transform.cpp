@@ -19,6 +19,7 @@ void Engine::Transform::Initialize()
 	if (GetOwner() == nullptr || GetOwner()->GetParent() == nullptr)
 		return;
 
+	UpdateWorld();
 	UpdateLocal();
 }
 

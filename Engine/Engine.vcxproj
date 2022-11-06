@@ -74,7 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -86,7 +86,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -185,6 +185,11 @@
     <ClCompile Include="Source\Graphics\Model.cpp" />
     <ClCompile Include="Source\Graphics\Renderable.cpp" />
     <ClCompile Include="Source\Graphics\Shader.cpp" />
+    <ClCompile Include="Source\Graphics\stbi_image.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Texture.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Math\Transform.cpp" />
     <ClCompile Include="Source\pch.cpp">
@@ -209,6 +214,7 @@
     <ClInclude Include="Source\Graphics\Model.hpp" />
     <ClInclude Include="Source\Graphics\Renderable.hpp" />
     <ClInclude Include="Source\Graphics\Shader.hpp" />
+    <ClInclude Include="Source\Graphics\Texture.hpp" />
     <ClInclude Include="Source\Math\Transform.hpp" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Core\Time\TimeSystem.hpp" />

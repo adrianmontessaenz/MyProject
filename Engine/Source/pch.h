@@ -29,6 +29,7 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
+#include <stb_image.h>
 
 #include <Importer.hpp>
 #include <scene.h>
@@ -52,3 +53,4 @@
 
 //Graphics
 #include <Graphics/Shader.hpp>
+#include <Graphics/Texture.hpp>
