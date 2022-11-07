@@ -53,6 +53,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\stbi_image.c" />
+    <ClCompile Include="Source\Core\Scene\Space.cpp">
+      <Filter>Core\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -81,6 +84,9 @@
     </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{ac76e0c0-db87-4eb8-9366-b52595f72a17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Scene">
+      <UniqueIdentifier>{479f62f5-7c75-42e2-86cc-01a6d1ed7507}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +141,9 @@
     </ClInclude>
     <ClInclude Include="Source\Graphics\Texture.hpp">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Scene\Space.hpp">
+      <Filter>Core\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

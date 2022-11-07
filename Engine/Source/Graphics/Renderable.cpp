@@ -25,6 +25,10 @@ void Engine::Renderable::Initialize()
 /// -----------------------------------------------------------------
 void Engine::Renderable::Render()
 {
+	//Don't update if disabled or shutdown
+	if (!IsEnabled() || IsShutdown())
+		return;
+
 	//Get world matrix of object
 	Transform* trans = GetOwner()->GetEngineComp<Transform>();
 	glm::mat4 world = trans->GetWorldMat();

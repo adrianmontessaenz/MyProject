@@ -179,6 +179,7 @@
     <ClCompile Include="Source\Core\Events\SDLEvents.cpp" />
     <ClCompile Include="Source\Core\Platform\InputManager.cpp" />
     <ClCompile Include="Source\Core\Platform\Window.cpp" />
+    <ClCompile Include="Source\Core\Scene\Space.cpp" />
     <ClCompile Include="Source\Core\Time\TimeSystem.cpp" />
     <ClCompile Include="Source\Debug\DebugSystem.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsManager.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="Source\Core\Base\Singleton.hpp" />
     <ClInclude Include="Source\Core\Events\SDLEvents.hpp" />
     <ClInclude Include="Source\Core\Platform\Window.hpp" />
+    <ClInclude Include="Source\Core\Scene\Space.hpp" />
     <ClInclude Include="Source\Debug\DebugSystem.hpp" />
     <ClInclude Include="Source\Core\Entity-Component\Object.hpp" />
     <ClInclude Include="Source\Graphics\GraphicsManager.hpp" />
