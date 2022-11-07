@@ -1,8 +1,9 @@
+#include "Object.hpp"
 /*// -----------------------------------------------------------------
 *  File:		Object.inl
 *  Brief:		Implementation of templated Object class functions
 *  Creation:	21/10/2022
-*  Last Update:	04/11/2022
+*  Last Update:	07/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -73,10 +74,35 @@ inline Type* Engine::Object::GetEngineComp(int* debug)
 		}
 	}
 
-	//Not found<
+	//Not found
 	if (debug)
 		*debug = 0;
 	return nullptr;
+}
+
+/// -----------------------------------------------------------------
+/// Deletes engine component from object
+/// -----------------------------------------------------------------
+template<typename Type>
+inline void Engine::Object::DeleteEngineComp(int* debug)
+{
+	//If it is not an engine component or not added, return
+	int failed = 2;
+	EngineComp* comp = GetEngineComp<Type>(&failed);
+	if (failed <= 0)
+	{
+		if (debug)
+			*debug = failed;
+		return;
+	}
+
+	//Check that is shutdown and then delete it
+	if (comp->IsShutdown())
+		comp->Shutdown();
+	mEngineComps.erase(std::find(mEngineComps.begin(), mEngineComps.end(), comp));
+	delete comp;
+	if (debug)
+		*debug = failed;
 }
 
 /// -----------------------------------------------------------------
@@ -149,4 +175,29 @@ inline Type* Engine::Object::GetLogicComp(int* debug)
 	if (debug)
 		*debug = 0;
 	return nullptr;
+}
+
+/// -----------------------------------------------------------------
+/// Deletes logic component from object
+/// -----------------------------------------------------------------
+template<typename Type>
+inline void Engine::Object::DeleteLogicComp(int* debug)
+{
+	//If it is not an logic component or not added, return
+	int failed = 2;
+	LogicComp* comp = GetLogicComp<Type>(&failed);
+	if (failed <= 0)
+	{
+		if (debug)
+			*debug = failed;
+		return;
+	}
+
+	//Check that is shutdown and then delete it
+	if (comp->IsShutdown())
+		comp->Shutdown();
+	mLogicComps.erase(std::find(mLogicComps.begin(), mLogicComps.end(), comp));
+	delete comp;
+	if (debug)
+		*debug = failed;
 }

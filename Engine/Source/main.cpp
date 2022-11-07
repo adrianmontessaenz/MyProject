@@ -15,14 +15,19 @@
 #include <Graphics/GraphicsManager.hpp>
 #include <Graphics/Renderable.hpp>
 #include <Core/Scene/Space.hpp>
+#include <Core/Scene/ObjectManager.hpp>
 
 int main(void)
 {
 	gWindow->Initialize();
 	gTimeSys->Initialize();
 	gGfxMgr->Initialize();
-	Engine::Space* test = new Engine::Space;
+	gObjMgr->Initialize();
+
+	Engine::Space* test = gObjMgr->AddSpace();
+	Engine::Space* test2 = gObjMgr->AddSpace();
 	test->Initialize();
+	test2->Initialize();
 
 	//Test for components
 	Engine::Object* obj = test->AddObject();
@@ -33,18 +38,9 @@ int main(void)
 	comp->SetTexture("ID.jpeg");
 	obj->GetEngineComp<Engine::Transform>()->SetWorldPos({ 0.f,0.f,-2.f });
 	obj->GetEngineComp<Engine::Transform>()->SetWorldRot({ 90.f,0.f,0.f });
-	
-	Engine::Object* obj2 = test->AddObject();
-	obj->AddChild(obj2);
-	obj2->Initialize();
-	Engine::Renderable* comp2 = obj2->AddEngineComp<Engine::Renderable>();
-	comp2->Initialize();
-	comp2->SetColor(glm::vec4(1.f));
-	comp2->SetTexture("pepe.png");
-	obj2->GetEngineComp<Engine::Transform>()->SetLocalPos({ -1.f,0.f,0.5f });
 
 	Engine::Object* obj3 = test->AddObject();
-	obj2->AddChild(obj3);
+	obj->AddChild(obj3);
 	obj3->Initialize();
 	Engine::Renderable* comp3 = obj3->AddEngineComp<Engine::Renderable>();
 	comp3->Initialize();
@@ -53,13 +49,33 @@ int main(void)
 	obj3->GetEngineComp<Engine::Transform>()->SetLocalPos({ 1.f,0.f,0.5f });
 	obj3->GetEngineComp<Engine::Transform>()->SetWorldRot({ 180.f,0.f,0.f });
 
+	Engine::Object* obj4 = test2->AddObject();
+	obj4->Initialize();
+	Engine::Renderable* comp4 = obj4->AddEngineComp<Engine::Renderable>();
+	comp4->Initialize();
+	comp4->SetColor(glm::vec4(1.f));
+	comp4->SetTexture("pepe.png");
+	obj4->GetEngineComp<Engine::Transform>()->SetLocalPos({ 1.f,1.f,0.5f });
+	obj4->GetEngineComp<Engine::Transform>()->SetWorldRot({ 180.f,0.f,0.f });
+
+
+	Engine::Object* obj2 = test->AddObject();
+	obj->AddChild(obj2);
+	obj2->Initialize();
+	obj2->SetName("Exito");
+	Engine::Renderable* comp2 = obj2->AddEngineComp<Engine::Renderable>();
+	comp2->Initialize();
+	comp2->SetColor(glm::vec4(1.f));
+	comp2->SetTexture("pepe.png");
+	obj2->GetEngineComp<Engine::Transform>()->SetLocalPos({ -1.f,0.f,0.5f });
+
 	while (gWindow->IsEnabled())
 	{
 		//Update
 		gSDLSys->Update();
 		gWindow->Update();
 		gInputMgr->Update();
-		test->Update();
+		gObjMgr->Update();
 
 		//Logic Update
 		if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_F11))
@@ -74,9 +90,9 @@ int main(void)
 
 		//TEST SPACES
 		{
-			if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_A))
+			if (gInputMgr->IsKeyTriggered(SDL_SCANCODE_A) && test->IsShutdown() == false)
 			{
-				obj2->Shutdown();
+				gObjMgr->DeleteSpace(test);
 			}
 		}
 		
@@ -126,8 +142,7 @@ int main(void)
 		gTimeSys->Update();
 	}
 
-	test->Shutdown();
-	delete test;
+	gObjMgr->Shutdown();
 	gGfxMgr->Shutdown();
 	gSDLSys->Shutdown();
 	gInputMgr->Shutdown();

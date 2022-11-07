@@ -28,9 +28,12 @@ namespace Engine
 		Object* GetObjectByID(const unsigned id_);
 		std::vector<Object*> GetObjects() const;
 
+		void SetSceneIdx(const int idx_);
+		const int GetSceneIdx() const;
+
 	private:
 		std::vector<Object*> mObjects;
-
+		int mSceneIdx = -1;
 		void UpdateObjectIdx(unsigned idx_);
 	};
 }

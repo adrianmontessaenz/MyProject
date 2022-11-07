@@ -56,6 +56,9 @@
     <ClCompile Include="Source\Core\Scene\Space.cpp">
       <Filter>Core\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\Scene\ObjectManager.cpp">
+      <Filter>Core\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -143,6 +146,9 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Scene\Space.hpp">
+      <Filter>Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Scene\ObjectManager.hpp">
       <Filter>Core\Scene</Filter>
     </ClInclude>
   </ItemGroup>

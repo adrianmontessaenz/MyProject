@@ -28,12 +28,16 @@ namespace Engine
 		Type* AddEngineComp(int* debug = nullptr);
 		template<typename Type>
 		Type* GetEngineComp(int* debug = nullptr);
+		template<typename Type>
+		void DeleteEngineComp(int* debug = nullptr);
 
 		//Logic Components
 		template<typename Type>
 		Type* AddLogicComp(int* debug = nullptr);
 		template<typename Type>
 		Type* GetLogicComp(int* debug = nullptr);
+		template<typename Type>
+		void DeleteLogicComp(int* debug = nullptr);
 
 		//Hierarchy
 		void AddChild(Object* child);

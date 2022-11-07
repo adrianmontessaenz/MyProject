@@ -163,10 +163,14 @@ void Engine::Space::RemoveObject(Object* obj_, bool rec)
 void Engine::Space::DeleteObject(Object* obj_, bool rec)
 {
 	//First remove children
-	for (auto child : obj_->GetChildren())
-		DeleteObject(child, true);
+	auto children = obj_->GetChildren();
+	for (int idx = children.size() - 1; idx >= 0; idx--)
+		DeleteObject(children[idx], true);
 
 	//If parent, update from parent and remove object from parent
+	if (obj_->IsShutdown() == false)
+		obj_->Shutdown();
+
 	Object* parent_ = obj_->GetParent();
 	unsigned updateIdx = 0;
 	if (parent_)
@@ -232,6 +236,22 @@ Engine::Object* Engine::Space::GetObjectByID(const unsigned id_)
 std::vector<Engine::Object*> Engine::Space::GetObjects() const
 {
 	return mObjects;
+}
+
+/// -----------------------------------------------------------------
+/// Sets index on scene list of spaces
+/// -----------------------------------------------------------------
+void Engine::Space::SetSceneIdx(const int idx_)
+{
+	mSceneIdx = idx_;
+}
+
+/// -----------------------------------------------------------------
+/// Gets index on scene list of spaces
+/// -----------------------------------------------------------------
+const int Engine::Space::GetSceneIdx() const
+{
+	return mSceneIdx;
 }
 
 /// -----------------------------------------------------------------
