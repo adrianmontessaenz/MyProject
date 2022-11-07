@@ -2,7 +2,7 @@
 *  File:		Identity.hpp
 *  Brief:		Header of Identity class
 *  Creation:	21/10/2022
-*  Last Update:	21/10/2022
+*  Last Update:	07/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -12,6 +12,7 @@ namespace Engine
 	class Identity
 	{
 	public:
+		~Identity();
 		//Name
 		void SetName(const std::string name);
 		std::string GetName() const;

@@ -95,7 +95,7 @@ void Engine::Object::AddChild(Object* child)
 		parent_->RemoveChild(child);
 
 	//Set index on list and add it
-	child->SetParentIdx(mChildren.size());
+	child->SetParentIdx(static_cast<const int>(mChildren.size()));
 	mChildren.push_back(child);
 	child->mParent = this;
 }

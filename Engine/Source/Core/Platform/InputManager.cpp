@@ -2,7 +2,7 @@
 *  File:		InputManager.cpp
 *  Brief:		Implementation of Engine Input Manager
 *  Creation:	16/10/2022
-*  Last Update:	16/10/2022
+*  Last Update:	07/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -63,7 +63,13 @@ void Engine::InputManager::Update()
 /// -----------------------------------------------------------------
 /// Empty shutdown
 /// -----------------------------------------------------------------
-void Engine::InputManager::Shutdown(){}
+void Engine::InputManager::Shutdown()
+{
+	mMouse.clear();
+	mPrevMouse.clear();
+	mKeyboard.clear();
+	mPrevKeyboard.clear();
+}
 
 /// -----------------------------------------------------------------
 /// Checks if key was triggered

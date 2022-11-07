@@ -72,12 +72,12 @@ void Engine::Space::LogicUpdate()
 void Engine::Space::Shutdown()
 {
 	//Delete objects and components
-	for (auto obj : mObjects)
+	while (mObjects.empty() == false)
 	{
+		auto obj = *(mObjects.begin());
 		obj->Shutdown();
-		delete obj;
+		DeleteObject(obj);
 	}
-	mObjects.clear();
 	SetShutdown(true);
 }
 
@@ -117,9 +117,9 @@ void Engine::Space::AddObject(Object* obj_, bool rec)
 	else
 	{
 		//If no parent, insert at the end
-		obj_->SetSpaceIdx(mObjects.size());
+		obj_->SetSpaceIdx(static_cast<const int>(mObjects.size()));
 		mObjects.push_back(obj_);
-		updateIdx = mObjects.size();
+		updateIdx = static_cast<unsigned>(mObjects.size());
 	}
 
 	//Add children to space too

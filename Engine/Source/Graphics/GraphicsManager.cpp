@@ -2,7 +2,7 @@
 *  File:		GraphicsManager.cpp
 *  Brief:		Implementation file of graphics manager
 *  Creation:	04/11/2022
-*  Last Update:	04/11/2022
+*  Last Update:	07/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -48,8 +48,11 @@ void Engine::GraphicsManager::Render()
 void Engine::GraphicsManager::Shutdown()
 {
 	mRenderables.clear();
+	mRenderables.shrink_to_fit();
 	for (auto shader : mShaders)
 		delete shader;
+	mShaders.clear();
+	mShaders.shrink_to_fit();
 }
 
 /// -----------------------------------------------------------------

@@ -2,7 +2,7 @@
 *  File:		Renderable.cpp
 *  Brief:		Implementation of renderable component
 *  Creation:	04/11/2022
-*  Last Update:	04/11/2022
+*  Last Update:	07/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -52,6 +52,8 @@ void Engine::Renderable::Render()
 void Engine::Renderable::Shutdown()
 {
 	delete mModel;
+	if(mTexture)
+		delete mTexture;
 	gGfxMgr->RemoveRenderable(this);
 	SetShutdown(true);
 }

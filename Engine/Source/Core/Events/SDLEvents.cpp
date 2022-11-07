@@ -2,7 +2,7 @@
 *  File:		SDLEvents.cpp
 *  Brief:		Implementation of sdlevents gatherer
 *  Creation:	14/10/2022
-*  Last Update:	14/10/2022
+*  Last Update:	07/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -29,7 +29,10 @@ void Engine::SDLEventSystem::Update()
 /// -----------------------------------------------------------------
 /// Empty shutdown
 /// -----------------------------------------------------------------
-void Engine::SDLEventSystem::Shutdown(){}
+void Engine::SDLEventSystem::Shutdown()
+{
+	mEvents.clear();
+}
 
 /// -----------------------------------------------------------------
 /// Gets requested events

@@ -2,13 +2,25 @@
 *  File:		RTTI.hpp
 *  Brief:		Implementation for RTTI
 *  Creation:	21/10/2022
-*  Last Update:	04/11/2022
+*  Last Update:	07/11/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "RTTI.hpp"
 std::vector<Engine::TypeInfo*> Engine::RTTI::sTypes;
+
+/// -----------------------------------------------------------------
+/// Type info destructor
+/// -----------------------------------------------------------------
+Engine::TypeInfo::~TypeInfo()
+{
+	delete mTypeName;
+	for (auto parent : mParentNames)
+		delete parent;
+	mParentNames.clear();
+	mParentNames.shrink_to_fit();
+}
 
 /// -----------------------------------------------------------------
 /// Sets name of typeinfo
@@ -76,4 +88,15 @@ bool Engine::TypeInfo::HasParent(const std::string name) const
 
 	//Not child of
 	return false;
+}
+
+/// -----------------------------------------------------------------
+/// RTTI type destructor
+/// -----------------------------------------------------------------
+void Engine::RTTI::FreeTypeInfos()
+{
+	for (auto type : sTypes)
+		delete type;
+	sTypes.clear();
+	sTypes.shrink_to_fit();
 }

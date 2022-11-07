@@ -126,6 +126,13 @@ int main(void)
 		gTimeSys->Update();
 	}
 
+	test->Shutdown();
+	delete test;
+	gGfxMgr->Shutdown();
+	gSDLSys->Shutdown();
+	gInputMgr->Shutdown();
 	gWindow->Shutdown();
+	Engine::RTTI::FreeTypeInfos();
+
 	return 0;
 }
