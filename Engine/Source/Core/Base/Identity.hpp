@@ -12,17 +12,19 @@ namespace Engine
 	class Identity
 	{
 	public:
+		Identity();
 		~Identity();
 		//Name
 		void SetName(const std::string name);
 		std::string GetName() const;
 
 		//UniqueID
-		void SetUniqueID(const unsigned id);
 		const unsigned GetUniqueID() const;
 
 	private:
 		char* mName;
 		unsigned mUID;
+		static unsigned sNextId;
+		static std::vector<unsigned> sUnusedID;
 	};
 }

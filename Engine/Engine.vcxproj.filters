@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Core\Platform\Window.cpp">
       <Filter>Core\Platform</Filter>
     </ClCompile>
@@ -42,7 +41,6 @@
     <ClCompile Include="Source\Graphics\Model.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="glad.c" />
     <ClCompile Include="Source\Graphics\GraphicsManager.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -58,6 +56,33 @@
     </ClCompile>
     <ClCompile Include="Source\Core\Scene\ObjectManager.cpp">
       <Filter>Core\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>ThirdParty</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_demo.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_draw.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_impl_opengl3.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_impl_sdl.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_tables.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_widgets.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_stdlib.cpp">
+      <Filter>ThirdParty\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +115,12 @@
     </Filter>
     <Filter Include="Core\Scene">
       <UniqueIdentifier>{479f62f5-7c75-42e2-86cc-01a6d1ed7507}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{4ab09eab-0ee4-427a-bec0-7f06b4e64cb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\imgui">
+      <UniqueIdentifier>{0995d078-be07-46ed-86b0-cb31029915ab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +181,36 @@
     </ClInclude>
     <ClInclude Include="Source\Core\Scene\ObjectManager.hpp">
       <Filter>Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imconfig.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_impl_opengl3.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_impl_sdl.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_internal.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imstb_rectpack.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imstb_textedit.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imstb_truetype.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_stdlib.h">
+      <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -164,7 +164,7 @@ void Engine::Space::DeleteObject(Object* obj_, bool rec)
 {
 	//First remove children
 	auto children = obj_->GetChildren();
-	for (int idx = children.size() - 1; idx >= 0; idx--)
+	for (int idx = static_cast<int>(children.size()) - 1; idx >= 0; idx--)
 		DeleteObject(children[idx], true);
 
 	//If parent, update from parent and remove object from parent

@@ -84,7 +84,7 @@ Engine::Space* Engine::ObjectManager::AddSpace()
 void Engine::ObjectManager::AddSpace(Space* space_)
 {
 	mSpaces.push_back(space_);
-	space_->SetSceneIdx(mSpaces.size() - 1);
+	space_->SetSceneIdx(static_cast<int>(mSpaces.size()) - 1);
 }
 
 /// -----------------------------------------------------------------

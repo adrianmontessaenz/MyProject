@@ -125,7 +125,21 @@ void Engine::Window::SetSize(const glm::vec<2, int> new_size)
 {
 	mSize = new_size;
 }
+/// -----------------------------------------------------------------
+/// Gets SDL window
+/// -----------------------------------------------------------------
+SDL_Window* Engine::Window::GetWindow()
+{
+	return mWindow;
+}
 
+/// -----------------------------------------------------------------
+/// Gets SDL context of OpenGL
+/// -----------------------------------------------------------------
+SDL_GLContext& Engine::Window::GetContext()
+{
+	return mContext;
+}
 /// -----------------------------------------------------------------
 /// Updates window based on its current mode
 /// -----------------------------------------------------------------

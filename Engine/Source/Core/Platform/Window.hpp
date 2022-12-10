@@ -31,6 +31,8 @@ namespace Engine
 		const glm::vec<2, int> GetSize() const;
 		void SetSize(const glm::vec<2, int> new_size);
 
+		SDL_Window* GetWindow();
+		SDL_GLContext& GetContext();
 	private:
 		SDL_Window* mWindow = nullptr;
 		SDL_GLContext mContext = SDL_GLContext();

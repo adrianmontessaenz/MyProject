@@ -41,3 +41,11 @@ const std::vector<SDL_Event>& Engine::SDLEventSystem::GetEventsOfType(Uint32 typ
 {
 	return mEvents[type];
 }
+
+/// -----------------------------------------------------------------
+/// Gets all events
+/// -----------------------------------------------------------------
+const std::map<Uint32, std::vector<SDL_Event>>& Engine::SDLEventSystem::GetEvents()
+{
+	return mEvents;
+}

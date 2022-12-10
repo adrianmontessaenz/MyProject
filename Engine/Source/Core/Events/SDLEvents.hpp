@@ -18,6 +18,7 @@ namespace Engine
 		virtual void Shutdown() override;
 
 		const std::vector<SDL_Event>& GetEventsOfType(Uint32 type);
+		const std::map<Uint32, std::vector<SDL_Event>>& GetEvents();
 
 	private:
 		std::map<Uint32, std::vector<SDL_Event>> mEvents;

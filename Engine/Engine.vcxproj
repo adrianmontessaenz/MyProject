@@ -27,7 +27,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -39,7 +39,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -72,9 +72,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi</IncludePath>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\obj\</IntDir>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui</IncludePath>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -84,9 +85,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi</IncludePath>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\obj\</IntDir>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui</IncludePath>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -110,6 +112,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\Libraries\$(Platform)\SDL2;$(SolutionDir)ThirdParty\Libraries\$(Platform)\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <OutputFile>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\Engine.lib</OutputFile>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -146,6 +151,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\Libraries\$(Platform)\SDL2;$(SolutionDir)ThirdParty\Libraries\$(Platform)\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <OutputFile>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\Engine.lib</OutputFile>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -167,6 +175,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_impl_opengl3.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_impl_sdl.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_stdlib.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -192,7 +231,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Texture.cpp" />
-    <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Math\Transform.cpp" />
     <ClCompile Include="Source\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -202,6 +240,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imconfig.h" />
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui.h" />
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_impl_sdl.h" />
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_internal.h" />
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_stdlib.h" />
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\ThirdParty\Includes\imgui\imstb_truetype.h" />
     <ClInclude Include="Source\Core\Base\Identity.hpp" />
     <ClInclude Include="Source\Core\Base\RTTI.hpp" />
     <ClInclude Include="Source\Core\Entity-Component\Components.hpp" />

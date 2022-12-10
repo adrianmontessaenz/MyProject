@@ -10,12 +10,39 @@
 #include <pch.h>
 #include "Identity.hpp"
 
+//Static
+unsigned Engine::Identity::sNextId = 0;
+std::vector<unsigned> Engine::Identity::sUnusedID;
+
+/// -----------------------------------------------------------------
+/// Identity constructor
+/// -----------------------------------------------------------------
+Engine::Identity::Identity() : mName(nullptr), mUID(0)
+{
+	if (!sUnusedID.empty())
+	{
+		mUID = sUnusedID.back();
+		sUnusedID.pop_back();
+	}
+	else
+		mUID = sNextId++;
+}
+
 /// -----------------------------------------------------------------
 /// Identity destructor
 /// -----------------------------------------------------------------
 Engine::Identity::~Identity()
 {
+	//Delete name and push id to unused
 	delete mName;
+	sUnusedID.push_back(mUID);
+
+	//If no ids in use, clear vector
+	if (sUnusedID.size() == sNextId)
+	{
+		sUnusedID.clear();
+		sNextId = 0;
+	}
 }
 
 /// -----------------------------------------------------------------
@@ -45,14 +72,6 @@ void Engine::Identity::SetName(const std::string name)
 std::string Engine::Identity::GetName() const
 {
 	return std::string(mName);
-}
-
-/// -----------------------------------------------------------------
-/// Sets unique id of identity
-/// -----------------------------------------------------------------
-void Engine::Identity::SetUniqueID(const unsigned id)
-{
-	mUID = id;
 }
 
 /// -----------------------------------------------------------------
