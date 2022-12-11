@@ -98,6 +98,7 @@ void Engine::Object::AddChild(Object* child)
 	child->SetParentIdx(static_cast<const int>(mChildren.size()));
 	mChildren.push_back(child);
 	child->mParent = this;
+	mSpace->MoveObject(child, child->mParent->GetSpaceIdx() + child->mParentIdx + 1);
 }
 
 /// -----------------------------------------------------------------
@@ -158,6 +159,21 @@ const std::vector<Engine::Object*> Engine::Object::GetChildren() const
 }
 
 /// -----------------------------------------------------------------
+/// Swaps two children on parent's children array
+/// -----------------------------------------------------------------
+void Engine::Object::SwapChildren(const size_t& l_idx, const size_t& r_idx)
+{
+	Object* tmp = mChildren[l_idx];
+	mChildren[l_idx] = mChildren[r_idx];
+	mChildren[l_idx]->SetParentIdx(static_cast<int>(l_idx));
+
+	mChildren[r_idx] = tmp;
+	mChildren[r_idx]->SetParentIdx(static_cast<int>(r_idx));
+
+	mSpace->SwapObjects(r_idx, l_idx);
+}
+
+/// -----------------------------------------------------------------
 /// Sets parent to object
 /// -----------------------------------------------------------------
 void Engine::Object::SetParent(Object* parent)
@@ -165,9 +181,8 @@ void Engine::Object::SetParent(Object* parent)
 	//If parent remove. Then set and check if parent to add child to its list
 	if (mParent)
 		mParent->RemoveChild(this);
-	mParent = parent;
-	if (mParent)
-		mParent->AddChild(this);
+	if (parent)
+		parent->AddChild(this);
 }
 
 /// -----------------------------------------------------------------

@@ -22,6 +22,8 @@ namespace Engine
 		void AddObject(Object* obj_, bool rec = false);
 		void RemoveObject(Object* obj_, bool rec = false);
 		void DeleteObject(Object* obj_, bool rec = false);
+		void SwapObjects(const size_t& l_idx, const size_t& r_idx);
+		void MoveObject(Object* obj, const size_t& idx);
 
 		Object* GetObjectByName(const std::string name_);
 		std::vector<Object*> GetObjectsByName(const std::string name_);

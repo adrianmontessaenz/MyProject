@@ -191,6 +191,34 @@ void Engine::Space::DeleteObject(Object* obj_, bool rec)
 }
 
 /// -----------------------------------------------------------------
+/// Swap objects in space array
+/// -----------------------------------------------------------------
+void Engine::Space::SwapObjects(const size_t& l_idx, const size_t& r_idx)
+{
+	Object* tmp = mObjects[l_idx];
+	mObjects[l_idx] = mObjects[r_idx];
+	mObjects[l_idx]->SetSpaceIdx(static_cast<int>(l_idx));
+
+	mObjects[r_idx] = tmp;
+	mObjects[r_idx]->SetSpaceIdx(static_cast<int>(r_idx));
+}
+
+/// -----------------------------------------------------------------
+/// Moves object to given index and updates index list
+/// -----------------------------------------------------------------
+void Engine::Space::MoveObject(Object* obj, const size_t& idx)
+{
+	mObjects.erase(mObjects.begin() + obj->GetSpaceIdx());
+	if (idx >= mObjects.size())
+		mObjects.push_back(obj);
+	else
+	{
+		mObjects.insert(mObjects.begin() + idx, obj);
+		UpdateObjectIdx(idx);
+	}
+}
+
+/// -----------------------------------------------------------------
 /// Finds object by name
 /// -----------------------------------------------------------------
 Engine::Object* Engine::Space::GetObjectByName(const std::string name_)

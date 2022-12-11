@@ -45,6 +45,7 @@ namespace Engine
 		Object* GetChildByName(const std::string name) const;
 		std::vector<Object*> GetChildrenByName(const std::string name) const;
 		const std::vector<Object*> GetChildren() const;
+		void SwapChildren(const size_t& l_idx, const size_t& r_idx);
 
 		void SetParent(Object* parent);
 		Object* GetParent() const;

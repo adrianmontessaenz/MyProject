@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------*/
 #pragma once
 #include <pch.h>
+#include "Editor/EditScene.hpp"
+#include "Editor/EditObject.hpp"
 #include <Core/Entity-Component/Object.hpp>
 
 namespace Editor
@@ -21,9 +23,9 @@ namespace Editor
 		virtual void Shutdown() override;
 
 	private:
-		Engine::Object* mSelectedObj = nullptr;
-		void VisualizeObject(Engine::Object* obj, const unsigned idx);
-		void EditPickedObject();
+		//Editor helpers
+		SceneEditor mSceneEditor;
+		ObjectEditor mObjectEditor;		
 	};
 }
 #define gEditor (&Editor::Editor::GetInstance())
