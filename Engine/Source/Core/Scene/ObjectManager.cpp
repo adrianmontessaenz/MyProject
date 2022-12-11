@@ -148,6 +148,33 @@ std::vector<Engine::Space*> Engine::ObjectManager::GetSpaces() const
 }
 
 /// -----------------------------------------------------------------
+/// Swaps two spaces' order
+/// -----------------------------------------------------------------
+void Engine::ObjectManager::SwapSpaces(const size_t& l_idx, const size_t& r_idx)
+{
+	Space* tmp = mSpaces[l_idx];
+	mSpaces[l_idx] = mSpaces[r_idx];
+	mSpaces[l_idx]->SetSceneIdx(static_cast<int>(l_idx));
+
+	mSpaces[r_idx] = tmp;
+	mSpaces[r_idx]->SetSceneIdx(static_cast<int>(r_idx));
+}
+
+/// -----------------------------------------------------------------
+/// Updates list of spaces
+/// -----------------------------------------------------------------
+void Engine::ObjectManager::LoadScene(const std::string& lvl)
+{
+}
+
+/// -----------------------------------------------------------------
+/// Updates list of spaces
+/// -----------------------------------------------------------------
+void Engine::ObjectManager::SaveScene(const std::string& lvl)
+{
+}
+
+/// -----------------------------------------------------------------
 /// Updates list of spaces
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::UpdateSpaceList(unsigned idx_)

@@ -10,12 +10,27 @@
 #include "GraphicsManager.hpp"
 #include <Graphics/Renderable.hpp>
 #include <Core/Entity-Component/Object.hpp>
+#include <Core/Scene/ObjectManager.hpp>
 
 /// -----------------------------------------------------------------
 /// Initialize graphics manager
 /// -----------------------------------------------------------------
 void Engine::GraphicsManager::Initialize()
 {
+	//Add all renderables of initial scene
+	auto spaces = gObjMgr->GetSpaces();
+	for (auto space : spaces)
+	{
+		auto objs = space->GetObjects();
+		for (auto obj : objs)
+		{
+			auto rend = obj->GetEngineComp<Renderable>();
+			if (rend)
+				AddRenderable(rend);
+		}
+	}
+
+	//Add shaders
 	mShaders.push_back(new Shader("default.vert", "default.frag"));
 }
 
@@ -89,7 +104,7 @@ void Engine::GraphicsManager::AddRenderable(Renderable* rend)
 		{
 			//If parented, place renderable next to parent (in children order)
 			Renderable* parentRend = parent->GetEngineComp<Renderable>();
-			int idx = parentRend->GetIndexOnManager() + owner->GetParentIdx() + 1;
+			size_t idx = static_cast<size_t>(parentRend->GetIndexOnManager()) + static_cast<size_t>(owner->GetParentIdx()) + 1;
 			while (1)
 			{
 				//If parent was found, insert next to parent
@@ -118,8 +133,8 @@ void Engine::GraphicsManager::AddRenderable(Renderable* rend)
 			}
 
 			//Set index and update list
-			rend->SetIndexOnManager(idx);
-			UpdateRendIdx(idx);
+			rend->SetIndexOnManager(static_cast<int>(idx));
+			UpdateRendIdx(static_cast<int>(idx));
 		}
 		else
 		{

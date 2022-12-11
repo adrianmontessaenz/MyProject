@@ -46,10 +46,10 @@ void Editor::Editor::Update()
 	ImGui::NewFrame();
 
 	glm::vec2 windowSize = gWindow->GetSize();
-	ImGuiBackendFlags flags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
+	ImGuiBackendFlags defaultWindowFlags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar;
 	ImGui::SetNextWindowPos({ 0, 50 });
 	ImGui::SetNextWindowSize({ 350, windowSize.y - 50 });
-	ImGui::Begin("Scene Visualizer", nullptr, flags);
+	ImGui::Begin("Scene Visualizer", nullptr, defaultWindowFlags);
 
 	//Create new space
 	if (ImGui::Button("Add Space"))
@@ -64,58 +64,82 @@ void Editor::Editor::Update()
 	{
 		//Set name
 		ImGui::PushID(spaces[idx]->GetUniqueID());
-		ImGui::Text("Name:");
-		ImGui::SameLine();
-		std::string spaceName = spaces[idx]->GetName();
-		if (ImGui::InputText("", &spaceName, ImGuiInputTextFlags_EnterReturnsTrue))
-			spaces[idx]->SetName(spaceName);
-
-		//Delete space button
-		ImGui::SameLine();
-		if (ImGui::Button("Add Object"))
+		bool isOpen = ImGui::CollapsingHeader(spaces[idx]->GetName().c_str());
+		
+		//Drag spaces
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 		{
-			Engine::Object* tmp = spaces[idx]->AddObject();
-			tmp->SetName("Default");
+			ImGui::SetDragDropPayload("Space Order Change", &idx, sizeof(size_t));
+			ImGui::EndDragDropSource();
 		}
-
-		ImGui::SameLine();
-		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0, 0.7f, 0.7f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
-		if (ImGui::Button("X"))
+		if (ImGui::BeginDragDropTarget())
 		{
-			ImGui::PopID();
-			gObjMgr->DeleteSpace(spaces[idx]);
-			ImGui::PopStyleColor(3);
-			break;
-		}
-		else
-			ImGui::PopStyleColor(3);
-
-		//Show objects of space
-		if (ImGui::BeginTable(spaces[idx]->GetName().c_str(), 3, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Hideable))
-		{
-			ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-			ImGui::TableSetupColumn("Unique ID", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableSetupColumn("Space IDX", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableHeadersRow();
-			std::vector<Engine::Object*> objects = spaces[idx]->GetObjects();
-			for (size_t idx2 = 0; idx2 < objects.size(); idx2++)
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Space Order Change"))
 			{
-				if (objects[idx2]->GetParent())
-					continue;
-				VisualizeObject(objects[idx2], idx2);
+				size_t changeIdx = *(size_t*)payload->Data;
+				gObjMgr->SwapSpaces(idx, changeIdx);
+				ImGui::PopID();
+				break;
 			}
-			ImGui::EndTable();
+			ImGui::EndDragDropTarget();
 		}
 
+		if (isOpen)
+		{
+			std::string spaceName;
+			if (ImGui::InputTextWithHint("##", "Enter new name", &spaceName, ImGuiInputTextFlags_EnterReturnsTrue))
+				spaces[idx]->SetName(spaceName);
+
+			//Delete space button
+			ImGui::SameLine();
+			if (ImGui::Button("Add Object"))
+			{
+				Engine::Object* tmp = spaces[idx]->AddObject();
+				tmp->SetName("Default");
+			}
+
+			ImGui::SameLine();
+			ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0, 0.7f, 0.7f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
+			if (ImGui::Button("X"))
+			{
+				if (mSelectedObj->GetSpace() == spaces[idx])
+					mSelectedObj = nullptr;
+				ImGui::PopID();
+				gObjMgr->DeleteSpace(spaces[idx]);
+				ImGui::PopStyleColor(3);
+				break;
+			}
+			else
+				ImGui::PopStyleColor(3);
+
+			//Show objects of space
+			ImVec2 spaceMaxSize = ImVec2(0.f, ImGui::GetTextLineHeightWithSpacing() * 15.f);
+			ImGuiTableFlags spaceTableFlags = ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Hideable | ImGuiTableFlags_ScrollY;
+			if (ImGui::BeginTable(spaces[idx]->GetName().c_str(), 3, spaceTableFlags, spaceMaxSize))
+			{
+				ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableSetupColumn("Unique ID", ImGuiTableColumnFlags_WidthFixed);
+				ImGui::TableSetupColumn("Space IDX", ImGuiTableColumnFlags_WidthFixed);
+				ImGui::TableHeadersRow();
+				std::vector<Engine::Object*> objects = spaces[idx]->GetObjects();
+				for (size_t idx2 = 0; idx2 < objects.size(); idx2++)
+				{
+					if (objects[idx2]->GetParent())
+						continue;
+					VisualizeObject(objects[idx2], idx2);
+				}
+				ImGui::EndTable();
+			}
+		}
 		ImGui::PopID();
 	}
 	ImGui::End();
 
 	ImGui::SetNextWindowPos({ windowSize.x - 350, 50 });
 	ImGui::SetNextWindowSize({ 350, windowSize.y - 50 });
-	if (ImGui::Begin("Object Manager", nullptr, flags) && mSelectedObj != nullptr)
+	if (ImGui::Begin("Object Manager", nullptr, defaultWindowFlags) && mSelectedObj != nullptr)
 		EditPickedObject();
 	ImGui::End();
 }
@@ -153,15 +177,15 @@ void Editor::Editor::VisualizeObject(Engine::Object* obj, const unsigned idx)
 	bool childOpen = false;
 
 	//If parent, or end of hierarchy set as leaf. Otherwise set as treenode
-	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+	ImGuiTreeNodeFlags objectFlags = ImGuiTreeNodeFlags_None;
 	if (mSelectedObj == obj)
-		flags |= ImGuiTreeNodeFlags_Selected;
+		objectFlags |= ImGuiTreeNodeFlags_Selected;
 	if(children.empty())
-		flags |= ImGuiTreeNodeFlags_Leaf;
+		objectFlags |= ImGuiTreeNodeFlags_Leaf;
 	else if(children.empty() == false)
-		flags |= ImGuiTreeNodeFlags_OpenOnArrow;
+		objectFlags |= ImGuiTreeNodeFlags_OpenOnArrow;
 
-	childOpen = ImGui::TreeNodeEx(obj->GetName().c_str(), flags);
+	childOpen = ImGui::TreeNodeEx(obj->GetName().c_str(), objectFlags);
 	if(ImGui::IsItemClicked(ImGuiMouseButton_Left))
 		mSelectedObj = obj;
 
@@ -183,6 +207,9 @@ void Editor::Editor::VisualizeObject(Engine::Object* obj, const unsigned idx)
 	ImGui::PopID();
 }
 
+/// -----------------------------------------------------------------
+/// Visualize picked object
+/// -----------------------------------------------------------------
 void Editor::Editor::EditPickedObject()
 {
 	//Offset child windows
@@ -195,7 +222,7 @@ void Editor::Editor::EditPickedObject()
 	std::string objName = mSelectedObj->GetName();
 	ImGui::Text("Name:");
 	ImGui::SameLine();
-	if (ImGui::InputText("", &objName, ImGuiInputTextFlags_EnterReturnsTrue))
+	if (ImGui::InputText("##", &objName, ImGuiInputTextFlags_EnterReturnsTrue))
 		mSelectedObj->SetName(objName);
 	ImGui::SameLine();
 	if (ImGui::Button("X"))

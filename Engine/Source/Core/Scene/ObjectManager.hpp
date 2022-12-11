@@ -19,14 +19,19 @@ namespace Engine
 		virtual void LogicUpdate() override;
 		virtual void Shutdown() override;
 
+		//Space management
 		Space* AddSpace();
 		void AddSpace(Space* obj_);
 		void DeleteSpace(Space* space);
-
 		Space* GetSpaceByName(const std::string name_);
 		std::vector<Space*> GetSpacesByName(const std::string name_);
 		Space* GetSpaceByID(const unsigned id_);
 		std::vector<Space*> GetSpaces() const;
+		void SwapSpaces(const size_t& l_idx, const size_t& r_idx);
+
+		//Scene management
+		void LoadScene(const std::string& lvl);
+		void SaveScene(const std::string& lvl);
 
 	private:
 		std::vector<Space*> mSpaces;
