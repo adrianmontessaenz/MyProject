@@ -2,7 +2,7 @@
 *  File:		Object.cpp
 *  Brief:		Implementation of Object class
 *  Creation:	21/10/2022
-*  Last Update:	07/11/2022
+*  Last Update:	14/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -110,7 +110,11 @@ void Engine::Object::RemoveChild(Object* child)
 	if (child->GetParent() != this)
 		return;
 
-	//Remove its parent, remove from list and update list.
+	Engine::Object* last_child = GetChildren().back();
+	while (last_child->GetChildren().empty() == false)
+		last_child = last_child->GetChildren().back();
+
+	mSpace->MoveObject(child, last_child->GetSpaceIdx() + 1);
 	child->mParent = nullptr;
 	mChildren.erase(mChildren.begin() + child->GetParentIdx());
 	UpdateParentIdx(child->GetParentIdx() == 0 ? 0 : child->GetParentIdx() - 1);

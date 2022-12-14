@@ -25,6 +25,6 @@ namespace Engine
 		char* mName;
 		unsigned mUID;
 		static unsigned sNextId;
-		static std::vector<unsigned> sUnusedID;
+		static std::stack<unsigned> sUnusedID;
 	};
 }

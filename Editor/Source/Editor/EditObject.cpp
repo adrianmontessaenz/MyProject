@@ -2,7 +2,7 @@
 *  File:		EditObject.cpp
 *  Brief:		Implementation of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	11/12/2022
+*  Last Update:	14/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -60,6 +60,9 @@ void Editor::ObjectEditor::EditPickedObject()
 	ImGui::EndChild();
 }
 
+/// -----------------------------------------------------------------
+/// Show object properties
+/// -----------------------------------------------------------------
 bool Editor::ObjectEditor::ObjectProperties()
 {
 	//First window: properties
@@ -71,9 +74,15 @@ bool Editor::ObjectEditor::ObjectProperties()
 	if (ImGui::InputText("##", &objName, ImGuiInputTextFlags_EnterReturnsTrue))
 		mSelectedObj->SetName(objName);
 	ImGui::SameLine();
-	if (ImGui::Button("X"))
+
+	ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0, 0.7f, 0.7f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
+	bool objectDeleted = ImGui::Button("X");
+	ImGui::PopStyleColor(3);
+	if (objectDeleted)
 	{
-		mSelectedObj->Shutdown();
+		mSelectedObj->GetSpace()->DeleteObject(mSelectedObj, mSelectedObj->GetSpaceIdx());
 		mSelectedObj = nullptr;
 		ImGui::EndChild();
 		return false;

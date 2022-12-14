@@ -2,7 +2,7 @@
 *  File:		Space.hpp
 *  Brief:		Header file of Space class
 *  Creation:	07/11/2022
-*  Last Update:	07/11/2022
+*  Last Update:	14/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -19,9 +19,9 @@ namespace Engine
 		virtual void Shutdown() override;
 
 		Object* AddObject();
-		void AddObject(Object* obj_, bool rec = false);
-		void RemoveObject(Object* obj_, bool rec = false);
-		void DeleteObject(Object* obj_, bool rec = false);
+		void AddObject(Object* obj_, const size_t& idx);
+		void RemoveObject(Object* obj_, const size_t& idx);
+		void DeleteObject(Object* obj_, const size_t& idx);
 		void SwapObjects(const size_t& l_idx, const size_t& r_idx);
 		void MoveObject(Object* obj, const size_t& idx);
 
@@ -36,6 +36,8 @@ namespace Engine
 	private:
 		std::vector<Object*> mObjects;
 		int mSceneIdx = -1;
-		void UpdateObjectIdx(unsigned idx_);
+		void UpdateObjectIdx(const size_t& idx_);
+		size_t AddObjectRecursive(Object* obj_, const size_t& upd_idx_);
+		void DeleteObjectRecursive(Object* obj_, const size_t& idx);
 	};
 }

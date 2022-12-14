@@ -12,7 +12,7 @@
 
 //Static
 unsigned Engine::Identity::sNextId = 0;
-std::vector<unsigned> Engine::Identity::sUnusedID;
+std::stack<unsigned> Engine::Identity::sUnusedID;
 
 /// -----------------------------------------------------------------
 /// Identity constructor
@@ -21,8 +21,8 @@ Engine::Identity::Identity() : mName(nullptr), mUID(0)
 {
 	if (!sUnusedID.empty())
 	{
-		mUID = sUnusedID.back();
-		sUnusedID.pop_back();
+		mUID = sUnusedID.top();
+		sUnusedID.pop();
 	}
 	else
 		mUID = sNextId++;
@@ -35,12 +35,13 @@ Engine::Identity::~Identity()
 {
 	//Delete name and push id to unused
 	delete mName;
-	sUnusedID.push_back(mUID);
+	sUnusedID.push(mUID);
 
 	//If no ids in use, clear vector
 	if (sUnusedID.size() == sNextId)
 	{
-		sUnusedID.clear();
+		while(sUnusedID.empty() == false)
+			sUnusedID.pop();
 		sNextId = 0;
 	}
 }

@@ -2,12 +2,11 @@
 *  File:		EditScene.cpp
 *  Brief:		Implementation of the editor scene manager.
 *  Creation:	11/12/2022
-*  Last Update:	11/12/2022
+*  Last Update:	14/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include "EditScene.hpp"
-#include <Core/Scene/Space.hpp>
 #include <Core/Scene/ObjectManager.hpp>
 
 /// -----------------------------------------------------------------
@@ -75,7 +74,7 @@ bool Editor::SceneEditor::DragAndDropSpaces(const size_t& idx, const size_t& max
 	//Drag spaces
 	if (ImGui::IsItemActive() && !ImGui::IsItemHovered())
 	{
-		int next = idx + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
+		int next = static_cast<int>(idx) + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
 		if (next >= 0 && next < max_size)
 		{
 			gObjMgr->SwapSpaces(idx, next);
@@ -137,7 +136,9 @@ bool Editor::SceneEditor::SpaceProperties(Engine::Space* space)
 	if (ImGui::Button("Add Object"))
 	{
 		Engine::Object* tmp = space->AddObject();
-		tmp->SetName("Default");
+		std::string tmp_name;
+		tmp_name.push_back('A' + rand() % 21);
+		tmp->SetName(tmp_name);
 	}
 
 	//Delete space button
@@ -164,55 +165,64 @@ bool Editor::SceneEditor::SpaceProperties(Engine::Space* space)
 /// -----------------------------------------------------------------
 /// Drag and drop for objects in space visualizer
 /// -----------------------------------------------------------------
-bool Editor::SceneEditor::DragAndDropObjects(const std::vector<Engine::Object*>& objs, const size_t& idx, const size_t& max_size)
+bool Editor::SceneEditor::DragAndDropObjects(Engine::Space* space, const size_t& idx)
 {
-	Engine::Space* space = objs[idx]->GetSpace();
-	if (!mAddChildren)
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 	{
-		//Drag objects
-		if (ImGui::IsItemActive() && !ImGui::IsItemHovered())
-		{
-			int next = idx + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
-			if (next >= 0 && next < max_size)
-			{
-				if (objs[idx]->GetParent())
-					objs[idx]->GetParent()->SwapChildren(idx, next);
-				space->SwapObjects(idx, next);
-				ImGui::ResetMouseDragDelta();
-				return false;
-			}
-		}
+		ImGui::SetDragDropPayload("Add_Children", &idx, sizeof(size_t));
+		ImGui::EndDragDropSource();
 	}
-	else if(mAddChildren)
+	if (ImGui::BeginDragDropTarget())
 	{
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+		//Add child to parent
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Add_Children"))
 		{
-			ImGui::SetDragDropPayload("Add_Children", &idx, sizeof(size_t));
-			ImGui::EndDragDropSource();
-		}
-		if (ImGui::BeginDragDropTarget())
-		{
-			//Add child to parent
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Add_Children"))
+			//Get object
+			std::vector<Engine::Object*> objs = space->GetObjects();
+			size_t payload_n = *(size_t*)payload->Data;
+			Engine::Object* new_child = objs[payload_n];
+			Engine::Object* parent_hierarchy = objs[idx]->GetParent();
+			
+			//If one of the object's parent is the object to add, don't do it
+			while (parent_hierarchy)
 			{
-				size_t payload_n = *(size_t*)payload->Data;
-				Engine::Object* new_child = objs[payload_n];
-				Engine::Object* parent_of_child = new_child->GetParent();
-				while (parent_of_child)
-				{
-					//Can't make an infinite hierarchy
-					if (parent_of_child == objs[idx]->GetParent())
-						return true;
-					parent_of_child = parent_of_child->GetParent();
-				}
-				objs[idx]->AddChild(new_child);
-				ImGui::EndDragDropTarget();
-				return false;
+				//Can't make an infinite hierarchy
+				if (parent_hierarchy == new_child)
+					return true;
+				parent_hierarchy = parent_hierarchy->GetParent();
 			}
+
+			//If all good, make child
+			objs[idx]->AddChild(new_child);
+			ImGui::EndDragDropTarget();
+			return false;
 		}
 	}
 
 	//No changes
+	return true;
+}
+
+/// -----------------------------------------------------------------
+/// Order editor for space visualizer
+/// -----------------------------------------------------------------
+bool Editor::SceneEditor::ReOrderObjects(const std::vector<Engine::Object*>& objs, const size_t& idx, const size_t& max_size)
+{
+	//Drag objects
+	if (ImGui::IsItemActive() && !ImGui::IsItemHovered())
+	{
+		int next = static_cast<int>(idx) + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
+		if (next >= 0 && next < objs.size())
+		{
+			Engine::Space* space = objs[idx]->GetSpace();
+			if (objs[idx]->GetParent())
+				objs[idx]->GetParent()->SwapChildren(idx, next);
+			space->SwapObjects(idx, next);
+			ImGui::ResetMouseDragDelta();
+			return false;
+		}
+	}
+
 	return true;
 }
 
@@ -245,7 +255,8 @@ bool Editor::SceneEditor::VisualizeObject(Engine::Object* obj)
 	//Drag and drop. If child, only drag and drop inside parent objects
 	auto objs = obj->GetParent() == nullptr ? obj->GetSpace()->GetObjects() : obj->GetParent()->GetChildren();
 	size_t idx = obj->GetParent() == nullptr ? obj->GetSpaceIdx() : obj->GetParentIdx();
-	if (!DragAndDropObjects(objs, idx, objs.size()))
+	if ((!mAddChildren && !ReOrderObjects(objs, idx, objs.size())) ||
+		(mAddChildren && !DragAndDropObjects(obj->GetSpace(), obj->GetSpaceIdx())))
 	{
 		if (children.empty() || (childOpen && children.empty() == false))
 			ImGui::TreePop();

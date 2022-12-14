@@ -2,7 +2,7 @@
 *  File:		Space.cpp
 *  Brief:		Implementation of Space class
 *  Creation:	07/11/2022
-*  Last Update:	07/11/2022
+*  Last Update:	14/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -34,7 +34,7 @@ void Engine::Space::Update()
 		//Remove object if shutdown
 		if (mObjects[i]->IsShutdown())
 		{
-			DeleteObject(mObjects[i]);
+			DeleteObject(mObjects[i], i);
 			continue;
 		}
 		else if(mObjects[i]->IsEnabled())
@@ -53,16 +53,17 @@ void Engine::Space::LogicUpdate()
 		return;
 
 	//Update objects
-	for (unsigned i = 0; i < mObjects.size(); i++)
+	for (unsigned i = 0; i < mObjects.size();)
 	{
 		//Remove object if shutdown
 		if (mObjects[i]->IsShutdown())
 		{
-			DeleteObject(mObjects[i--]);
+			DeleteObject(mObjects[i], i);
 			continue;
 		}
 		else if (mObjects[i]->IsEnabled())
 			mObjects[i]->LogicUpdate();
+		i++;
 	}
 }
 
@@ -76,7 +77,7 @@ void Engine::Space::Shutdown()
 	{
 		auto obj = *(mObjects.begin());
 		obj->Shutdown();
-		DeleteObject(obj);
+		DeleteObject(obj, 0);
 	}
 	SetShutdown(true);
 }
@@ -88,106 +89,73 @@ Engine::Object* Engine::Space::AddObject()
 {
 	Object* obj = new Object;
 	obj->Initialize();
-	AddObject(obj);
+	AddObject(obj, mObjects.size());
 	return obj;
 }
 
 /// -----------------------------------------------------------------
 /// Adds specific object to space. If it was in another space, remove from prev space
 /// -----------------------------------------------------------------
-void Engine::Space::AddObject(Object* obj_, bool rec)
+void Engine::Space::AddObject(Object* obj_, const size_t& idx)
 {
 	//Only on the first call. Check if it was already added or if it was in another space
-	if (!rec && obj_->GetSpace() == this)
+	if (obj_->GetSpace() == this)
 		return;
-	else if (!rec && obj_->GetSpace() != this && obj_->GetSpace() != nullptr)
-		obj_->GetSpace()->RemoveObject(obj_);
+	else if (obj_->GetSpace() != nullptr && obj_->GetSpace() != this)
+		obj_->GetSpace()->RemoveObject(obj_, obj_->GetSpaceIdx());
 
-	//Get parent and check
+	//Set space and add to list
 	obj_->SetSpace(this);
-	Object* parent_ = obj_->GetParent();
-	unsigned updateIdx = 0;
-	if (parent_)
-	{
-		//If it has parent, insert children next to parent
-		mObjects.insert(mObjects.begin() + parent_->GetSpaceIdx(), obj_);
-		obj_->SetSpaceIdx(parent_->GetSpaceIdx() + obj_->GetParentIdx() + 1);
-		updateIdx = parent_->GetSpaceIdx() + obj_->GetParentIdx() + 2;
-	}
-	else
-	{
-		//If no parent, insert at the end
-		obj_->SetSpaceIdx(static_cast<const int>(mObjects.size()));
+	if (idx >= mObjects.size())
 		mObjects.push_back(obj_);
-		updateIdx = static_cast<unsigned>(mObjects.size());
-	}
+	else
+		mObjects.insert(mObjects.begin() + idx, obj_);
+	obj_->SetSpaceIdx(static_cast<int>(idx));
 
 	//Add children to space too
+	size_t upd_idx = idx + 1;
 	for (auto child : obj_->GetChildren())
-		AddObject(child, true);
-
-	//Last thing: Update object's indexes respect from where it was updated.
-	if (!rec)
-		UpdateObjectIdx(updateIdx);
+		upd_idx = AddObjectRecursive(child, upd_idx);
 }
 
 /// -----------------------------------------------------------------
 /// Removes object from space
 /// -----------------------------------------------------------------
-void Engine::Space::RemoveObject(Object* obj_, bool rec)
+void Engine::Space::RemoveObject(Object* obj_, const size_t& idx)
 {
+	if (obj_->GetSpace() != this)
+		return;
+
 	//First remove children
 	for (auto child : obj_->GetChildren())
-		RemoveObject(child, true);
-
-	//If parent, update from parent and remove object from parent
-	Object* parent_ = obj_->GetParent();
-	unsigned updateIdx = 0;
-	if (parent_)
-		updateIdx = parent_->GetSpaceIdx();
-	else
-		updateIdx = obj_->GetSpaceIdx() == 0 ? 0 : obj_->GetSpaceIdx() - 1;
+		RemoveObject(child, idx + child->GetParentIdx());
 
 	//Remove from list
-	mObjects.erase(mObjects.begin() + obj_->GetSpaceIdx());
+	mObjects.erase(mObjects.begin() + idx);
 	obj_->SetSpace(nullptr);
-
-	//Last thing: Update object's indexes respect from where it was updated.
-	if (!rec)
-		UpdateObjectIdx(updateIdx);
+	obj_->SetSpaceIdx(-1);
 }
 
 /// -----------------------------------------------------------------
 /// Removes object from space and deletes it
 /// -----------------------------------------------------------------
-void Engine::Space::DeleteObject(Object* obj_, bool rec)
+void Engine::Space::DeleteObject(Object* obj_, const size_t& idx)
 {
+	if (obj_->GetSpace() != this)
+		return;
+
 	//First remove children
-	auto children = obj_->GetChildren();
-	for (int idx = static_cast<int>(children.size()) - 1; idx >= 0; idx--)
-		DeleteObject(children[idx], true);
+	for (auto child : obj_->GetChildren())
+		DeleteObjectRecursive(child, idx + child->GetParentIdx());
 
 	//If parent, update from parent and remove object from parent
 	if (obj_->IsShutdown() == false)
 		obj_->Shutdown();
 
-	Object* parent_ = obj_->GetParent();
-	unsigned updateIdx = 0;
-	if (parent_)
-	{
-		parent_->RemoveChild(obj_);
-		updateIdx = parent_->GetSpaceIdx();
-	}
-	else
-		updateIdx = obj_->GetSpaceIdx() == 0 ? 0 : obj_->GetSpaceIdx() - 1;
-
 	//Remove from list
 	mObjects.erase(mObjects.begin() + obj_->GetSpaceIdx());
 	delete obj_;
-
-	//Last thing: Update object's indexes respect from where it was updated.
-	if (!rec)
-		UpdateObjectIdx(updateIdx);
+	UpdateObjectIdx(idx >= 1 ? idx - 1 : 0);
 }
 
 /// -----------------------------------------------------------------
@@ -208,13 +176,25 @@ void Engine::Space::SwapObjects(const size_t& l_idx, const size_t& r_idx)
 /// -----------------------------------------------------------------
 void Engine::Space::MoveObject(Object* obj, const size_t& idx)
 {
-	mObjects.erase(mObjects.begin() + obj->GetSpaceIdx());
-	if (idx >= mObjects.size())
-		mObjects.push_back(obj);
-	else
+	size_t prev_idx = obj->GetSpaceIdx();
+	if (prev_idx > idx)
 	{
-		mObjects.insert(mObjects.begin() + idx, obj);
+		RemoveObject(obj, prev_idx);
+		AddObject(obj, idx);
 		UpdateObjectIdx(idx);
+	}
+	else if (prev_idx < idx)
+	{
+		size_t last_idx = prev_idx;
+		Engine::Object* last_child = obj;
+		while (last_child->GetChildren().empty() == false)
+		{
+			last_child = last_child->GetChildren().back();
+			last_idx = last_child->GetSpaceIdx();
+		}
+		RemoveObject(obj, prev_idx);
+		AddObject(obj, idx - (last_idx - prev_idx) - 1);
+		UpdateObjectIdx(prev_idx);
 	}
 }
 
@@ -285,8 +265,46 @@ const int Engine::Space::GetSceneIdx() const
 /// -----------------------------------------------------------------
 /// Updates object's indexes from space
 /// -----------------------------------------------------------------
-void Engine::Space::UpdateObjectIdx(unsigned idx_)
+void Engine::Space::UpdateObjectIdx(const size_t& idx_)
 {
-	for (unsigned it = idx_; it < mObjects.size(); it++)
-		mObjects[it]->SetSpaceIdx(it);
+	for (size_t it = idx_; it < mObjects.size(); it++)
+		mObjects[it]->SetSpaceIdx(static_cast<int>(it));
+}
+
+/// -----------------------------------------------------------------
+/// Add objects recursively to space (for adding children next to parent)
+/// -----------------------------------------------------------------
+size_t Engine::Space::AddObjectRecursive(Object* obj_, const size_t& upd_idx_)
+{
+	//Set space and add to list
+	obj_->SetSpace(this);
+	if (upd_idx_ >= mObjects.size())
+		mObjects.push_back(obj_);
+	else
+		mObjects.insert(mObjects.begin() + upd_idx_, obj_);
+	obj_->SetSpaceIdx(static_cast<int>(upd_idx_));
+
+	//Add children to space too
+	size_t upd_idx = upd_idx_ + 1;
+	for (auto child : obj_->GetChildren())
+		upd_idx = AddObjectRecursive(child, upd_idx);
+	return upd_idx;
+}
+
+/// -----------------------------------------------------------------
+/// Deletes objects recursively from space
+/// -----------------------------------------------------------------
+void Engine::Space::DeleteObjectRecursive(Object* obj_, const size_t& idx)
+{
+	//First remove children
+	for (auto child : obj_->GetChildren())
+		DeleteObjectRecursive(child, idx + child->GetParentIdx());
+
+	//If parent, update from parent and remove object from parent
+	if (obj_->IsShutdown() == false)
+		obj_->Shutdown();
+
+	//Remove from list
+	mObjects.erase(mObjects.begin() + obj_->GetSpaceIdx());
+	delete obj_;
 }
