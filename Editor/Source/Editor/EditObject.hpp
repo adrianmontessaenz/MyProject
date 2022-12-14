@@ -9,6 +9,7 @@
 #pragma once
 #include <pch.h>
 #include <Core/Entity-Component/Object.hpp>
+#include <Graphics/Renderable.hpp>
 
 namespace Editor
 {
@@ -23,5 +24,14 @@ namespace Editor
 		Engine::Object* mSelectedObj = nullptr;
 		void EditPickedObject();
 		bool ObjectProperties();
+
+		bool ObjectEngineComponents();
+		Engine::EngineComp* GetObjectEngineComp(const std::string compName);
+		bool EditObjectEngineComp(const std::string& cmpName, Engine::EngineComp* cmp);
+
+		//Components
+		bool EditTransform(Engine::Transform* cmp);
+		void TransformDisplayCoords(glm::vec3& coords, const int& coordId, const float& min, const float& max);
+		bool EditRenderable(Engine::Renderable* cmp);
 	};
 }

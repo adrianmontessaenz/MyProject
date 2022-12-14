@@ -51,7 +51,6 @@ void Editor::Editor::Update()
 	//Update object editor and set selected object (in case it was deleted)
 	mObjectEditor.Update();
 	mSceneEditor.SetSelectedObj(mObjectEditor.GetSelectedObj());
-	ImGui::End();
 }
 
 /// -----------------------------------------------------------------

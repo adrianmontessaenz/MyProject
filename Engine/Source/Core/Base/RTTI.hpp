@@ -33,7 +33,8 @@ namespace Engine
 		template<typename Child> static void AddType();
 		template<typename Child, typename Parent> static void AddParentedType();
 		template<typename Type> static const TypeInfo* GetTypeInfo();
-		template<typename Type>	static const std::string TypeName(); 
+		template<typename Type>	static const std::string TypeName();
+		static std::vector<std::string> GetTypesWithParent(const std::string name);
 		static void FreeTypeInfos();
 
 	private:

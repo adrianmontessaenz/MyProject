@@ -91,6 +91,20 @@ bool Engine::TypeInfo::HasParent(const std::string name) const
 }
 
 /// -----------------------------------------------------------------
+/// Get types that have parent type
+/// -----------------------------------------------------------------
+std::vector<std::string> Engine::RTTI::GetTypesWithParent(const std::string name)
+{
+	std::vector<std::string> result;
+	for (auto type : sTypes)
+	{
+		if (type->HasParent(name))
+			result.push_back(type->GetTypeName());
+	}
+	return result;
+}
+
+/// -----------------------------------------------------------------
 /// RTTI type destructor
 /// -----------------------------------------------------------------
 void Engine::RTTI::FreeTypeInfos()
