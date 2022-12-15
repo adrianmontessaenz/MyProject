@@ -2,11 +2,12 @@
 *  File:		EditObject.cpp
 *  Brief:		Implementation of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	14/12/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include "EditObject.hpp"
+#include <Graphics/GraphicsManager.hpp>
 
 /// -----------------------------------------------------------------
 /// Update object visualizer
@@ -109,24 +110,34 @@ bool Editor::ObjectEditor::ObjectEngineComponents()
 	ImGui::Text("Engine Components");
 	ImGui::BeginChild("EngineComps", { ImGui::GetContentRegionAvail().x, offset - 50.f }, false, ImGuiWindowFlags_HorizontalScrollbar);
 	auto engineComps = Engine::RTTI::GetTypesWithParent("EngineComp");
+	auto objEngineComps = mSelectedObj->GetEngineComps();
 
 	//Loop in all engine components
-	for (size_t idx = 0; idx < engineComps.size();)
+	for (auto comp : objEngineComps)
 	{
-		Engine::EngineComp* cmp = GetObjectEngineComp(engineComps[idx]);
-		if (cmp)
+		std::string cmpName = comp->TypeInfo()->GetTypeName();
+		if (!EditObjectEngineComp(cmpName, comp))
 		{
-			if (!EditObjectEngineComp(engineComps[idx], cmp))
-			{
-				ImGui::EndChild();
-				return false;
-			}
-			engineComps.erase(engineComps.begin() + idx);
+			ImGui::EndChild();
+			return false;
 		}
-		else
-			idx++;
+		engineComps.erase(std::find(engineComps.begin(), engineComps.end(), cmpName));
 	}
 	
+	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+	if (ImGui::Button("+"))
+		ImGui::OpenPopup("Add Engine Comp");
+
+	if (ImGui::BeginPopup("Add Engine Comp"))
+	{
+		for (auto compName : engineComps)
+		{
+			bool selected = ImGui::Selectable(compName.c_str());
+			if (selected && compName == "Renderable")
+				gGfxMgr->AddRenderable(mSelectedObj->AddEngineComp<Engine::Renderable>());
+		}
+		ImGui::EndPopup();
+	}
 	ImGui::EndChild();
 	return true;
 }
@@ -162,8 +173,7 @@ bool Editor::ObjectEditor::EditObjectEngineComp(const std::string& cmpName, Engi
 /// -----------------------------------------------------------------
 bool Editor::ObjectEditor::EditTransform(Engine::Transform* cmp)
 {
-	bool open = true;
-	if (ImGui::CollapsingHeader("Transform", &open))
+	if (ImGui::CollapsingHeader("Transform"))
 	{
 		glm::vec3 pos = cmp->GetWorldPos();
 		glm::vec3 sca = cmp->GetWorldScale();
@@ -171,15 +181,18 @@ bool Editor::ObjectEditor::EditTransform(Engine::Transform* cmp)
 
 		//Show world coordinates of transform
 		ImGui::BulletText("World Coordinates");
-		TransformDisplayCoords(pos, 0, -10000.f, 10000.f);
+		glm::vec3 tmp = TransformDisplayCoords(pos, 0, -10000.f, 10000.f);
+		if(tmp != pos)
+			cmp->SetWorldPos(tmp);
 		ImGui::Text("Pos");
-		cmp->SetWorldPos(pos);
-		TransformDisplayCoords(sca, 3, 0.f, 10000.f);
+		tmp = TransformDisplayCoords(sca, 3, 0.f, 10000.f);
+		if (tmp != sca)
+			cmp->SetWorldScale(tmp);
 		ImGui::Text("Scale");
-		cmp->SetWorldScale(sca);
-		TransformDisplayCoords(rot, 6, 0.f, 360.f);
+		tmp = TransformDisplayCoords(rot, 6, 0.f, 360.f);
+		if(tmp != rot)
+			cmp->SetWorldRot(tmp);
 		ImGui::Text("Rot");
-		cmp->SetWorldRot(rot);
 		ImGui::NewLine();
 
 		//If it has parent, show also local coordinates of object
@@ -191,50 +204,58 @@ bool Editor::ObjectEditor::EditTransform(Engine::Transform* cmp)
 
 			ImGui::Separator();
 			ImGui::BulletText("Local Coordinates");
-			TransformDisplayCoords(pos, 9, -10000.f, 10000.f);
+			tmp = TransformDisplayCoords(pos, 9, -10000.f, 10000.f);
+			if (tmp != pos)
+				cmp->SetLocalPos(tmp);
 			ImGui::Text("Pos");
-			cmp->SetLocalPos(pos);
-			TransformDisplayCoords(sca, 12, 0.f, 10000.f);
+			tmp = TransformDisplayCoords(sca, 12, 0.f, 10000.f);
+			if(tmp != sca)
+				cmp->SetLocalScale(tmp);
 			ImGui::Text("Scale");
-			cmp->SetLocalScale(sca);
-			TransformDisplayCoords(rot, 15, 0.f, 360.f);
+			tmp = TransformDisplayCoords(rot, 15, 0.f, 360.f);
+			if(tmp != rot)
+				cmp->SetLocalRot(tmp);
 			ImGui::Text("Rot");
-			cmp->SetLocalRot(rot);
 			ImGui::NewLine();
 		}
-	}
-
-	//If it was deleted, delete component
-	if (!open)
-	{
-		mSelectedObj->DeleteEngineComp<Engine::Transform>();
-		return false;
 	}
 	return true;
 }
 
-void Editor::ObjectEditor::TransformDisplayCoords(glm::vec3& coords, const int& coordId, const float& min, const float& max)
+/// -----------------------------------------------------------------
+/// Display transform coord
+/// -----------------------------------------------------------------
+glm::vec3 Editor::ObjectEditor::TransformDisplayCoords(const glm::vec3& coords, const int& coordId, const float& min, const float& max)
 {
-	for (std::string letter = "X"; letter[0] <= 'Z'; letter[0]++)
+	glm::vec3 coordEdit = coords;
+	char letter[1] = { 'X' };
+	//Show X, Y and Z separately
+	for (int idx = 0; idx < 3; idx++)
 	{
-		ImGui::PushID(coordId + letter[0] - 'X');
-		float h = (letter[0] - 'X' + 1) * 2.f / 6.f;
+		//Show reset button
+		ImGui::PushID(coordId + idx);
+		float h = (idx + 1) * 2.f / 6.f;
 		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(h, 0.6f, 0.6f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(h, 0.7f, 0.7f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(h, 0.8f, 0.8f));
-		bool clicked = ImGui::Button(letter.c_str());
+		bool clicked = ImGui::Button(letter);
 		ImGui::PopStyleColor(3);
+
+		//If pressed, reset coord
 		if (clicked)
-			coords[letter[0] - 'X'] = 0.f;
+			coordEdit[idx] = 0.f;
 		ImGui::SameLine();
+
+		//Show coord to edit and increase letter
 		ImGui::PushItemWidth(65);
-		float coord = coords[letter[0] - 'X'];
-		ImGui::DragFloat("##", &coord, 0.1f, min, max);
-		coords[letter[0] - 'X'] = coord;
+		ImGui::DragFloat("##", &coordEdit[idx], 0.1f, min, max);
 		ImGui::PopItemWidth();
 		ImGui::PopID();
 		ImGui::SameLine();
+		letter[0]++;
 	}	
+
+	return coordEdit;
 }
 
 /// -----------------------------------------------------------------
@@ -242,5 +263,16 @@ void Editor::ObjectEditor::TransformDisplayCoords(glm::vec3& coords, const int& 
 /// -----------------------------------------------------------------
 bool Editor::ObjectEditor::EditRenderable(Engine::Renderable* cmp)
 {
-	return false;
+	bool open = true;
+	if (ImGui::CollapsingHeader("Renderable", &open))
+	{
+	}
+
+	//If it was deleted, delete component
+	if (!open)
+	{
+		mSelectedObj->DeleteEngineComp<Engine::Renderable>();
+		return false;
+	}
+	return true;
 }

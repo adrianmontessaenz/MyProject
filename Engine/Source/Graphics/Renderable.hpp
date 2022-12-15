@@ -2,7 +2,7 @@
 *  File:		Renderable.hpp
 *  Brief:		Header file of renderable component
 *  Creation:	04/11/2022
-*  Last Update:	04/11/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -25,13 +25,16 @@ namespace Engine
 		const vec4 GetColor() const;
 		void SetTexture(const std::string name);
 		const std::string GetTexture() const;
+		void SetShader(Shader* shader);
+		Shader* GetShader() const;
 
 		//For gfx manager
 		void SetIndexOnManager(const int idx);
 		const int GetIndexOnManager() const;
 	private:
-		int mIdx = -1;
+		int mRendIdx = -1;
 		Model* mModel = new Model();
 		Texture* mTexture = nullptr;
+		Shader* mShader = nullptr;
 	};
 }

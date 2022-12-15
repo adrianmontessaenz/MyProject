@@ -2,7 +2,7 @@
 *  File:		EditObject.hpp
 *  Brief:		Header of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	11/12/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -31,7 +31,7 @@ namespace Editor
 
 		//Components
 		bool EditTransform(Engine::Transform* cmp);
-		void TransformDisplayCoords(glm::vec3& coords, const int& coordId, const float& min, const float& max);
+		glm::vec3 TransformDisplayCoords(const glm::vec3& coords, const int& coordId, const float& min, const float& max);
 		bool EditRenderable(Engine::Renderable* cmp);
 	};
 }

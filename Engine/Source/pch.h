@@ -2,7 +2,7 @@
 *  File:		pch.h
 *  Brief:		Precompiled header for engine
 *  Creation:	16/10/2022
-*  Last Update:	16/10/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -29,6 +29,8 @@
 #include <glad/glad.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #include <gtc/type_ptr.hpp>
 #include <stb_image.h>
 

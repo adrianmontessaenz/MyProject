@@ -2,7 +2,7 @@
 *  File:		Transform.cpp
 *  Brief:		Implementation of Transform Component
 *  Creation:	04/11/2022
-*  Last Update:	04/11/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -164,7 +164,6 @@ void Engine::Transform::UpdateWorld()
 		mWPos = mLPos;
 		mWScale = mLScale;
 		mWRot = mLRot;
-		mWMat = mLMat;
 	}
 
 	//Update world with parent
@@ -175,12 +174,12 @@ void Engine::Transform::UpdateWorld()
 		assert(debug == 1); //Objects by default should have transform
 		if (pTrans != nullptr)
 		{
-			mWPos = mLPos + pTrans->mWPos;
+			mWPos = pTrans->mWMat*glm::vec4(mLPos, 1.f);
 			mWScale = mLScale * pTrans->mWScale;
 			mWRot = mLRot + pTrans->mWRot;
 		}
-		ComputeWorldMat();
 	}
+	ComputeWorldMat();
 
 	//Update children world
 	for (auto child : GetOwner()->GetChildren())
@@ -203,6 +202,7 @@ void Engine::Transform::ComputeWorldMat()
 	mWMat = glm::rotate(mWMat, glm::radians(mWRot.y), glm::vec3(0.f, 0.f, 1.f));
 	mWMat = glm::rotate(mWMat, glm::radians(mWRot.z), glm::vec3(1.f, 0.f, 0.f));
 	mWMat = glm::scale(mWMat, mWScale);
+	mWIMat = glm::inverse(mWMat);
 }
 
 /// -----------------------------------------------------------------
@@ -217,7 +217,6 @@ void Engine::Transform::UpdateLocal()
 		mLPos = mWPos;
 		mLScale = mWScale;
 		mLRot = mWRot;
-		mLMat = mWMat;
 	}
 	//Update local with parent world too
 	else
@@ -227,12 +226,12 @@ void Engine::Transform::UpdateLocal()
 		assert(debug == 1); //Objects by default should have transform
 		if (pTrans != nullptr)
 		{
-			mLPos = mWPos - pTrans->mWPos;
+			mLPos = pTrans->mWIMat * glm::vec4(mWPos, 1.f);
 			mLScale = mWScale / pTrans->mWScale;
 			mLRot = mWRot - pTrans->mWRot;
 		}
-		ComputeLocalMat();
 	}
+	ComputeLocalMat();
 
 	//Update children local
 	for (auto child : GetOwner()->GetChildren())

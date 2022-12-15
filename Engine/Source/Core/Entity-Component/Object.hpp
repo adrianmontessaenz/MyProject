@@ -2,7 +2,7 @@
 *  File:		Object.hpp
 *  Brief:		Header of Object class
 *  Creation:	21/10/2022
-*  Last Update:	14/12/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -28,6 +28,7 @@ namespace Engine
 		Type* AddEngineComp(int* debug = nullptr);
 		template<typename Type>
 		Type* GetEngineComp(int* debug = nullptr);
+		std::vector<EngineComp*> GetEngineComps() const;
 		template<typename Type>
 		void DeleteEngineComp(int* debug = nullptr);
 

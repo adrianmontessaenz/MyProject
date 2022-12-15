@@ -2,7 +2,7 @@
 *  File:		Object.cpp
 *  Brief:		Implementation of Object class
 *  Creation:	21/10/2022
-*  Last Update:	14/12/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -79,6 +79,14 @@ void Engine::Object::Shutdown()
 	for (auto comp : mLogicComps)
 		comp->Shutdown();
 	SetShutdown(true);
+}
+
+/// -----------------------------------------------------------------
+/// Gets engine components
+/// -----------------------------------------------------------------
+std::vector<Engine::EngineComp*> Engine::Object::GetEngineComps() const
+{
+	return mEngineComps;
 }
 
 /// -----------------------------------------------------------------

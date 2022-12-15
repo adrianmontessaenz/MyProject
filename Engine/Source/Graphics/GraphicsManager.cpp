@@ -2,7 +2,7 @@
 *  File:		GraphicsManager.cpp
 *  Brief:		Implementation file of graphics manager
 *  Creation:	04/11/2022
-*  Last Update:	07/11/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -17,6 +17,7 @@
 /// -----------------------------------------------------------------
 void Engine::GraphicsManager::Initialize()
 {
+	RTTI::AddParentedType<Renderable, EngineComp>();
 	//Add all renderables of initial scene
 	auto spaces = gObjMgr->GetSpaces();
 	for (auto space : spaces)
@@ -50,12 +51,22 @@ void Engine::GraphicsManager::Render()
 	glm::mat4 view = glm::translate(glm::identity<mat4>(), glm::vec3(0.f, -0.5f, -2.f));
 	glm::mat4 proj = glm::perspective(glm::radians(45.f), size.x / size.y, 0.1f, 100.f);
 
-	//Activate shader and set matrices
-	mShaders[0]->Activate();
-	mShaders[0]->UniformMat4(proj, "proj");
-	mShaders[0]->UniformMat4(view, "view");
-	for (auto rend : mRenderables)
-		rend->Render();
+	Shader* currShader = nullptr;
+	for (auto space : mRenderables)
+	{
+		for (auto rend : space.second)
+		{
+			//Activate shader and set matrices
+			if (rend->GetShader() != currShader)
+			{
+				currShader = rend->GetShader();
+				currShader->Activate();
+				currShader->UniformMat4(proj, "proj");
+				currShader->UniformMat4(view, "view");
+			}
+			rend->Render();
+		}
+	}
 }
 
 /// -----------------------------------------------------------------
@@ -64,7 +75,6 @@ void Engine::GraphicsManager::Render()
 void Engine::GraphicsManager::Shutdown()
 {
 	mRenderables.clear();
-	mRenderables.shrink_to_fit();
 	for (auto shader : mShaders)
 		delete shader;
 	mShaders.clear();
@@ -92,56 +102,9 @@ void Engine::GraphicsManager::AddRenderable(Renderable* rend)
 	//No owner == for typeinfo
 	if (rend->GetOwner() == nullptr)
 		return;
-
 	int rendIdx = rend->GetIndexOnManager();
-
-	//If new to list, check if it has parent
-	if (rendIdx == -1)
-	{
-		Object* owner = rend->GetOwner();
-		Object* parent = owner->GetParent();
-		if (parent)
-		{
-			//If parented, place renderable next to parent (in children order)
-			Renderable* parentRend = parent->GetEngineComp<Renderable>();
-			size_t idx = static_cast<size_t>(parentRend->GetIndexOnManager()) + static_cast<size_t>(owner->GetParentIdx()) + 1;
-			while (1)
-			{
-				//If parent was found, insert next to parent
-				if (mRenderables[idx - 1]->GetOwner() == parent)
-				{
-					if (idx - 1 == mRenderables.size())
-						mRenderables.push_back(rend);
-					else
-						mRenderables.insert(mRenderables.begin() + idx, rend);
-					break;
-				}
-
-				//If child of parent was found, insert in parent list order
-				else if (mRenderables[idx - 1]->GetOwner()->GetParent() == parent)
-				{
-					if (mRenderables[idx - 1]->GetOwner()->GetParentIdx() < owner->GetParentIdx())
-					{
-						if (idx - 1 == mRenderables.size())
-							mRenderables.push_back(rend);
-						else
-							mRenderables.insert(mRenderables.begin() + idx, rend);
-						break;
-					}
-				}
-				idx--;
-			}
-
-			//Set index and update list
-			rend->SetIndexOnManager(static_cast<int>(idx));
-			UpdateRendIdx(static_cast<int>(idx));
-		}
-		else
-		{
-			rend->SetIndexOnManager(static_cast<int>(mRenderables.size()));
-			mRenderables.push_back(rend);
-		}
-	}
+	rend->SetIndexOnManager(static_cast<int>(mRenderables.size()));
+	mRenderables[rend->GetOwner()->GetSpace()].push_back(rend);
 }
 
 /// -----------------------------------------------------------------
@@ -149,19 +112,20 @@ void Engine::GraphicsManager::AddRenderable(Renderable* rend)
 /// -----------------------------------------------------------------
 void Engine::GraphicsManager::RemoveRenderable(Renderable* rend)
 {
+	Space* space = rend->GetOwner()->GetSpace();
 	int rendIdx = rend->GetIndexOnManager();
 	if (rendIdx != -1)
 	{
-		mRenderables.erase(mRenderables.begin() + rend->GetIndexOnManager());
-		UpdateRendIdx(rendIdx);
+		mRenderables[space].erase(mRenderables[space].begin() + rend->GetIndexOnManager());
+		UpdateRendIdx(space, rendIdx);
 	}
 }
 
 /// -----------------------------------------------------------------
 /// Removes renderable from graphics manager
 /// -----------------------------------------------------------------
-void Engine::GraphicsManager::UpdateRendIdx(const int idx_)
+void Engine::GraphicsManager::UpdateRendIdx(Space* space, const int idx_)
 {
 	for (int i = idx_; i < mRenderables.size(); i++)
-		mRenderables[i]->SetIndexOnManager(i);
+		mRenderables[space][i]->SetIndexOnManager(i);
 }

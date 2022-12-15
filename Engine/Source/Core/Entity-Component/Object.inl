@@ -3,7 +3,7 @@
 *  File:		Object.inl
 *  Brief:		Implementation of templated Object class functions
 *  Creation:	21/10/2022
-*  Last Update:	07/11/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -97,7 +97,7 @@ inline void Engine::Object::DeleteEngineComp(int* debug)
 	}
 
 	//Check that is shutdown and then delete it
-	if (comp->IsShutdown())
+	if (!comp->IsShutdown())
 		comp->Shutdown();
 	mEngineComps.erase(std::find(mEngineComps.begin(), mEngineComps.end(), comp));
 	delete comp;

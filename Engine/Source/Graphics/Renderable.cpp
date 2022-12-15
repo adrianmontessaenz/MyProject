@@ -2,7 +2,7 @@
 *  File:		Renderable.cpp
 *  Brief:		Implementation of renderable component
 *  Creation:	04/11/2022
-*  Last Update:	07/11/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -18,6 +18,7 @@ void Engine::Renderable::Initialize()
 {
 	RTTI::AddParentedType<Renderable, EngineComp>();
 	gGfxMgr->AddRenderable(this);
+	mShader = gGfxMgr->GetShader("Default");
 }
 
 /// -----------------------------------------------------------------
@@ -34,14 +35,13 @@ void Engine::Renderable::Render()
 	glm::mat4 world = trans->GetWorldMat();
 
 	//Add uniforms to shader and render
-	Shader* shader = gGfxMgr->GetShader("default");
-	shader->UniformMat4(world, "world");
-	shader->UniformVec4(mModel->GetColor(), "col");
+	mShader->UniformMat4(world, "world");
+	mShader->UniformVec4(mModel->GetColor(), "col");
 	if (mTexture)
 	{
-		shader->UniformInt(1, "hasTexture");
+		mShader->UniformInt(1, "hasTexture");
 		mTexture->Bind();
-		shader->UniformInt(mTexture->GetType(), "texImage");
+		mShader->UniformInt(mTexture->GetType(), "texImage");
 	}
 	mModel->Render();
 }
@@ -113,11 +113,27 @@ const std::string Engine::Renderable::GetTexture() const
 }
 
 /// -----------------------------------------------------------------
+/// Sets shader for renderable
+/// -----------------------------------------------------------------
+void Engine::Renderable::SetShader(Shader* shader)
+{
+	mShader = shader;
+}
+
+/// -----------------------------------------------------------------
+/// Gets shader of renderable
+/// -----------------------------------------------------------------
+Engine::Shader* Engine::Renderable::GetShader() const
+{
+	return mShader;
+}
+
+/// -----------------------------------------------------------------
 /// Set index of renderable in manager
 /// -----------------------------------------------------------------
 void Engine::Renderable::SetIndexOnManager(const int idx)
 {
-	mIdx = idx;
+	mRendIdx = idx;
 }
 
 /// -----------------------------------------------------------------
@@ -125,5 +141,5 @@ void Engine::Renderable::SetIndexOnManager(const int idx)
 /// -----------------------------------------------------------------
 const int Engine::Renderable::GetIndexOnManager() const
 {
-	return mIdx;
+	return mRendIdx;
 }

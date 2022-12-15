@@ -2,7 +2,7 @@
 *  File:		Space.cpp
 *  Brief:		Implementation of Space class
 *  Creation:	07/11/2022
-*  Last Update:	14/12/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -147,6 +147,10 @@ void Engine::Space::DeleteObject(Object* obj_, const size_t& idx)
 	//First remove children
 	for (auto child : obj_->GetChildren())
 		DeleteObjectRecursive(child, idx + child->GetParentIdx());
+	
+	//Then remove from parent
+	if (obj_->GetParent())
+		obj_->GetParent()->RemoveChild(obj_);
 
 	//If parent, update from parent and remove object from parent
 	if (obj_->IsShutdown() == false)

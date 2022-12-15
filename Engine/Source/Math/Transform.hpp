@@ -2,7 +2,7 @@
 *  File:		Transform.hpp
 *  Brief:		Header of Transform Component
 *  Creation:	04/11/2022
-*  Last Update:	04/11/2022
+*  Last Update:	15/12/2022
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -51,6 +51,7 @@ namespace Engine
 
 		//Matrices
 		mat4 mWMat = glm::identity<mat4>();
+		mat4 mWIMat = glm::identity<mat4>();
 		mat4 mLMat = glm::identity<mat4>();
 
 		//Matrix Update
