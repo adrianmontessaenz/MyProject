@@ -2,7 +2,7 @@
 *  File:		ObjectManager.cpp
 *  Brief:		Implementation file of ObjectManager class
 *  Creation:	07/11/2022
-*  Last Update:	07/11/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -83,8 +83,11 @@ Engine::Space* Engine::ObjectManager::AddSpace()
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::AddSpace(Space* space_)
 {
-	mSpaces.push_back(space_);
-	space_->SetSceneIdx(static_cast<int>(mSpaces.size()) - 1);
+	if (space_ == nullptr)
+		return;
+	auto it = std::find(mSpaces.begin(), mSpaces.end(), space_);
+	if(it == mSpaces.end())
+		mSpaces.push_back(space_);
 }
 
 /// -----------------------------------------------------------------
@@ -92,10 +95,13 @@ void Engine::ObjectManager::AddSpace(Space* space_)
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::DeleteSpace(Space* space_)
 {
+	if (space_ == nullptr)
+		return;
 	if (space_->IsShutdown() == false)
 		space_->Shutdown();
-	mSpaces.erase(mSpaces.begin() + space_->GetSceneIdx());
-	UpdateSpaceList(space_->GetSceneIdx());
+	auto it = std::find(mSpaces.begin(), mSpaces.end(), space_);
+	if(it != mSpaces.end())
+		mSpaces.erase(it);
 	delete space_;
 }
 
@@ -154,10 +160,7 @@ void Engine::ObjectManager::SwapSpaces(const size_t& l_idx, const size_t& r_idx)
 {
 	Space* tmp = mSpaces[l_idx];
 	mSpaces[l_idx] = mSpaces[r_idx];
-	mSpaces[l_idx]->SetSceneIdx(static_cast<int>(l_idx));
-
 	mSpaces[r_idx] = tmp;
-	mSpaces[r_idx]->SetSceneIdx(static_cast<int>(r_idx));
 }
 
 /// -----------------------------------------------------------------
@@ -172,13 +175,4 @@ void Engine::ObjectManager::LoadScene(const std::string& lvl)
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::SaveScene(const std::string& lvl)
 {
-}
-
-/// -----------------------------------------------------------------
-/// Updates list of spaces
-/// -----------------------------------------------------------------
-void Engine::ObjectManager::UpdateSpaceList(unsigned idx_)
-{
-	for (unsigned i = idx_; i < mSpaces.size(); i++)
-		mSpaces[i]->SetSceneIdx(i);
 }

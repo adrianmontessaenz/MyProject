@@ -2,7 +2,7 @@
 *  File:		EditObject.cpp
 *  Brief:		Implementation of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	15/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -87,7 +87,7 @@ bool Editor::ObjectEditor::ObjectProperties()
 	ImGui::PopStyleColor(3);
 	if (objectDeleted)
 	{
-		mSelectedObj->GetSpace()->DeleteObject(mSelectedObj, mSelectedObj->GetSpaceIdx());
+		mSelectedObj->GetSpace()->DeleteObject(mSelectedObj);
 		mSelectedObj = nullptr;
 		ImGui::EndChild();
 		return false;
@@ -134,7 +134,7 @@ bool Editor::ObjectEditor::ObjectEngineComponents()
 		{
 			bool selected = ImGui::Selectable(compName.c_str());
 			if (selected && compName == "Renderable")
-				gGfxMgr->AddRenderable(mSelectedObj->AddEngineComp<Engine::Renderable>());
+				mSelectedObj->AddEngineComp<Engine::Renderable>()->Initialize();
 		}
 		ImGui::EndPopup();
 	}
@@ -228,7 +228,7 @@ bool Editor::ObjectEditor::EditTransform(Engine::Transform* cmp)
 glm::vec3 Editor::ObjectEditor::TransformDisplayCoords(const glm::vec3& coords, const int& coordId, const float& min, const float& max)
 {
 	glm::vec3 coordEdit = coords;
-	char letter[1] = { 'X' };
+	std::string letter = "X";
 	//Show X, Y and Z separately
 	for (int idx = 0; idx < 3; idx++)
 	{
@@ -238,7 +238,7 @@ glm::vec3 Editor::ObjectEditor::TransformDisplayCoords(const glm::vec3& coords, 
 		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(h, 0.6f, 0.6f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(h, 0.7f, 0.7f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(h, 0.8f, 0.8f));
-		bool clicked = ImGui::Button(letter);
+		bool clicked = ImGui::Button(letter.c_str());
 		ImGui::PopStyleColor(3);
 
 		//If pressed, reset coord

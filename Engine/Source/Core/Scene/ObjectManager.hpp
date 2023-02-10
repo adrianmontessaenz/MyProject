@@ -2,7 +2,7 @@
 *  File:		ObjectManager.hpp
 *  Brief:		Header file of ObjectManager class
 *  Creation:	07/11/2022
-*  Last Update:	07/11/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -35,7 +35,6 @@ namespace Engine
 
 	private:
 		std::vector<Space*> mSpaces;
-		void UpdateSpaceList(unsigned idx_);
 	};
 }
 #define gObjMgr (&Engine::ObjectManager::GetInstance())

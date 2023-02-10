@@ -2,7 +2,7 @@
 *  File:		Object.cpp
 *  Brief:		Implementation of Object class
 *  Creation:	21/10/2022
-*  Last Update:	15/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -103,10 +103,9 @@ void Engine::Object::AddChild(Object* child)
 		parent_->RemoveChild(child);
 
 	//Set index on list and add it
-	child->SetParentIdx(static_cast<const int>(mChildren.size()));
 	mChildren.push_back(child);
 	child->mParent = this;
-	mSpace->MoveObject(child, child->mParent->GetSpaceIdx() + child->mParentIdx + 1);
+	child->mSpace = mSpace;
 }
 
 /// -----------------------------------------------------------------
@@ -118,15 +117,10 @@ void Engine::Object::RemoveChild(Object* child)
 	if (child->GetParent() != this)
 		return;
 
-	Engine::Object* last_child = GetChildren().back();
-	while (last_child->GetChildren().empty() == false)
-		last_child = last_child->GetChildren().back();
-
-	mSpace->MoveObject(child, last_child->GetSpaceIdx() + 1);
+	//Erase child from list and remove its parent
+	auto it = std::find(mChildren.begin(), mChildren.end(), child);
+	mChildren.erase(it);
 	child->mParent = nullptr;
-	mChildren.erase(mChildren.begin() + child->GetParentIdx());
-	UpdateParentIdx(child->GetParentIdx() == 0 ? 0 : child->GetParentIdx() - 1);
-	child->SetParentIdx(-1);
 }
 
 /// -----------------------------------------------------------------
@@ -177,12 +171,7 @@ void Engine::Object::SwapChildren(const size_t& l_idx, const size_t& r_idx)
 {
 	Object* tmp = mChildren[l_idx];
 	mChildren[l_idx] = mChildren[r_idx];
-	mChildren[l_idx]->SetParentIdx(static_cast<int>(l_idx));
-
 	mChildren[r_idx] = tmp;
-	mChildren[r_idx]->SetParentIdx(static_cast<int>(r_idx));
-
-	mSpace->SwapObjects(r_idx, l_idx);
 }
 
 /// -----------------------------------------------------------------
@@ -206,22 +195,6 @@ Engine::Object* Engine::Object::GetParent() const
 }
 
 /// -----------------------------------------------------------------
-/// Sets index on parent array
-/// -----------------------------------------------------------------
-void Engine::Object::SetParentIdx(const int idx_)
-{
-	mParentIdx = idx_;
-}
-
-/// -----------------------------------------------------------------
-/// Gets index on parent array
-/// -----------------------------------------------------------------
-const int Engine::Object::GetParentIdx() const
-{
-	return mParentIdx;
-}
-
-/// -----------------------------------------------------------------
 /// Sets space of object
 /// -----------------------------------------------------------------
 void Engine::Object::SetSpace(Engine::Space* space_)
@@ -235,29 +208,4 @@ void Engine::Object::SetSpace(Engine::Space* space_)
 Engine::Space* Engine::Object::GetSpace() const
 {
 	return mSpace;
-}
-
-/// -----------------------------------------------------------------
-/// Sets an object's index on space
-/// -----------------------------------------------------------------
-void Engine::Object::SetSpaceIdx(const int idx_)
-{
-	mSpaceIdx = idx_;
-}
-
-/// -----------------------------------------------------------------
-/// Gets an object's index on space
-/// -----------------------------------------------------------------
-const int Engine::Object::GetSpaceIdx() const
-{
-	return mSpaceIdx;
-}
-
-/// -----------------------------------------------------------------
-/// Update index of objects in parent list
-/// -----------------------------------------------------------------
-void Engine::Object::UpdateParentIdx(unsigned idx_)
-{
-	for (unsigned it = idx_; it < mChildren.size(); it++)
-		mChildren[it]->SetParentIdx(it);
 }

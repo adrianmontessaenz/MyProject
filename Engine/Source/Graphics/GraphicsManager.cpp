@@ -2,7 +2,7 @@
 *  File:		GraphicsManager.cpp
 *  Brief:		Implementation file of graphics manager
 *  Creation:	04/11/2022
-*  Last Update:	15/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -33,6 +33,7 @@ void Engine::GraphicsManager::Initialize()
 
 	//Add shaders
 	mShaders.push_back(new Shader("default.vert", "default.frag"));
+	mShaders.back()->SetName("Default");
 }
 
 /// -----------------------------------------------------------------
@@ -102,8 +103,6 @@ void Engine::GraphicsManager::AddRenderable(Renderable* rend)
 	//No owner == for typeinfo
 	if (rend->GetOwner() == nullptr)
 		return;
-	int rendIdx = rend->GetIndexOnManager();
-	rend->SetIndexOnManager(static_cast<int>(mRenderables.size()));
 	mRenderables[rend->GetOwner()->GetSpace()].push_back(rend);
 }
 
@@ -113,19 +112,6 @@ void Engine::GraphicsManager::AddRenderable(Renderable* rend)
 void Engine::GraphicsManager::RemoveRenderable(Renderable* rend)
 {
 	Space* space = rend->GetOwner()->GetSpace();
-	int rendIdx = rend->GetIndexOnManager();
-	if (rendIdx != -1)
-	{
-		mRenderables[space].erase(mRenderables[space].begin() + rend->GetIndexOnManager());
-		UpdateRendIdx(space, rendIdx);
-	}
-}
-
-/// -----------------------------------------------------------------
-/// Removes renderable from graphics manager
-/// -----------------------------------------------------------------
-void Engine::GraphicsManager::UpdateRendIdx(Space* space, const int idx_)
-{
-	for (int i = idx_; i < mRenderables.size(); i++)
-		mRenderables[space][i]->SetIndexOnManager(i);
+	auto it = std::find(mRenderables[space].begin(), mRenderables[space].end(), rend);
+	mRenderables[space].erase(mRenderables[space].begin());
 }

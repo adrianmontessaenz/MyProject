@@ -2,7 +2,7 @@
 *  File:		Identity.cpp
 *  Brief:		Implementation of Identity class
 *  Creation:	21/10/2022
-*  Last Update:	07/11/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -17,7 +17,7 @@ std::stack<unsigned> Engine::Identity::sUnusedID;
 /// -----------------------------------------------------------------
 /// Identity constructor
 /// -----------------------------------------------------------------
-Engine::Identity::Identity() : mName(nullptr), mUID(0)
+Engine::Identity::Identity() : mUID(0)
 {
 	if (!sUnusedID.empty())
 	{
@@ -34,7 +34,6 @@ Engine::Identity::Identity() : mName(nullptr), mUID(0)
 Engine::Identity::~Identity()
 {
 	//Delete name and push id to unused
-	delete mName;
 	sUnusedID.push(mUID);
 
 	//If no ids in use, clear vector
@@ -51,20 +50,7 @@ Engine::Identity::~Identity()
 /// -----------------------------------------------------------------
 void Engine::Identity::SetName(const std::string name)
 {
-	//Delete previous name
-	if (mName != nullptr)
-	{
-		delete mName;
-		mName = nullptr;
-	}
-
-	//If empty name, return
-	if (name.empty())
-		return;
-
-	//Create new name
-	mName = new char[name.length() + 1]{ 0 };
-	strcpy(mName, name.c_str());
+	mName = name;
 }
 
 /// -----------------------------------------------------------------
@@ -72,7 +58,7 @@ void Engine::Identity::SetName(const std::string name)
 /// -----------------------------------------------------------------
 std::string Engine::Identity::GetName() const
 {
-	return std::string(mName);
+	return mName;
 }
 
 /// -----------------------------------------------------------------

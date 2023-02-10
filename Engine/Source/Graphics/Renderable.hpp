@@ -2,7 +2,7 @@
 *  File:		Renderable.hpp
 *  Brief:		Header file of renderable component
 *  Creation:	04/11/2022
-*  Last Update:	15/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -28,11 +28,7 @@ namespace Engine
 		void SetShader(Shader* shader);
 		Shader* GetShader() const;
 
-		//For gfx manager
-		void SetIndexOnManager(const int idx);
-		const int GetIndexOnManager() const;
 	private:
-		int mRendIdx = -1;
 		Model* mModel = new Model();
 		Texture* mTexture = nullptr;
 		Shader* mShader = nullptr;

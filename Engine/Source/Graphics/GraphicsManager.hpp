@@ -2,7 +2,7 @@
 *  File:		GraphicsManager.hpp
 *  Brief:		Header file of graphics manager
 *  Creation:	04/11/2022
-*  Last Update:	15/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -26,8 +26,6 @@ namespace Engine
 	private:
 		std::vector<Shader*> mShaders;
 		std::map<Space*, std::vector<Renderable*>> mRenderables;
-
-		void UpdateRendIdx(Engine::Space* space, const int idx_);
 	};
 }
 #define gGfxMgr (&Engine::GraphicsManager::GetInstance())

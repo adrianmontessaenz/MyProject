@@ -2,12 +2,13 @@
 *  File:		EditScene.cpp
 *  Brief:		Implementation of the editor scene manager.
 *  Creation:	11/12/2022
-*  Last Update:	14/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include "EditScene.hpp"
 #include <Core/Scene/ObjectManager.hpp>
+#include <Core/Time/TimeSystem.hpp>
 
 /// -----------------------------------------------------------------
 /// Update scene editor
@@ -99,18 +100,17 @@ bool Editor::SceneEditor::VisualizeSpace(Engine::Space* space)
 
 	ImVec2 spaceMaxSize = ImVec2(0.f, ImGui::GetTextLineHeightWithSpacing() * 15.f);
 	ImGuiTableFlags spaceTableFlags = ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Hideable | ImGuiTableFlags_ScrollY;
-	if (ImGui::BeginTable(space->GetName().c_str(), 3, spaceTableFlags, spaceMaxSize))
+	if (ImGui::BeginTable(space->GetName().c_str(), 2, spaceTableFlags, spaceMaxSize))
 	{
 		ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("Unique ID", ImGuiTableColumnFlags_WidthFixed);
-		ImGui::TableSetupColumn("Space IDX", ImGuiTableColumnFlags_WidthFixed);
 		ImGui::TableHeadersRow();
 		std::vector<Engine::Object*> objects = space->GetObjects();
 		for (size_t idx2 = 0; idx2 < objects.size(); idx2++)
 		{
 			if (objects[idx2]->GetParent())
 				continue;
-			if (!VisualizeObject(objects[idx2]))
+			if (!VisualizeObject(objects[idx2], idx2))
 			{
 				ImGui::EndTable();
 				ImGui::PopID();
@@ -165,11 +165,11 @@ bool Editor::SceneEditor::SpaceProperties(Engine::Space* space)
 /// -----------------------------------------------------------------
 /// Drag and drop for objects in space visualizer
 /// -----------------------------------------------------------------
-bool Editor::SceneEditor::DragAndDropObjects(Engine::Space* space, const size_t& idx)
+bool Editor::SceneEditor::DragAndDropObjects(Engine::Space* space, Engine::Object* obj)
 {
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 	{
-		ImGui::SetDragDropPayload("Add_Children", &idx, sizeof(size_t));
+		ImGui::SetDragDropPayload("Add_Children", &(*obj), sizeof(Engine::Object));
 		ImGui::EndDragDropSource();
 	}
 	if (ImGui::BeginDragDropTarget())
@@ -178,10 +178,9 @@ bool Editor::SceneEditor::DragAndDropObjects(Engine::Space* space, const size_t&
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Add_Children"))
 		{
 			//Get object
-			std::vector<Engine::Object*> objs = space->GetObjects();
-			size_t payload_n = *(size_t*)payload->Data;
-			Engine::Object* new_child = objs[payload_n];
-			Engine::Object* parent_hierarchy = objs[idx]->GetParent();
+			Engine::Object* new_child = (Engine::Object*)payload->Data;
+			new_child = space->GetObjectByName(new_child->GetName());
+			Engine::Object* parent_hierarchy = obj;
 			
 			//If one of the object's parent is the object to add, don't do it
 			while (parent_hierarchy)
@@ -193,7 +192,7 @@ bool Editor::SceneEditor::DragAndDropObjects(Engine::Space* space, const size_t&
 			}
 
 			//If all good, make child
-			objs[idx]->AddChild(new_child);
+			obj->AddChild(new_child);
 			ImGui::EndDragDropTarget();
 			return false;
 		}
@@ -206,19 +205,41 @@ bool Editor::SceneEditor::DragAndDropObjects(Engine::Space* space, const size_t&
 /// -----------------------------------------------------------------
 /// Order editor for space visualizer
 /// -----------------------------------------------------------------
-bool Editor::SceneEditor::ReOrderObjects(const std::vector<Engine::Object*>& objs, const size_t& idx, const size_t& max_size)
+bool Editor::SceneEditor::ReOrderObjects(std::vector<Engine::Object*> objs_, Engine::Object* obj_, const size_t idx)
 {
+	//If on cooldown, recharge
+	if (mOrderCd > 0.f && mOrderCd <= mMaxCd)
+	{
+		mOrderCd += gTimeSys->GetDeltaTime();
+		return true;
+	}
+	mOrderCd = 0.f;
+
 	//Drag objects
 	if (ImGui::IsItemActive() && !ImGui::IsItemHovered())
 	{
-		int next = static_cast<int>(idx) + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
-		if (next >= 0 && next < objs.size())
+		//Get increment
+		int increment = (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
+		int next = static_cast<int>(idx) + increment;
+		if (next >= 0 && next < objs_.size())
 		{
-			Engine::Space* space = objs[idx]->GetSpace();
-			if (objs[idx]->GetParent())
-				objs[idx]->GetParent()->SwapChildren(idx, next);
-			space->SwapObjects(idx, next);
+			//Keep incrementing until same parent level
+			Engine::Object* parent = obj_->GetParent();
+			while (parent != objs_[next]->GetParent())
+			{
+				next += increment;
+				if (next < 0 || next >= objs_.size())
+					return true;
+			}
+
+			//Swap objects and start cooldown
+			Engine::Space* space = objs_[idx]->GetSpace();
+			if (!obj_->GetParent())
+				space->SwapObjects(idx, next);
+			else
+				obj_->GetParent()->SwapChildren(idx, next);
 			ImGui::ResetMouseDragDelta();
+			mOrderCd += gTimeSys->GetDeltaTime();
 			return false;
 		}
 	}
@@ -229,7 +250,7 @@ bool Editor::SceneEditor::ReOrderObjects(const std::vector<Engine::Object*>& obj
 /// -----------------------------------------------------------------
 /// Visualize object on editor
 /// -----------------------------------------------------------------
-bool Editor::SceneEditor::VisualizeObject(Engine::Object* obj)
+bool Editor::SceneEditor::VisualizeObject(Engine::Object* obj, const size_t idx)
 {
 	//Push id of object and set name first
 	ImGui::PushID(obj->GetUniqueID());
@@ -253,10 +274,9 @@ bool Editor::SceneEditor::VisualizeObject(Engine::Object* obj)
 		mSelectedObj = obj;
 
 	//Drag and drop. If child, only drag and drop inside parent objects
-	auto objs = obj->GetParent() == nullptr ? obj->GetSpace()->GetObjects() : obj->GetParent()->GetChildren();
-	size_t idx = obj->GetParent() == nullptr ? obj->GetSpaceIdx() : obj->GetParentIdx();
-	if ((!mAddChildren && !ReOrderObjects(objs, idx, objs.size())) ||
-		(mAddChildren && !DragAndDropObjects(obj->GetSpace(), obj->GetSpaceIdx())))
+	auto objs = obj->GetSpace()->GetObjects();
+	if ((!mAddChildren && !ReOrderObjects(objs, obj, idx)) ||
+		(mAddChildren && !DragAndDropObjects(obj->GetSpace(), obj)))
 	{
 		if (children.empty() || (childOpen && children.empty() == false))
 			ImGui::TreePop();
@@ -268,15 +288,70 @@ bool Editor::SceneEditor::VisualizeObject(Engine::Object* obj)
 	ImGui::TableSetColumnIndex(1);
 	ImGui::Text("%u", obj->GetUniqueID());
 
-	//Set Space Index on second column
-	ImGui::TableSetColumnIndex(2);
-	ImGui::Text("%u", obj->GetSpaceIdx());
+	if (childOpen)
+	{
+		for (size_t idx2 = 0; idx2 < children.size(); idx2++)
+		{
+			if (!VisualizeChildren(children[idx2], idx2))
+			{
+				ImGui::TreePop();
+				ImGui::PopID();
+				return false;
+			}
+		}
+	}
+	if (children.empty() || (childOpen && children.empty() == false))
+		ImGui::TreePop();
+	ImGui::PopID();
+	return true;
+}
+
+/// -----------------------------------------------------------------
+/// Visualize children on editor
+/// -----------------------------------------------------------------
+bool Editor::SceneEditor::VisualizeChildren(Engine::Object* obj, const size_t idx)
+{
+	//Push id of object and set name first
+	ImGui::PushID(obj->GetUniqueID());
+	ImGui::TableNextRow();
+	ImGui::TableSetColumnIndex(0);
+	ImGui::AlignTextToFramePadding();
+	std::vector<Engine::Object*> children = obj->GetChildren();
+	bool childOpen = false;
+
+	//If parent, or end of hierarchy set as leaf. Otherwise set as treenode
+	ImGuiTreeNodeFlags objectFlags = ImGuiTreeNodeFlags_None;
+	if (mSelectedObj == obj)
+		objectFlags |= ImGuiTreeNodeFlags_Selected;
+	if (children.empty())
+		objectFlags |= ImGuiTreeNodeFlags_Leaf;
+	else
+		objectFlags |= ImGuiTreeNodeFlags_OpenOnArrow;
+
+	childOpen = ImGui::TreeNodeEx(obj->GetName().c_str(), objectFlags);
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+		mSelectedObj = obj;
+
+	//Drag and drop. If child, only drag and drop inside parent objects
+	auto objs = obj->GetParent()->GetChildren();
+	if ((!mAddChildren && !ReOrderObjects(objs, obj, idx)) ||
+		(mAddChildren && !DragAndDropObjects(obj->GetSpace(), obj)))
+	{
+		if (children.empty() || (childOpen && children.empty() == false))
+			ImGui::TreePop();
+		ImGui::PopID();
+		return false;
+	}
+
+	//Set ID on second column
+	ImGui::TableSetColumnIndex(1);
+	ImGui::Text("%u", obj->GetUniqueID());
 
 	if (childOpen)
 	{
-		for (auto child : children)
+		for (size_t idx2 = 0; idx2 < children.size(); idx2++)
 		{
-			if (!VisualizeObject(child))
+			if (!VisualizeChildren(children[idx2], idx2))
 			{
 				ImGui::TreePop();
 				ImGui::PopID();

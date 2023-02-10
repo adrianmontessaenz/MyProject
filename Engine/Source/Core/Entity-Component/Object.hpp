@@ -2,7 +2,7 @@
 *  File:		Object.hpp
 *  Brief:		Header of Object class
 *  Creation:	21/10/2022
-*  Last Update:	15/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -50,25 +50,16 @@ namespace Engine
 
 		void SetParent(Object* parent);
 		Object* GetParent() const;
-		void SetParentIdx(const int idx_);
-		const int GetParentIdx() const;
-
 		void SetSpace(Space* space_);
 		Space* GetSpace() const;
-		void SetSpaceIdx(const int idx_);
-		const int GetSpaceIdx() const;
 
 	private:
 		std::vector<EngineComp*> mEngineComps;
 		std::vector<LogicComp*> mLogicComps;
 
 		Object* mParent = nullptr;
-		int mParentIdx = -1;
 		std::vector<Object*> mChildren;
-		void UpdateParentIdx(unsigned idx_);
-
 		Space* mSpace = nullptr;
-		int mSpaceIdx = -1;
 	};
 }
 #include "Object.inl"

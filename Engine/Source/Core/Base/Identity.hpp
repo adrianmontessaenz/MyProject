@@ -2,7 +2,7 @@
 *  File:		Identity.hpp
 *  Brief:		Header of Identity class
 *  Creation:	21/10/2022
-*  Last Update:	07/11/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -22,7 +22,7 @@ namespace Engine
 		const unsigned GetUniqueID() const;
 
 	private:
-		char* mName;
+		std::string mName;
 		unsigned mUID;
 		static unsigned sNextId;
 		static std::stack<unsigned> sUnusedID;

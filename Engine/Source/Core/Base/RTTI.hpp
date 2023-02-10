@@ -2,7 +2,7 @@
 *  File:		RTTI.hpp
 *  Brief:		Header for RTTI implementation
 *  Creation:	21/10/2022
-*  Last Update:	07/11/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -12,7 +12,6 @@ namespace Engine
 	class TypeInfo
 	{
 	public:
-		~TypeInfo();
 		//Settors
 		void SetTypeName(const std::string name);
 		void AddParentType(const std::string parent);
@@ -23,8 +22,8 @@ namespace Engine
 		bool HasParent(const std::string name) const;
 
 	private:
-		const char* mTypeName = nullptr;
-		std::vector<const char*> mParentNames;
+		std::string mTypeName;
+		std::vector<std::string> mParentNames;
 	};
 
 	class RTTI

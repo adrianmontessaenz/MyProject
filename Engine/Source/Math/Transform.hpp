@@ -2,7 +2,7 @@
 *  File:		Transform.hpp
 *  Brief:		Header of Transform Component
 *  Creation:	04/11/2022
-*  Last Update:	15/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -38,8 +38,6 @@ namespace Engine
 		const mat4& GetLocalMat() const;
 
 	private:
-		bool mWChanged = false;
-		bool mLChanged = false;
 		//World
 		vec3 mWPos = vec3(0.f);
 		vec3 mWScale = vec3(1.f);

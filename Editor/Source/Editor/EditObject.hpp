@@ -2,7 +2,7 @@
 *  File:		EditObject.hpp
 *  Brief:		Header of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	15/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
