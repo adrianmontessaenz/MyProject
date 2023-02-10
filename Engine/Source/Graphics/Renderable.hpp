@@ -18,6 +18,8 @@ namespace Engine
 		virtual void Initialize() override;
 		virtual void Render() override;
 		virtual void Shutdown() override;
+		virtual void ToJson(nlohmann::ordered_json& data) override;
+		virtual void FromJson(const nlohmann::ordered_json& data) override;
 
 		void SetModel(const std::string name);
 		const std::string GetModel() const;

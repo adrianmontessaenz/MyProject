@@ -11,13 +11,16 @@
 
 namespace Engine
 {
-	class ObjectManager : public RunTime, public Singleton<ObjectManager>
+	class ObjectManager : public RunTime, public Singleton<ObjectManager>, public Serialized
 	{
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;
 		virtual void LogicUpdate() override;
 		virtual void Shutdown() override;
+
+		virtual void ToJson(nlohmann::ordered_json& data) override;
+		virtual void FromJson(const nlohmann::ordered_json& data) override;
 
 		//Space management
 		Space* AddSpace();

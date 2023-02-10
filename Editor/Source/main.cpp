@@ -1,3 +1,12 @@
+/*// -----------------------------------------------------------------
+*  File:		main.cpp
+*  Brief:		Main of editor
+*  Creation:	11/12/2022
+*  Last Update:	10/02/2023
+*
+*  © 2022 Adrian Montes. All right reserved
+// -----------------------------------------------------------------*/
+
 #include "Editor/Editor.hpp"
 #include <Graphics/GraphicsManager.hpp>
 #include <Core/Time/TimeSystem.hpp>

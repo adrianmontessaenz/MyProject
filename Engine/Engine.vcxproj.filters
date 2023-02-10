@@ -84,6 +84,9 @@
     <ClCompile Include="..\ThirdParty\Includes\imgui\imgui_stdlib.cpp">
       <Filter>ThirdParty\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\Serialization\Serialized.cpp">
+      <Filter>Core\Serialization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -121,6 +124,9 @@
     </Filter>
     <Filter Include="ThirdParty\imgui">
       <UniqueIdentifier>{0995d078-be07-46ed-86b0-cb31029915ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Serialization">
+      <UniqueIdentifier>{31b8a33b-3c1d-4088-80d1-59794903364b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +218,9 @@
     <ClInclude Include="..\ThirdParty\Includes\imgui\imgui_stdlib.h">
       <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Core\Serialization\Serialized.hpp">
+      <Filter>Core\Serialization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Core\Entity-Component\Object.inl">
@@ -219,6 +228,9 @@
     </None>
     <None Include="Source\Core\Base\RTTI.inl">
       <Filter>Core\Base</Filter>
+    </None>
+    <None Include="Source\Core\Serialization\Serialized.inl">
+      <Filter>Core\Serialization</Filter>
     </None>
   </ItemGroup>
 </Project>

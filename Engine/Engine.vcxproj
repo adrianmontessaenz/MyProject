@@ -74,7 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui;$(SolutionDir)ThirdParty\Includes\json</IncludePath>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -220,6 +220,7 @@
     <ClCompile Include="Source\Core\Platform\Window.cpp" />
     <ClCompile Include="Source\Core\Scene\ObjectManager.cpp" />
     <ClCompile Include="Source\Core\Scene\Space.cpp" />
+    <ClCompile Include="Source\Core\Serialization\Serialized.cpp" />
     <ClCompile Include="Source\Core\Time\TimeSystem.cpp" />
     <ClCompile Include="Source\Debug\DebugSystem.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsManager.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="Source\Core\Platform\Window.hpp" />
     <ClInclude Include="Source\Core\Scene\ObjectManager.hpp" />
     <ClInclude Include="Source\Core\Scene\Space.hpp" />
+    <ClInclude Include="Source\Core\Serialization\Serialized.hpp" />
     <ClInclude Include="Source\Debug\DebugSystem.hpp" />
     <ClInclude Include="Source\Core\Entity-Component\Object.hpp" />
     <ClInclude Include="Source\Graphics\GraphicsManager.hpp" />
@@ -274,6 +276,7 @@
   <ItemGroup>
     <None Include="Source\Core\Base\RTTI.inl" />
     <None Include="Source\Core\Entity-Component\Object.inl" />
+    <None Include="Source\Core\Serialization\Serialized.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

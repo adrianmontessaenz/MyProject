@@ -2,7 +2,7 @@
 *  File:		Components.hpp
 *  Brief:		Header for components (Both engine and logic)
 *  Creation:	21/10/2022
-*  Last Update:	04/11/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -11,12 +11,15 @@
 namespace Engine
 {
 	class Object;
-	class Component : public RunTime
+	class Component : public RunTime, public Serialized
 	{
 		RTTI_BASE(Component)
 	public:
 		virtual void Initialize() override = 0;
 		virtual void Shutdown() override = 0;
+
+		virtual void ToJson(nlohmann::ordered_json& data) = 0;
+		virtual void FromJson(const nlohmann::ordered_json& data) = 0;
 
 		void SetOwner(Object* owner);
 		Object* GetOwner() const;
@@ -30,6 +33,8 @@ namespace Engine
 	public:
 		virtual void Initialize() override = 0;
 		virtual void Shutdown() override = 0;
+		virtual void ToJson(nlohmann::ordered_json& data) = 0;
+		virtual void FromJson(const nlohmann::ordered_json& data) = 0;
 	};
 
 	class LogicComp : public Component
@@ -38,5 +43,7 @@ namespace Engine
 	public:
 		virtual void Initialize() override = 0;
 		virtual void Shutdown() override = 0;
+		virtual void ToJson(nlohmann::ordered_json& data) = 0;
+		virtual void FromJson(const nlohmann::ordered_json& data) = 0;
 	};
 }

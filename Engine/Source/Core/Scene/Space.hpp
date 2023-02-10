@@ -10,13 +10,16 @@
 
 namespace Engine
 {
-	class Space : public RunTime, public Identity
+	class Space : public RunTime, public Identity, public Serialized
 	{
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;
 		virtual void LogicUpdate() override;
 		virtual void Shutdown() override;
+
+		virtual void ToJson(nlohmann::ordered_json& data) override;
+		virtual void FromJson(const nlohmann::ordered_json& data) override;
 
 		Object* AddObject();
 		void AddObject(Object* obj_);

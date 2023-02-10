@@ -83,6 +83,35 @@ void Engine::Space::Shutdown()
 }
 
 /// -----------------------------------------------------------------
+/// Write to json
+/// -----------------------------------------------------------------
+void Engine::Space::ToJson(nlohmann::ordered_json& data)
+{
+	data["Name"] = GetName();
+	nlohmann::ordered_json objs;
+	for (auto obj : mObjects)
+		obj->ToJson(objs);
+	data["Objects"] = objs;
+}
+
+/// -----------------------------------------------------------------
+/// Read from json
+/// -----------------------------------------------------------------
+void Engine::Space::FromJson(const nlohmann::ordered_json& data)
+{
+	if (data.find("Name") != data.end())		//Remove in future
+		SetName(data["Name"]);
+	if (data.find("Objects") != data.end())		//Remove in future
+	{
+		for (auto obj : data["Objects"])
+		{
+			Object* tmp = AddObject();
+			tmp->FromJson(obj);
+		}
+	}
+}
+
+/// -----------------------------------------------------------------
 /// Adds empty object to space
 /// -----------------------------------------------------------------
 Engine::Object* Engine::Space::AddObject()

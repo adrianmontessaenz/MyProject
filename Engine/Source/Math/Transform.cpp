@@ -29,6 +29,46 @@ void Engine::Transform::Initialize()
 void Engine::Transform::Shutdown(){}
 
 /// -----------------------------------------------------------------
+/// Write to json
+/// -----------------------------------------------------------------
+void Engine::Transform::ToJson(nlohmann::ordered_json& data)
+{
+	data["Component"] = TYPE()->GetTypeName();
+	data["World Coords"]["Pos"] << mWPos;
+	data["World Coords"]["Sca"] << mWScale;
+	data["World Coords"]["Rot"] << mWRot;
+
+	data["Local Coords"]["Pos"] << mLPos;
+	data["Local Coords"]["Sca"] << mLScale;
+	data["Local Coords"]["Rot"] << mLRot;
+}
+
+/// -----------------------------------------------------------------
+/// Read from json
+/// -----------------------------------------------------------------
+void Engine::Transform::FromJson(const nlohmann::ordered_json& data)
+{
+	if (data.find("World Coords") != data.end())	//Remove in future
+	{
+		if (data["World Coords"].find("Pos") != data["World Coords"].end())
+			data["World Coords"]["Pos"] >> mWPos;
+		if (data["World Coords"].find("Sca") != data["World Coords"].end())
+			data["World Coords"]["Sca"] >> mWScale;
+		if (data["World Coords"].find("Rot") != data["World Coords"].end())
+			data["World Coords"]["Rot"] >> mWRot;
+	}
+	if (data.find("Local Coords") != data.end())	//Remove in future
+	{
+		if (data["Local Coords"].find("Pos") != data["Local Coords"].end())
+			data["Local Coords"]["Pos"] >> mWPos;
+		if (data["Local Coords"].find("Sca") != data["Local Coords"].end())
+			data["Local Coords"]["Sca"] >> mWScale;
+		if (data["Local Coords"].find("Rot") != data["Local Coords"].end())
+			data["Local Coords"]["Rot"] >> mWRot;
+	}
+}
+
+/// -----------------------------------------------------------------
 /// Sets world position
 /// -----------------------------------------------------------------
 void Engine::Transform::SetWorldPos(const vec3 pos)

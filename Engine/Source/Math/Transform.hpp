@@ -18,6 +18,8 @@ namespace Engine
 	public:
 		virtual void Initialize() override;
 		virtual void Shutdown() override;
+		virtual void ToJson(nlohmann::ordered_json& data) override;
+		virtual void FromJson(const nlohmann::ordered_json& data) override;
 
 		//World
 		void SetWorldPos(const vec3 pos);

@@ -68,6 +68,33 @@ void Engine::ObjectManager::Shutdown()
 }
 
 /// -----------------------------------------------------------------
+/// Write to json
+/// -----------------------------------------------------------------
+void Engine::ObjectManager::ToJson(nlohmann::ordered_json& data)
+{
+	nlohmann::ordered_json spaces;
+	for (auto spa : mSpaces)
+		spa->ToJson(spaces);
+	data["Spaces"] = spaces;
+}
+
+/// -----------------------------------------------------------------
+/// Read from json
+/// -----------------------------------------------------------------
+void Engine::ObjectManager::FromJson(const nlohmann::ordered_json& data)
+{
+	if (data.find("Spaces") != data.end())	//Remove in future
+	{
+		for (auto spa : data["Spaces"])
+		{
+			Space* tmp = new Space;
+			tmp->FromJson(spa);
+			mSpaces.push_back(tmp);
+		}
+	}
+}
+
+/// -----------------------------------------------------------------
 /// Creates and adds new space
 /// -----------------------------------------------------------------
 Engine::Space* Engine::ObjectManager::AddSpace()
@@ -168,6 +195,8 @@ void Engine::ObjectManager::SwapSpaces(const size_t& l_idx, const size_t& r_idx)
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::LoadScene(const std::string& lvl)
 {
+	nlohmann::ordered_json data = OpenJson(lvl);
+	FromJson(data);
 }
 
 /// -----------------------------------------------------------------
@@ -175,4 +204,8 @@ void Engine::ObjectManager::LoadScene(const std::string& lvl)
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::SaveScene(const std::string& lvl)
 {
+	nlohmann::ordered_json data;
+	data["Level"] = lvl;
+	ToJson(data);
+	SaveJson(lvl, data);
 }

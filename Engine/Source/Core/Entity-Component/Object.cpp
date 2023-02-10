@@ -8,6 +8,7 @@
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "Object.hpp"
+#include <Graphics/Renderable.hpp>
 
 /// -----------------------------------------------------------------
 /// Object destructor
@@ -82,11 +83,86 @@ void Engine::Object::Shutdown()
 }
 
 /// -----------------------------------------------------------------
+/// Write to json
+/// -----------------------------------------------------------------
+void Engine::Object::ToJson(nlohmann::ordered_json& data)
+{
+	data["Name"] = GetName();
+	nlohmann::ordered_json ecomps;
+	for (auto ecomp : mEngineComps)
+		ecomp->ToJson(ecomps);
+	data["Engine Comps"] = ecomps;
+	nlohmann::ordered_json lcomps;
+	for (auto lcomp : mLogicComps)
+		lcomp->ToJson(lcomps);
+	data["Logic Comps"] = lcomps;
+	nlohmann::ordered_json children;
+	for (auto child : mChildren)
+		child->ToJson(children);
+	data["Children"] = children;
+}
+
+/// -----------------------------------------------------------------
+/// Read from json
+/// -----------------------------------------------------------------
+void Engine::Object::FromJson(const nlohmann::ordered_json& data)
+{
+	if (data.find("Name") != data.end())
+		SetName(data["Name"]);
+	if (data.find("Engine Comps") != data.end())
+	{
+		for (auto ecomp : data["Engine Comps"])
+		{
+			std::string name = ecomp["Component"];
+			EngineComp* cmp = AddEngineComp(name);
+			cmp->FromJson(ecomp);
+		}
+	}
+	if (data.find("Logic Comps") != data.end())
+	{
+		for (auto lcomp : data["Logic Comps"])
+		{
+			std::string name = lcomp["Component"];
+			LogicComp* cmp = AddLogicComp(name);
+			cmp->FromJson(lcomp);
+		}
+	}
+	if (data.find("Children") != data.end())
+	{
+		for (auto child : data["Children"])
+		{
+			Object* ch = new Object;
+			AddChild(ch);
+			ch->FromJson(child);
+		}
+	}
+}
+
+/// -----------------------------------------------------------------
+///	Add engine comp manually
+/// -----------------------------------------------------------------
+Engine::EngineComp* Engine::Object::AddEngineComp(std::string name)
+{
+	if (name == "Transform")
+		return AddEngineComp<Transform>();
+	else if (name == "Renderable")
+		return AddEngineComp<Renderable>();
+}
+
+/// -----------------------------------------------------------------
 /// Gets engine components
 /// -----------------------------------------------------------------
 std::vector<Engine::EngineComp*> Engine::Object::GetEngineComps() const
 {
 	return mEngineComps;
+}
+
+/// -----------------------------------------------------------------
+/// Add logic comp manually
+/// -----------------------------------------------------------------
+Engine::LogicComp* Engine::Object::AddLogicComp(std::string name)
+{
+	return nullptr;
 }
 
 /// -----------------------------------------------------------------

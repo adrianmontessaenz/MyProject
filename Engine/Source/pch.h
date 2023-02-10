@@ -2,7 +2,7 @@
 *  File:		pch.h
 *  Brief:		Precompiled header for engine
 *  Creation:	16/10/2022
-*  Last Update:	15/12/2022
+*  Last Update:	10/02/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -43,6 +43,8 @@
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui_impl_opengl3.h>
 
+#include <json.hpp>
+
 //Engine
 //Core
 #include "Core/Base/RunTime.hpp"
@@ -50,6 +52,7 @@
 #include "Core/Base/Identity.hpp"
 #include "Core/Base/RTTI.hpp"
 #include "Core/Events/SDLEvents.hpp"
+#include "Core/Serialization/Serialized.hpp"
 #include "Core/Entity-Component/Components.hpp"
 #include "Core/Platform/Window.hpp"
 

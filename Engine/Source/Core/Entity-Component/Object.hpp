@@ -11,7 +11,7 @@
 
 namespace Engine
 {
-	class Object : public RunTime, public Identity
+	class Object : public RunTime, public Identity, public Serialized
 	{
 		RTTI_BASE(Object)
 	public:
@@ -23,9 +23,13 @@ namespace Engine
 		virtual void LogicUpdate() override;
 		virtual void Shutdown() override;
 
+		virtual void ToJson(nlohmann::ordered_json& data) override;
+		virtual void FromJson(const nlohmann::ordered_json& data) override;
+
 		//Engine Components
 		template<typename Type>
 		Type* AddEngineComp(int* debug = nullptr);
+		EngineComp* AddEngineComp(std::string name);
 		template<typename Type>
 		Type* GetEngineComp(int* debug = nullptr);
 		std::vector<EngineComp*> GetEngineComps() const;
@@ -35,6 +39,7 @@ namespace Engine
 		//Logic Components
 		template<typename Type>
 		Type* AddLogicComp(int* debug = nullptr);
+		LogicComp* AddLogicComp(std::string name);
 		template<typename Type>
 		Type* GetLogicComp(int* debug = nullptr);
 		template<typename Type>

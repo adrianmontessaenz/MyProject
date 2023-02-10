@@ -59,6 +59,21 @@ void Engine::Renderable::Shutdown()
 }
 
 /// -----------------------------------------------------------------
+/// Write to file
+/// -----------------------------------------------------------------
+void Engine::Renderable::ToJson(nlohmann::ordered_json& data)
+{
+	data["Component"] = TYPE()->GetTypeName();
+}
+
+/// -----------------------------------------------------------------
+/// Read from file
+/// -----------------------------------------------------------------
+void Engine::Renderable::FromJson(const nlohmann::ordered_json& data)
+{
+}
+
+/// -----------------------------------------------------------------
 /// Sets model of renderable
 /// -----------------------------------------------------------------
 void Engine::Renderable::SetModel(const std::string name)
