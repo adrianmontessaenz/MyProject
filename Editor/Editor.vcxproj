@@ -91,7 +91,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)Engine\Source;$(SolutionDir)ThirdParty\Includes\imgui</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)Engine\Source;$(SolutionDir)ThirdParty\Includes\imgui;$(SolutionDir)ThirdParty\Includes\json</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

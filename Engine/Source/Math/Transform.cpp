@@ -33,7 +33,7 @@ void Engine::Transform::Shutdown(){}
 /// -----------------------------------------------------------------
 void Engine::Transform::ToJson(nlohmann::ordered_json& data)
 {
-	data["Component"] = TYPE()->GetTypeName();
+	data["Component"] = TypeInfo()->GetTypeName();
 	data["World Coords"]["Pos"] << mWPos;
 	data["World Coords"]["Sca"] << mWScale;
 	data["World Coords"]["Rot"] << mWRot;

@@ -32,12 +32,17 @@ namespace Engine
 		std::vector<Space*> GetSpaces() const;
 		void SwapSpaces(const size_t& l_idx, const size_t& r_idx);
 
+		//Get/Set
+		void SetLvlName(std::string name);
+		std::string GetLvlName() const;
+
 		//Scene management
-		void LoadScene(const std::string& lvl);
-		void SaveScene(const std::string& lvl);
+		void LoadScene(const std::string& filename);
+		void SaveScene(const std::string& filename);
 
 	private:
 		std::vector<Space*> mSpaces;
+		std::string mLvlName = "Default";
 	};
 }
 #define gObjMgr (&Engine::ObjectManager::GetInstance())

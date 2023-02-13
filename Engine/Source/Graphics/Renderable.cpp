@@ -63,7 +63,7 @@ void Engine::Renderable::Shutdown()
 /// -----------------------------------------------------------------
 void Engine::Renderable::ToJson(nlohmann::ordered_json& data)
 {
-	data["Component"] = TYPE()->GetTypeName();
+	data["Component"] = TypeInfo()->GetTypeName();
 }
 
 /// -----------------------------------------------------------------

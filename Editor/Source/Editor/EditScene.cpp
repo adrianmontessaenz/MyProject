@@ -15,6 +15,56 @@
 /// -----------------------------------------------------------------
 void Editor::SceneEditor::Update()
 {
+	//Create main bar for loading/saving scenes
+	if (ImGui::BeginMainMenuBar())
+	{
+		std::string mLvlName = gObjMgr->GetLvlName();
+		if (ImGui::BeginMenu(mLvlName.c_str()))
+		{
+			//Space name editor and object addition button
+			ImGui::PushID(200);
+			if (ImGui::InputTextWithHint("##", "Enter new name", &mLvlName, ImGuiInputTextFlags_EnterReturnsTrue))
+				gObjMgr->SetLvlName(mLvlName);
+			ImGui::PopID();
+			ImGui::EndMenu();
+		}
+
+		//Save scene if not default
+		if (ImGui::MenuItem("Save") && mLvlName != "Default")
+		{
+			std::string path = "../data/levels/" + mLvlName + ".json";
+			gObjMgr->SaveScene(path);
+		}
+
+		//Load scene
+		if (ImGui::BeginMenu("Load"))
+		{
+			std::string path = "../data/levels/";
+			for (const auto& entry : std::filesystem::directory_iterator(path))
+			{
+				//If loaded a saved scene, shutdown and load
+				std::string file = entry.path().filename().string();
+				file = file.substr(0, file.size() - 5);
+				if (ImGui::MenuItem(file.c_str()))
+				{
+					std::string new_path = path + file + ".json";
+					gObjMgr->Shutdown();
+					gObjMgr->LoadScene(new_path);
+					mSelectedObj = nullptr;
+				}
+			}
+
+			//If loading default, shutdown
+			if (ImGui::MenuItem("Default"))
+			{
+				gObjMgr->Shutdown();
+				mSelectedObj = nullptr;
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+
 	//Create initial window
 	glm::vec2 windowSize = gWindow->GetSize();
 	ImGuiBackendFlags defaultWindowFlags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar;

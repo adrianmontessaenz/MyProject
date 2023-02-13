@@ -87,10 +87,14 @@ void Engine::Space::Shutdown()
 /// -----------------------------------------------------------------
 void Engine::Space::ToJson(nlohmann::ordered_json& data)
 {
-	data["Name"] = GetName();
+	data["Space"] = GetName();
 	nlohmann::ordered_json objs;
 	for (auto obj : mObjects)
-		obj->ToJson(objs);
+	{
+		nlohmann::ordered_json objData;
+		obj->ToJson(objData);
+		objs.push_back(objData);
+	}
 	data["Objects"] = objs;
 }
 
@@ -99,8 +103,8 @@ void Engine::Space::ToJson(nlohmann::ordered_json& data)
 /// -----------------------------------------------------------------
 void Engine::Space::FromJson(const nlohmann::ordered_json& data)
 {
-	if (data.find("Name") != data.end())		//Remove in future
-		SetName(data["Name"]);
+	if (data.find("Space") != data.end())		//Remove in future
+		SetName(data["Space"]);
 	if (data.find("Objects") != data.end())		//Remove in future
 	{
 		for (auto obj : data["Objects"])

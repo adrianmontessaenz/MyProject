@@ -87,18 +87,30 @@ void Engine::Object::Shutdown()
 /// -----------------------------------------------------------------
 void Engine::Object::ToJson(nlohmann::ordered_json& data)
 {
-	data["Name"] = GetName();
+	data["Object"] = GetName();
 	nlohmann::ordered_json ecomps;
 	for (auto ecomp : mEngineComps)
-		ecomp->ToJson(ecomps);
+	{
+		nlohmann::ordered_json ecompData;
+		ecomp->ToJson(ecompData);
+		ecomps.push_back(ecompData);
+	}
 	data["Engine Comps"] = ecomps;
 	nlohmann::ordered_json lcomps;
 	for (auto lcomp : mLogicComps)
-		lcomp->ToJson(lcomps);
+	{
+		nlohmann::ordered_json lcompData;
+		lcomp->ToJson(lcompData);
+		lcomps.push_back(lcompData);
+	}
 	data["Logic Comps"] = lcomps;
 	nlohmann::ordered_json children;
 	for (auto child : mChildren)
-		child->ToJson(children);
+	{
+		nlohmann::ordered_json childData;
+		child->ToJson(childData);
+		children.push_back(childData);
+	}
 	data["Children"] = children;
 }
 
@@ -107,8 +119,8 @@ void Engine::Object::ToJson(nlohmann::ordered_json& data)
 /// -----------------------------------------------------------------
 void Engine::Object::FromJson(const nlohmann::ordered_json& data)
 {
-	if (data.find("Name") != data.end())
-		SetName(data["Name"]);
+	if (data.find("Object") != data.end())
+		SetName(data["Object"]);
 	if (data.find("Engine Comps") != data.end())
 	{
 		for (auto ecomp : data["Engine Comps"])

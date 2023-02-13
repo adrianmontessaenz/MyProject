@@ -72,9 +72,14 @@ void Engine::ObjectManager::Shutdown()
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::ToJson(nlohmann::ordered_json& data)
 {
+	data["Level"] = mLvlName;
 	nlohmann::ordered_json spaces;
 	for (auto spa : mSpaces)
-		spa->ToJson(spaces);
+	{
+		nlohmann::ordered_json spaceData;
+		spa->ToJson(spaceData);
+		spaces.push_back(spaceData);
+	}
 	data["Spaces"] = spaces;
 }
 
@@ -83,6 +88,8 @@ void Engine::ObjectManager::ToJson(nlohmann::ordered_json& data)
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::FromJson(const nlohmann::ordered_json& data)
 {
+	if (data.find("Level") != data.end())
+		mLvlName = data["Level"];
 	if (data.find("Spaces") != data.end())	//Remove in future
 	{
 		for (auto spa : data["Spaces"])
@@ -191,21 +198,36 @@ void Engine::ObjectManager::SwapSpaces(const size_t& l_idx, const size_t& r_idx)
 }
 
 /// -----------------------------------------------------------------
+/// Sets level name
+/// -----------------------------------------------------------------
+void Engine::ObjectManager::SetLvlName(std::string name)
+{
+	mLvlName = name;
+}
+
+/// -----------------------------------------------------------------
+/// Gets level name
+/// -----------------------------------------------------------------
+std::string Engine::ObjectManager::GetLvlName() const
+{
+	return mLvlName;
+}
+
+/// -----------------------------------------------------------------
 /// Updates list of spaces
 /// -----------------------------------------------------------------
-void Engine::ObjectManager::LoadScene(const std::string& lvl)
+void Engine::ObjectManager::LoadScene(const std::string& file)
 {
-	nlohmann::ordered_json data = OpenJson(lvl);
+	nlohmann::ordered_json data = OpenJson(file);
 	FromJson(data);
 }
 
 /// -----------------------------------------------------------------
 /// Updates list of spaces
 /// -----------------------------------------------------------------
-void Engine::ObjectManager::SaveScene(const std::string& lvl)
+void Engine::ObjectManager::SaveScene(const std::string& file)
 {
 	nlohmann::ordered_json data;
-	data["Level"] = lvl;
 	ToJson(data);
-	SaveJson(lvl, data);
+	SaveJson(file, data);
 }
