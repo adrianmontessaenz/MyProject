@@ -116,6 +116,22 @@ void Engine::Space::FromJson(const nlohmann::ordered_json& data)
 }
 
 /// -----------------------------------------------------------------
+/// Set enable state
+/// -----------------------------------------------------------------
+void Engine::Space::SetEnabled(const bool& enable) noexcept
+{
+	mEnabled = enable;
+}
+
+/// -----------------------------------------------------------------
+/// Check enable state
+/// -----------------------------------------------------------------
+bool Engine::Space::IsEnabled() const noexcept
+{
+	return mEnabled;
+}
+
+/// -----------------------------------------------------------------
 /// Adds empty object to space
 /// -----------------------------------------------------------------
 Engine::Object* Engine::Space::AddObject()

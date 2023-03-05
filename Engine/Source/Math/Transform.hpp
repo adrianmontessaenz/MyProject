@@ -12,12 +12,11 @@ using glm::vec3;
 using glm::mat4;
 namespace Engine
 {
-	class Transform : public EngineComp
+	class Transform : public Serialized
 	{
 		RTTI_BASE(Transform)
 	public:
-		virtual void Initialize() override;
-		virtual void Shutdown() override;
+		void Initialize();
 		virtual void ToJson(nlohmann::ordered_json& data) override;
 		virtual void FromJson(const nlohmann::ordered_json& data) override;
 
@@ -37,13 +36,19 @@ namespace Engine
 		const vec3& GetLocalPos() const;
 		const vec3& GetLocalScale() const;
 		const vec3& GetLocalRot() const;
-		const mat4& GetLocalMat() const;
+
+		//Hierarchy
+		void AddChild(Transform* child);
+		void RemoveChild(Transform* child);
+		void SetParent(Transform* parent);
+		Transform* GetParent() const;
 
 	private:
 		//World
 		vec3 mWPos = vec3(0.f);
 		vec3 mWScale = vec3(1.f);
 		vec3 mWRot = vec3(0.f);
+
 		//Local
 		vec3 mLPos = vec3(0.f);
 		vec3 mLScale = vec3(1.f);
@@ -54,10 +59,13 @@ namespace Engine
 		mat4 mWIMat = glm::identity<mat4>();
 		mat4 mLMat = glm::identity<mat4>();
 
+		//Hierarchy
+		Transform* mParent = nullptr;
+		std::vector<Transform*> mChildren;
+
 		//Matrix Update
 		void UpdateWorld();
 		void ComputeWorldMat();
 		void UpdateLocal();
-		void ComputeLocalMat();
 	};
 }

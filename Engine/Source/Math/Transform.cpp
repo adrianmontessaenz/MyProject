@@ -11,22 +11,14 @@
 #include <Core/Entity-Component/Object.hpp>
 
 /// -----------------------------------------------------------------
-/// Update if it has a parent
+/// Initialize matrices
 /// -----------------------------------------------------------------
 void Engine::Transform::Initialize()
 {
-	RTTI::AddParentedType<Transform, EngineComp>();
-	if (GetOwner() == nullptr || GetOwner()->GetParent() == nullptr)
-		return;
-
+	RTTI::AddParentedType<Transform, Serialized>();
 	UpdateWorld();
 	UpdateLocal();
 }
-
-/// -----------------------------------------------------------------
-/// Empty shutdown
-/// -----------------------------------------------------------------
-void Engine::Transform::Shutdown(){}
 
 /// -----------------------------------------------------------------
 /// Write to json
@@ -136,7 +128,6 @@ const mat4& Engine::Transform::GetWorldMat() const
 void Engine::Transform::SetLocalPos(const vec3 pos)
 {
 	mLPos = pos;
-	ComputeLocalMat();
 	UpdateWorld();
 }
 
@@ -146,7 +137,6 @@ void Engine::Transform::SetLocalPos(const vec3 pos)
 void Engine::Transform::SetLocalScale(const vec3 sca)
 {
 	mLScale = sca;
-	ComputeLocalMat();
 	UpdateWorld();
 }
 
@@ -156,7 +146,6 @@ void Engine::Transform::SetLocalScale(const vec3 sca)
 void Engine::Transform::SetLocalRot(const vec3 rot)
 {
 	mLRot = rot;
-	ComputeLocalMat();
 	UpdateWorld();
 }
 
@@ -185,11 +174,45 @@ const vec3& Engine::Transform::GetLocalRot() const
 }
 
 /// -----------------------------------------------------------------
-/// Gets local matrix
+/// Adds child transform
 /// -----------------------------------------------------------------
-const mat4& Engine::Transform::GetLocalMat() const
+void Engine::Transform::AddChild(Transform* child)
 {
-	return mLMat;
+	//Don't add twice
+	if (child->mParent == this)
+		return;
+	mChildren.push_back(child);
+	child->mParent = this;
+}
+
+/// -----------------------------------------------------------------
+/// Remove child
+/// -----------------------------------------------------------------
+void Engine::Transform::RemoveChild(Transform* child)
+{
+	if (child->mParent != this)
+		return;
+	mChildren.erase(std::find(mChildren.begin(), mChildren.end(), child));
+	child->mParent = nullptr;
+}
+
+/// -----------------------------------------------------------------
+/// Sets parent
+/// -----------------------------------------------------------------
+void Engine::Transform::SetParent(Transform* parent)
+{
+	if (mParent)
+		mParent->RemoveChild(this);
+	if (parent)
+		parent->AddChild(this);
+}
+
+/// -----------------------------------------------------------------
+/// Gets parent
+/// -----------------------------------------------------------------
+Engine::Transform* Engine::Transform::GetParent() const
+{
+	return mParent;
 }
 
 /// -----------------------------------------------------------------
@@ -198,8 +221,7 @@ const mat4& Engine::Transform::GetLocalMat() const
 void Engine::Transform::UpdateWorld()
 {
 	//If no parent, set locals as world too
-	Object* parent = GetOwner()->GetParent();
-	if (parent == nullptr)
+	if (!mParent)
 	{
 		mWPos = mLPos;
 		mWScale = mLScale;
@@ -209,26 +231,15 @@ void Engine::Transform::UpdateWorld()
 	//Update world with parent
 	else
 	{
-		int debug = 0;
-		Transform* pTrans = parent->GetEngineComp<Transform>(&debug);
-		assert(debug == 1); //Objects by default should have transform
-		if (pTrans != nullptr)
-		{
-			mWPos = pTrans->mWMat*glm::vec4(mLPos, 1.f);
-			mWScale = mLScale * pTrans->mWScale;
-			mWRot = mLRot + pTrans->mWRot;
-		}
+		mWPos = mParent->mWMat*glm::vec4(mLPos, 1.f);
+		mWScale = mLScale * mParent->mWScale;
+		mWRot = mLRot + mParent->mWRot;
 	}
 	ComputeWorldMat();
 
 	//Update children world
-	for (auto child : GetOwner()->GetChildren())
-	{
-		int debug = 0;
-		Transform* cTrans = child->GetEngineComp<Transform>(&debug);
-		assert(debug == 1); //Objects by default should have transform
-		cTrans->UpdateWorld();
-	}
+	for (auto child : mChildren)
+		child->UpdateWorld();
 }
 
 /// -----------------------------------------------------------------
@@ -251,8 +262,7 @@ void Engine::Transform::ComputeWorldMat()
 void Engine::Transform::UpdateLocal()
 {
 	//If no parent, set worlds as locals too
-	Object* parent = GetOwner()->GetParent();
-	if (parent == nullptr)
+	if (!mParent)
 	{
 		mLPos = mWPos;
 		mLScale = mWScale;
@@ -261,37 +271,12 @@ void Engine::Transform::UpdateLocal()
 	//Update local with parent world too
 	else
 	{
-		int debug = 0;
-		Transform* pTrans = parent->GetEngineComp<Transform>(&debug);
-		assert(debug == 1); //Objects by default should have transform
-		if (pTrans != nullptr)
-		{
-			mLPos = pTrans->mWIMat * glm::vec4(mWPos, 1.f);
-			mLScale = mWScale / pTrans->mWScale;
-			mLRot = mWRot - pTrans->mWRot;
-		}
+		mLPos = mParent->mWIMat * glm::vec4(mWPos, 1.f);
+		mLScale = mWScale / mParent->mWScale;
+		mLRot = mWRot - mParent->mWRot;
 	}
-	ComputeLocalMat();
 
 	//Update children local
-	for (auto child : GetOwner()->GetChildren())
-	{
-		int debug = 0;
-		Transform* cTrans = child->GetEngineComp<Transform>(&debug);
-		assert(debug == 1); //Objects by default should have transform
-		cTrans->UpdateWorld();
-	}
-}
-
-/// -----------------------------------------------------------------
-/// Computes local matrix
-/// -----------------------------------------------------------------
-void Engine::Transform::ComputeLocalMat()
-{
-	mLMat = glm::identity<mat4>();
-	mLMat = glm::translate(mLMat, mLPos);
-	mLMat = glm::rotate(mLMat, glm::radians(mLRot.x), glm::vec3(0.f, 1.f, 0.f));
-	mLMat = glm::rotate(mLMat, glm::radians(mLRot.y), glm::vec3(0.f, 0.f, 1.f));
-	mLMat = glm::rotate(mLMat, glm::radians(mLRot.z), glm::vec3(1.f, 0.f, 0.f));
-	mLMat = glm::scale(mLMat, mLScale);
+	for (auto child : mChildren)
+		child->UpdateWorld();
 }

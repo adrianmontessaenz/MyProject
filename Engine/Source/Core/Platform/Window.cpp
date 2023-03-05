@@ -55,7 +55,7 @@ void Engine::Window::Update()
 		switch (we.window.event)
 		{
 			case SDL_WINDOWEVENT_CLOSE:
-				SetEnabled(false);
+				mActive = false;
 				return;
 			case SDL_WINDOWEVENT_RESIZED:
 				mSize.x = we.window.data1;
@@ -140,6 +140,15 @@ SDL_GLContext& Engine::Window::GetContext()
 {
 	return mContext;
 }
+
+/// -----------------------------------------------------------------
+/// Gets if active
+/// -----------------------------------------------------------------
+bool Engine::Window::IsActive() const noexcept
+{
+	return mActive;
+}
+
 /// -----------------------------------------------------------------
 /// Updates window based on its current mode
 /// -----------------------------------------------------------------

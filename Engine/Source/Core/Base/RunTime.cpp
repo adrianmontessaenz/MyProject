@@ -39,19 +39,3 @@ bool Engine::RunTime::IsShutdown() const
 {
 	return mIsShutdown;
 }
-
-/// -----------------------------------------------------------------
-/// Sets enabled state
-/// -----------------------------------------------------------------
-void Engine::RunTime::SetEnabled(const bool enable)
-{
-	mIsEnabled = enable;
-}
-
-/// -----------------------------------------------------------------
-/// Gets enabled state
-/// -----------------------------------------------------------------
-bool Engine::RunTime::IsEnabled() const
-{
-	return mIsEnabled;
-}

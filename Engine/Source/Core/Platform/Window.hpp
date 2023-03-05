@@ -33,7 +33,11 @@ namespace Engine
 
 		SDL_Window* GetWindow();
 		SDL_GLContext& GetContext();
+		
+		bool IsActive() const noexcept;
+
 	private:
+		bool mActive = true;
 		SDL_Window* mWindow = nullptr;
 		SDL_GLContext mContext = SDL_GLContext();
 		SDL_DisplayMode mDisplay = SDL_DisplayMode();

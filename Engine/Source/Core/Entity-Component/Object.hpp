@@ -26,6 +26,10 @@ namespace Engine
 		virtual void ToJson(nlohmann::ordered_json& data) override;
 		virtual void FromJson(const nlohmann::ordered_json& data) override;
 
+		//Object enable state
+		void SetEnabled(const bool& enable) noexcept;
+		bool IsEnabled() const noexcept;
+	
 		//Engine Components
 		template<typename Type>
 		Type* AddEngineComp(int* debug = nullptr);
@@ -45,20 +49,26 @@ namespace Engine
 		template<typename Type>
 		void DeleteLogicComp(int* debug = nullptr);
 
-		//Hierarchy
+		//Transform
+		Transform* GetTransform() const;
+
+		//Children hierarchy options
 		void AddChild(Object* child);
 		void RemoveChild(Object* child);
 		Object* GetChildByName(const std::string name) const;
 		std::vector<Object*> GetChildrenByName(const std::string name) const;
 		const std::vector<Object*> GetChildren() const;
 		void SwapChildren(const size_t& l_idx, const size_t& r_idx);
-
+		
+		//Parent hierarchy options
 		void SetParent(Object* parent);
 		Object* GetParent() const;
 		void SetSpace(Space* space_);
 		Space* GetSpace() const;
 
 	private:
+		bool mEnabled = true;
+		Transform* mTransform = nullptr;
 		std::vector<EngineComp*> mEngineComps;
 		std::vector<LogicComp*> mLogicComps;
 

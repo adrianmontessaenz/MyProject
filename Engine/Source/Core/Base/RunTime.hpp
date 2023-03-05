@@ -22,13 +22,10 @@ namespace Engine
 		void SetShutdown(const bool shutdown);
 		bool IsShutdown() const;
 
-		void SetEnabled(const bool enable);
-		bool IsEnabled() const;
 	protected:
 		RunTime() = default;
 
 	private:
-		bool mIsEnabled = true;
 		bool mIsShutdown = false;
 	};
 }

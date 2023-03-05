@@ -113,6 +113,7 @@ bool Editor::ObjectEditor::ObjectEngineComponents()
 	auto objEngineComps = mSelectedObj->GetEngineComps();
 
 	//Loop in all engine components
+	EditTransform(mSelectedObj->GetTransform());
 	for (auto comp : objEngineComps)
 	{
 		std::string cmpName = comp->TypeInfo()->GetTypeName();
@@ -147,9 +148,7 @@ bool Editor::ObjectEditor::ObjectEngineComponents()
 /// -----------------------------------------------------------------
 Engine::EngineComp* Editor::ObjectEditor::GetObjectEngineComp(const std::string compName)
 {
-	if (compName == "Transform")
-		return mSelectedObj->GetEngineComp<Engine::Transform>();
-	else if (compName == "Renderable")
+	if (compName == "Renderable")
 		return mSelectedObj->GetEngineComp<Engine::Renderable>();
 	return nullptr;
 }
@@ -159,9 +158,7 @@ Engine::EngineComp* Editor::ObjectEditor::GetObjectEngineComp(const std::string 
 /// -----------------------------------------------------------------
 bool Editor::ObjectEditor::EditObjectEngineComp(const std::string& cmpName, Engine::EngineComp* cmp)
 {
-	if (cmpName == "Transform")
-		return EditTransform(reinterpret_cast<Engine::Transform*>(cmp));
-	else if (cmpName == "Renderable")
+	if (cmpName == "Renderable")
 		return EditRenderable(reinterpret_cast<Engine::Renderable*>(cmp));
 	
 	//Stop everything
@@ -196,7 +193,7 @@ bool Editor::ObjectEditor::EditTransform(Engine::Transform* cmp)
 		ImGui::NewLine();
 
 		//If it has parent, show also local coordinates of object
-		if (cmp->GetOwner()->GetParent())
+		if (cmp->GetParent())
 		{
 			pos = cmp->GetLocalPos();
 			sca = cmp->GetLocalScale();

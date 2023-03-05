@@ -223,6 +223,7 @@
     <ClCompile Include="Source\Core\Serialization\Serialized.cpp" />
     <ClCompile Include="Source\Core\Time\TimeSystem.cpp" />
     <ClCompile Include="Source\Debug\DebugSystem.cpp" />
+    <ClCompile Include="Source\Graphics\Camera\Camera.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsManager.cpp" />
     <ClCompile Include="Source\Graphics\Model.cpp" />
     <ClCompile Include="Source\Graphics\Renderable.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="Source\Core\Serialization\Serialized.hpp" />
     <ClInclude Include="Source\Debug\DebugSystem.hpp" />
     <ClInclude Include="Source\Core\Entity-Component\Object.hpp" />
+    <ClInclude Include="Source\Graphics\Camera\Camera.hpp" />
     <ClInclude Include="Source\Graphics\GraphicsManager.hpp" />
     <ClInclude Include="Source\Graphics\Model.hpp" />
     <ClInclude Include="Source\Graphics\Renderable.hpp" />

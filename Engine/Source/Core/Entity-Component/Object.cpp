@@ -26,14 +26,14 @@ Engine::Object::~Object()
 /// -----------------------------------------------------------------
 void Engine::Object::Initialize()
 {
-	//Add to RTTI
+	//Add to RTTI and create transform
 	RTTI::AddParentedType<Object, RunTime>();
 	RTTI::AddParentedType<Object, Identity>();
+	if (!mTransform)
+		mTransform = new Transform;
+	mTransform->Initialize();
 
-	//If no components, add transform to object
-	if (mEngineComps.empty())
-		AddEngineComp<Transform>();
-
+	//Initialize comps
 	for (auto comp : mEngineComps)
 		comp->Initialize();
 	for (auto comp : mLogicComps)
@@ -49,8 +49,16 @@ void Engine::Object::Update()
 	if (!IsEnabled() || IsShutdown())
 		return;
 
-	for (auto comp : mEngineComps)
-		comp->Update();
+	for (size_t idx = 0; idx < mEngineComps.size(); idx++)
+	{
+		if (mEngineComps[idx]->IsShutdown())
+		{
+			mEngineComps.erase(mEngineComps.begin() + idx);
+			idx--;
+		}
+		else if(mEngineComps[idx]->IsActive())
+			mEngineComps[idx]->Update();
+	}
 }
 
 /// -----------------------------------------------------------------
@@ -62,8 +70,16 @@ void Engine::Object::LogicUpdate()
 	if (!IsEnabled() || IsShutdown())
 		return;
 
-	for (auto comp : mLogicComps)
-		comp->LogicUpdate();
+	for (size_t idx = 0; idx < mLogicComps.size(); idx++)
+	{
+		if (mLogicComps[idx]->IsShutdown())
+		{
+			mLogicComps.erase(mLogicComps.begin() + idx);
+			idx--;
+		}
+		else if (mLogicComps[idx]->IsActive())
+			mLogicComps[idx]->Update();
+	}
 }
 
 /// -----------------------------------------------------------------
@@ -151,13 +167,27 @@ void Engine::Object::FromJson(const nlohmann::ordered_json& data)
 }
 
 /// -----------------------------------------------------------------
+/// Enable or disable object
+/// -----------------------------------------------------------------
+void Engine::Object::SetEnabled(const bool& enable) noexcept
+{
+	mEnabled = enable;
+}
+
+/// -----------------------------------------------------------------
+/// Check if enable
+/// -----------------------------------------------------------------
+bool Engine::Object::IsEnabled() const noexcept
+{
+	return mEnabled;
+}
+
+/// -----------------------------------------------------------------
 ///	Add engine comp manually
 /// -----------------------------------------------------------------
 Engine::EngineComp* Engine::Object::AddEngineComp(std::string name)
 {
-	if (name == "Transform")
-		return AddEngineComp<Transform>();
-	else if (name == "Renderable")
+	if (name == "Renderable")
 		return AddEngineComp<Renderable>();
 }
 
@@ -178,6 +208,14 @@ Engine::LogicComp* Engine::Object::AddLogicComp(std::string name)
 }
 
 /// -----------------------------------------------------------------
+/// Add logic comp manually
+/// -----------------------------------------------------------------
+Engine::Transform* Engine::Object::GetTransform() const
+{
+	return mTransform;
+}
+
+/// -----------------------------------------------------------------
 /// Adds children to parent list
 /// -----------------------------------------------------------------
 void Engine::Object::AddChild(Object* child)
@@ -194,6 +232,7 @@ void Engine::Object::AddChild(Object* child)
 	mChildren.push_back(child);
 	child->mParent = this;
 	child->mSpace = mSpace;
+	mTransform->AddChild(child->mTransform);
 }
 
 /// -----------------------------------------------------------------
@@ -209,6 +248,7 @@ void Engine::Object::RemoveChild(Object* child)
 	auto it = std::find(mChildren.begin(), mChildren.end(), child);
 	mChildren.erase(it);
 	child->mParent = nullptr;
+	mTransform->RemoveChild(child->mTransform);
 }
 
 /// -----------------------------------------------------------------

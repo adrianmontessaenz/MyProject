@@ -21,7 +21,7 @@ int main()
 	gGfxMgr->Initialize();
 	gTimeSys->Initialize();
 	
-	while (gWindow->IsEnabled())
+	while (gWindow->IsActive())
 	{
 		gSDLSys->Update();
 		gWindow->Update();

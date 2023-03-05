@@ -26,3 +26,19 @@ Engine::Object* Engine::Component::GetOwner() const
 {
 	return mOwner;
 }
+
+/// -----------------------------------------------------------------
+/// Sets component active
+/// -----------------------------------------------------------------
+void Engine::Component::SetActive(const bool& active) noexcept
+{
+	mActive = active;
+}
+
+/// -----------------------------------------------------------------
+/// Checks if component active
+/// -----------------------------------------------------------------
+bool Engine::Component::IsActive() const noexcept
+{
+	return mActive;
+}

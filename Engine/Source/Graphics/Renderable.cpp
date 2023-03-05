@@ -27,11 +27,11 @@ void Engine::Renderable::Initialize()
 void Engine::Renderable::Render()
 {
 	//Don't update if disabled or shutdown
-	if (!IsEnabled() || IsShutdown())
+	if (!IsActive() || IsShutdown())
 		return;
 
 	//Get world matrix of object
-	Transform* trans = GetOwner()->GetEngineComp<Transform>();
+	Transform* trans = GetOwner()->GetTransform();
 	glm::mat4 world = trans->GetWorldMat();
 
 	//Add uniforms to shader and render

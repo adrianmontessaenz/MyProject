@@ -23,8 +23,13 @@ namespace Engine
 
 		void SetOwner(Object* owner);
 		Object* GetOwner() const;
+
+		virtual void SetActive(const bool& active) noexcept;
+		virtual bool IsActive() const noexcept;
+	
 	private:
 		Object* mOwner = nullptr;
+		bool mActive = true;
 	};
 
 	class EngineComp : public Component

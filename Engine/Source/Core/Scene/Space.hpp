@@ -21,6 +21,10 @@ namespace Engine
 		virtual void ToJson(nlohmann::ordered_json& data) override;
 		virtual void FromJson(const nlohmann::ordered_json& data) override;
 
+		//Space enable state
+		void SetEnabled(const bool& enable) noexcept;
+		bool IsEnabled() const noexcept;
+
 		Object* AddObject();
 		void AddObject(Object* obj_);
 		void RemoveObject(Object* obj_);
@@ -33,6 +37,7 @@ namespace Engine
 		std::vector<Object*> GetObjects() const;
 
 	private:
+		bool mEnabled = true;
 		std::vector<Object*> mObjects;
 		void AddObjectRecursive(Object* obj_);
 		void DeleteObjectRecursive(Object* obj_);
