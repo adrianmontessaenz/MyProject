@@ -2,7 +2,7 @@
 *  File:		Object.hpp
 *  Brief:		Header of Object class
 *  Creation:	21/10/2022
-*  Last Update:	10/02/2023
+*  Last Update:	05/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/

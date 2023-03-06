@@ -20,6 +20,9 @@
     <ClCompile Include="Source\Editor\EditorHelpers.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Editor\EditorRenderer.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Editor\Editor.hpp">
@@ -32,6 +35,9 @@
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="Source\Editor\EditorHelpers.hpp">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\EditorRenderer.hpp">
       <Filter>Editor</Filter>
     </ClInclude>
   </ItemGroup>

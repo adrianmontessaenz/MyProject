@@ -2,13 +2,15 @@
 *  File:		EditObject.cpp
 *  Brief:		Implementation of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	10/02/2023
+*  Last Update:	06/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include "EditObject.hpp"
 #include <Graphics/GraphicsManager.hpp>
-#include <Editor/EditorHelpers.hpp>
+#include "EditorHelpers.hpp"
+#include "Editor.hpp"
+#include "EditorRenderer.hpp"
 
 /// -----------------------------------------------------------------
 /// Update object visualizer
@@ -19,7 +21,10 @@ void Editor::ObjectEditor::Update()
 	ImGuiBackendFlags defaultWindowFlags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar;
 	ImGui::SetNextWindowPos({ windowSize.x - 350, 50 });
 	ImGui::SetNextWindowSize({ 350, windowSize.y - 50 });
-	if (ImGui::Begin("Object Manager", nullptr, defaultWindowFlags) && mSelectedObj != nullptr)
+	ImGui::Begin("Object Manager", nullptr, defaultWindowFlags);
+	if (ImGui::IsWindowFocused())
+		gEditor->SetFocused(true);
+	if (mSelectedObj != nullptr)
 	{
 		ImGui::PushID(mSelectedObj->GetUniqueID());
 		EditPickedObject();
@@ -136,7 +141,11 @@ bool Editor::ObjectEditor::ObjectEngineComponents()
 		{
 			bool selected = ImGui::Selectable(compName.c_str());
 			if (selected && compName == "Renderable")
-				mSelectedObj->AddEngineComp<Engine::Renderable>()->Initialize();
+			{
+				auto rnd = mSelectedObj->AddEngineComp<Engine::Renderable>();
+				rnd->Initialize();
+				RenderEditor::GetInstance().AddRenderable(rnd);
+			}
 			if (selected && compName == "Camera")
 				mSelectedObj->AddEngineComp<Engine::Camera>()->Initialize();
 		}

@@ -2,47 +2,72 @@
 *  File:		main.cpp
 *  Brief:		Main of editor
 *  Creation:	11/12/2022
-*  Last Update:	10/02/2023
+*  Last Update:	06/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 
 #include "Editor/Editor.hpp"
+#include "Editor/EditorRenderer.hpp"
 #include <Graphics/GraphicsManager.hpp>
 #include <Core/Time/TimeSystem.hpp>
+#include <Core/Scene/ObjectManager.hpp>
+#include <Core/Platform/InputManager.hpp>
 
 int main(void)
 {
 	//Get all the singletons
 	Engine::Window* window = gWindow;
 	Editor::Editor* editor = gEditor;
+	Editor::RenderEditor* renderEditor = gRenderEditor;
 	Engine::GraphicsManager* graphs = gGfxMgr;
 	Engine::TimeSystem* time = gTimeSys;
 	Engine::SDLEventSystem* SDLeventSys = gSDLSys;
+	Engine::ObjectManager* objMgr = gObjMgr;
+	Engine::InputManager* input = gInputMgr;
 
 	//Initialize
 	window->Initialize();
 	editor->Initialize();
+	objMgr->Initialize();
+	renderEditor->Initialize();
 	graphs->Initialize();
 	time->Initialize();
+	input->Initialize();
 	
 	//Update
 	while (window->IsActive())
 	{
+		//Normal updates
 		SDLeventSys->Update();
 		window->Update();
 		time->Update();
 		editor->Update();
+		input->Update();
 
-		//Render
-		graphs->Render();
+		//Update editor render if not playing
+		if (editor->IsPlaying() == false)
+		{
+			renderEditor->Update();
+			renderEditor->Render();
+		}
+		//If playing, update normally
+		else
+		{
+			objMgr->Update();
+			graphs->Render();
+		}
 		editor->Render();
 		window->Render();
+
 	}
 
 	//Shutdown
 	time->Shutdown();
-	window->Shutdown();
+	objMgr->Shutdown();
+	graphs->Shutdown();
+	renderEditor->Shutdown();
 	editor->Shutdown();
+	window->Shutdown();
 	return 0;
 }

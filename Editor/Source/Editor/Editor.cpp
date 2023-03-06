@@ -2,7 +2,7 @@
 *  File:		Editor.cpp
 *  Brief:		Main part of the editor.
 *  Creation:	17/11/2022
-*  Last Update:	10/12/2022
+*  Last Update:	06/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -19,6 +19,7 @@ void Editor::Editor::Initialize()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
 	//Set ImGui style
 	ImGui::StyleColorsDark();
@@ -45,6 +46,7 @@ void Editor::Editor::Update()
 	ImGui::NewFrame();
 
 	//Update scene editor and set object to visualize
+	mFocused = false;
 	mSceneEditor.Update();
 	mObjectEditor.SetSelectedObj(mSceneEditor.GetSelectedObj());
 
@@ -70,4 +72,36 @@ void Editor::Editor::Shutdown()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
+}
+
+/// -----------------------------------------------------------------
+/// Sets if playing scene or not
+/// -----------------------------------------------------------------
+void Editor::Editor::SetPlaying(const bool play)
+{
+	mPlaying = play;
+}
+
+/// -----------------------------------------------------------------
+/// Checks if scene playing
+/// -----------------------------------------------------------------
+bool Editor::Editor::IsPlaying() const
+{
+	return mPlaying;
+}
+
+/// -----------------------------------------------------------------
+/// Sets if any window of editor focused
+/// -----------------------------------------------------------------
+void Editor::Editor::SetFocused(const bool focus)
+{
+	mFocused = focus;
+}
+
+/// -----------------------------------------------------------------
+/// Checks if focused on editor windows
+/// -----------------------------------------------------------------
+bool Editor::Editor::IsFocused() const
+{
+	return mFocused;
 }

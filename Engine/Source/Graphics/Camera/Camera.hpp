@@ -27,6 +27,8 @@ namespace Engine
 		void SetHeight(const int height);
 		void SetSize(const glm::vec2& size);
 		glm::vec2 GetSize() const;
+		glm::vec3 GetUp() const;
+		glm::vec3 GetRight() const;
 
 		//Planes
 		void SetFOV(const float fov);
@@ -55,8 +57,8 @@ namespace Engine
 		glm::vec<2, float> mPlanes{ 0.1f, 100.f };
 
 		//Render matrices
-		glm::mat4 mView;
-		glm::mat4 mProj;
+		glm::mat4 mView = glm::identity<glm::mat4>();
+		glm::mat4 mProj = glm::identity<glm::mat4>();
 		void UpdateMatrices();
 
 		//Movement variables

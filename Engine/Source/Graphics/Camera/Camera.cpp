@@ -18,8 +18,12 @@ void Engine::Camera::Initialize() noexcept
 	RTTI::AddParentedType<Camera, EngineComp>();
 	if(mSize == glm::vec<2,int>(0,0))
 		mSize = gWindow->GetSize();
-	if(GetOwner() != nullptr)
+	if (GetOwner() != nullptr)
+	{
 		mOwnerTransform = GetOwner()->GetTransform();
+		mOwnerTransform->SetWorldPos({ 0.f,0.f,2.f });
+		mOwnerTransform->SetWorldRot({ 0.f,0.f,-1.f });
+	}
 }
 
 /// -----------------------------------------------------------------
@@ -27,6 +31,7 @@ void Engine::Camera::Initialize() noexcept
 /// -----------------------------------------------------------------
 void Engine::Camera::Update() noexcept
 {
+	
 	UpdateMatrices();
 }
 
@@ -114,6 +119,22 @@ void Engine::Camera::SetSize(const glm::vec2& size)
 glm::vec2 Engine::Camera::GetSize() const
 {
 	return mSize;
+}
+
+/// -----------------------------------------------------------------
+/// Get up vector
+/// -----------------------------------------------------------------
+glm::vec3 Engine::Camera::GetUp() const
+{
+	return mUp;
+}
+
+/// -----------------------------------------------------------------
+/// Get right vector
+/// -----------------------------------------------------------------
+glm::vec3 Engine::Camera::GetRight() const
+{
+	return glm::cross(mOwnerTransform->GetWorldRot(), mUp);
 }
 
 /// -----------------------------------------------------------------

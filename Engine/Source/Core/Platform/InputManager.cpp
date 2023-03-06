@@ -2,7 +2,7 @@
 *  File:		InputManager.cpp
 *  Brief:		Implementation of Engine Input Manager
 *  Creation:	16/10/2022
-*  Last Update:	07/11/2022
+*  Last Update:	06/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -39,11 +39,15 @@ void Engine::InputManager::Update()
 
 	//Update key up keys
 	for (const auto& k : keysUp)
+	{
+		if (k.key.keysym.scancode == SDL_SCANCODE_LSHIFT)
+			int a = 0;
 		mKeyboard[k.key.keysym.scancode] = 0.f;
+	}
 
 	//Get mouse events and update
 	auto mouseDown = gSDLSys->GetEventsOfType(SDL_MOUSEBUTTONDOWN);
-	auto mouseUp = gSDLSys->GetEventsOfType(SDL_MOUSEBUTTONDOWN);
+	auto mouseUp = gSDLSys->GetEventsOfType(SDL_MOUSEBUTTONUP);
 	SDL_GetMouseState(&mMousePos.x, &mMousePos.y);
 
 	//Update keydown events (change with timer events)
@@ -84,7 +88,7 @@ bool Engine::InputManager::IsKeyTriggered(SDL_Scancode key)
 /// -----------------------------------------------------------------
 bool Engine::InputManager::IsKeyPressed(SDL_Scancode key)
 {
-	return mKeyboard[key] > gTimeSys->GetDeltaTime() * 1.10f && mPrevKeyboard[key] > 0.f;
+	return mKeyboard[key] > gTimeSys->GetDeltaTime() && mPrevKeyboard[key] > 0.f;
 }
 
 /// -----------------------------------------------------------------
@@ -108,7 +112,7 @@ bool Engine::InputManager::IsMouseTriggered(Uint8 mouse)
 /// -----------------------------------------------------------------
 bool Engine::InputManager::IsMousePressed(Uint8 mouse)
 {
-	return mMouse[mouse] > gTimeSys->GetDeltaTime() * 1.10f && mMouse[mouse] > 0.f;;
+	return mMouse[mouse] > gTimeSys->GetDeltaTime() && mMouse[mouse] > 0.f;
 }
 
 /// -----------------------------------------------------------------

@@ -2,13 +2,14 @@
 *  File:		EditScene.cpp
 *  Brief:		Implementation of the editor scene manager.
 *  Creation:	11/12/2022
-*  Last Update:	10/02/2023
+*  Last Update:	06/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include "EditScene.hpp"
 #include <Core/Scene/ObjectManager.hpp>
 #include <Core/Time/TimeSystem.hpp>
+#include "Editor.hpp"
 
 /// -----------------------------------------------------------------
 /// Update scene editor
@@ -18,6 +19,8 @@ void Editor::SceneEditor::Update()
 	//Create main bar for loading/saving scenes
 	if (ImGui::BeginMainMenuBar())
 	{
+		if (ImGui::IsWindowFocused())
+			gEditor->SetFocused(true);
 		std::string mLvlName = gObjMgr->GetLvlName();
 		if (ImGui::BeginMenu(mLvlName.c_str()))
 		{
@@ -71,6 +74,9 @@ void Editor::SceneEditor::Update()
 	ImGui::SetNextWindowPos({ 0, 50 });
 	ImGui::SetNextWindowSize({ 350, windowSize.y - 50 });
 	ImGui::Begin("Scene Visualizer", nullptr, defaultWindowFlags);
+	
+	if (ImGui::IsWindowFocused())
+		gEditor->SetFocused(true);
 
 	//Button to create new space on scene
 	if (ImGui::Button("Add Space"))

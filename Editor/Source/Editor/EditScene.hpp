@@ -2,10 +2,11 @@
 *  File:		EditScene.hpp
 *  Brief:		Header of the editor scene manager.
 *  Creation:	11/12/2022
-*  Last Update:	10/02/2023
+*  Last Update:	06/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
+#pragma once
 #include <pch.h>
 #include <Core/Entity-Component/Object.hpp>
 #include <Core/Scene/Space.hpp>

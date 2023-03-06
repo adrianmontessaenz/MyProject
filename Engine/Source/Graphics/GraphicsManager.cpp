@@ -2,7 +2,7 @@
 *  File:		GraphicsManager.cpp
 *  Brief:		Implementation file of graphics manager
 *  Creation:	04/11/2022
-*  Last Update:	10/02/2023
+*  Last Update:	06/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -113,5 +113,6 @@ void Engine::GraphicsManager::RemoveRenderable(Renderable* rend)
 {
 	Space* space = rend->GetOwner()->GetSpace();
 	auto it = std::find(mRenderables[space].begin(), mRenderables[space].end(), rend);
-	mRenderables[space].erase(mRenderables[space].begin());
+	if(it != mRenderables[space].end())
+		mRenderables[space].erase(mRenderables[space].begin());
 }

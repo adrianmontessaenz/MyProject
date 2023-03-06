@@ -2,7 +2,7 @@
 *  File:		Renderable.cpp
 *  Brief:		Implementation of renderable component
 *  Creation:	04/11/2022
-*  Last Update:	10/02/2023
+*  Last Update:	05/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
