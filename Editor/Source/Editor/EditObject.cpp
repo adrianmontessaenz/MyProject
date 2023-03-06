@@ -8,6 +8,7 @@
 // -----------------------------------------------------------------*/
 #include "EditObject.hpp"
 #include <Graphics/GraphicsManager.hpp>
+#include <Editor/EditorHelpers.hpp>
 
 /// -----------------------------------------------------------------
 /// Update object visualizer
@@ -164,6 +165,7 @@ bool Editor::ObjectEditor::EditObjectEngineComp(const std::string& cmpName, Engi
 /// -----------------------------------------------------------------
 bool Editor::ObjectEditor::EditTransform(Engine::Transform* cmp)
 {
+	ImGui::PushID(&cmp);
 	if (ImGui::CollapsingHeader("Transform"))
 	{
 		glm::vec3 pos = cmp->GetWorldPos();
@@ -210,6 +212,7 @@ bool Editor::ObjectEditor::EditTransform(Engine::Transform* cmp)
 			ImGui::NewLine();
 		}
 	}
+	ImGui::PopID();
 	return true;
 }
 
@@ -254,6 +257,7 @@ glm::vec3 Editor::ObjectEditor::TransformDisplayCoords(const glm::vec3& coords, 
 /// -----------------------------------------------------------------
 bool Editor::ObjectEditor::EditRenderable(Engine::Renderable* cmp)
 {
+	ImGui::PushID(&cmp);
 	bool open = true;
 	if (ImGui::CollapsingHeader("Renderable", &open))
 	{
@@ -261,11 +265,9 @@ bool Editor::ObjectEditor::EditRenderable(Engine::Renderable* cmp)
 
 	//If it was deleted, delete component
 	if (!open)
-	{
 		mSelectedObj->DeleteEngineComp<Engine::Renderable>();
-		return false;
-	}
-	return true;
+	ImGui::PopID();
+	return open;
 }
 
 /// -----------------------------------------------------------------
@@ -273,16 +275,39 @@ bool Editor::ObjectEditor::EditRenderable(Engine::Renderable* cmp)
 /// -----------------------------------------------------------------
 bool Editor::ObjectEditor::EditCamera(Engine::Camera* cmp)
 {
+	ImGui::PushID(&cmp);
 	bool open = true;
 	if (ImGui::CollapsingHeader("Camera", &open))
 	{
+		//Change camera size
+		ImGui::Text("Change Camera Values:");
+		ImGui::Separator();
+		ImGui::NewLine();
+		glm::vec<2,int> size = gWindow->GetSize();
+		glm::vec<2,int> camSize = cmp->GetSize();
+		MyDragInt("Width: ", &(camSize.x), 60.f, 0, size.x);
+		ImGui::SameLine();
+		MyDragInt("Height:", &(camSize.y), 60.f, 0, size.y);
+		cmp->SetWidth(camSize.x);
+		cmp->SetHeight(camSize.y);
+
+		//Change planes
+		glm::vec2 planes = cmp->GetPlanes();
+		MyDragFloat("Near:  ", &(planes.x), 60.f, 0, 1000.f);
+		ImGui::SameLine();
+		MyDragFloat("Far:   ", &(planes.y), 60.f, 0, 1000.f);
+		cmp->SetNear(planes.x);
+		cmp->SetFar(planes.y);
+		
+		//Change FOV
+		float fov = cmp->GetFOV();
+		MyDragFloat("FOV:   ", &fov, 60.f, 0, 90.f);
+		cmp->SetFOV(fov);
 	}
 
 	//If it was deleted, delete component
 	if (!open)
-	{
-		mSelectedObj->DeleteEngineComp<Engine::Renderable>();
-		return false;
-	}
-	return true;
+		mSelectedObj->DeleteEngineComp<Engine::Camera>();
+	ImGui::PopID();
+	return open;
 }

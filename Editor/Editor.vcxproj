@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClCompile Include="Source\Editor\EditObject.cpp" />
     <ClCompile Include="Source\Editor\Editor.cpp" />
+    <ClCompile Include="Source\Editor\EditorHelpers.cpp" />
     <ClCompile Include="Source\Editor\EditScene.cpp" />
     <ClCompile Include="Source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Editor\EditObject.hpp" />
     <ClInclude Include="Source\Editor\Editor.hpp" />
+    <ClInclude Include="Source\Editor\EditorHelpers.hpp" />
     <ClInclude Include="Source\Editor\EditScene.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
