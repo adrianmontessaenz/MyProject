@@ -9,12 +9,22 @@
 #include <pch.h>
 #include "Space.hpp"
 #include <Core/Entity-Component/Object.hpp>
+#include <Graphics/Camera/Camera.hpp>
 
 /// -----------------------------------------------------------------
 /// Space initialization.
 /// -----------------------------------------------------------------
 void Engine::Space::Initialize()
 {
+	//If no objects, add a camera
+	if (mObjects.empty())
+	{
+		Object* obj = AddObject();
+		obj->AddEngineComp<Camera>();
+		obj->SetName("Main Camera");
+	}
+
+	//Initialize objects
 	for (auto obj : mObjects)
 		obj->Initialize();
 }

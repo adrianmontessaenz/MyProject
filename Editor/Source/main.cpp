@@ -11,30 +11,38 @@
 #include <Graphics/GraphicsManager.hpp>
 #include <Core/Time/TimeSystem.hpp>
 
-int main()
+int main(void)
 {
+	//Get all the singletons
 	Engine::Window* window = gWindow;
 	Editor::Editor* editor = gEditor;
 	Engine::GraphicsManager* graphs = gGfxMgr;
-	gWindow->Initialize();
-	gEditor->Initialize();
-	gGfxMgr->Initialize();
-	gTimeSys->Initialize();
-	
-	while (gWindow->IsActive())
-	{
-		gSDLSys->Update();
-		gWindow->Update();
-		gTimeSys->Update();
-		gEditor->Update();
+	Engine::TimeSystem* time = gTimeSys;
+	Engine::SDLEventSystem* SDLeventSys = gSDLSys;
 
-		gGfxMgr->Render();
-		gEditor->Render();
-		gWindow->Render();
+	//Initialize
+	window->Initialize();
+	editor->Initialize();
+	graphs->Initialize();
+	time->Initialize();
+	
+	//Update
+	while (window->IsActive())
+	{
+		SDLeventSys->Update();
+		window->Update();
+		time->Update();
+		editor->Update();
+
+		//Render
+		graphs->Render();
+		editor->Render();
+		window->Render();
 	}
 
-	gTimeSys->Shutdown();
-	gWindow->Shutdown();
-	gEditor->Shutdown();
+	//Shutdown
+	time->Shutdown();
+	window->Shutdown();
+	editor->Shutdown();
 	return 0;
 }

@@ -136,21 +136,13 @@ bool Editor::ObjectEditor::ObjectEngineComponents()
 			bool selected = ImGui::Selectable(compName.c_str());
 			if (selected && compName == "Renderable")
 				mSelectedObj->AddEngineComp<Engine::Renderable>()->Initialize();
+			if (selected && compName == "Camera")
+				mSelectedObj->AddEngineComp<Engine::Camera>()->Initialize();
 		}
 		ImGui::EndPopup();
 	}
 	ImGui::EndChild();
 	return true;
-}
-
-/// -----------------------------------------------------------------
-/// Checks if object has engine component
-/// -----------------------------------------------------------------
-Engine::EngineComp* Editor::ObjectEditor::GetObjectEngineComp(const std::string compName)
-{
-	if (compName == "Renderable")
-		return mSelectedObj->GetEngineComp<Engine::Renderable>();
-	return nullptr;
 }
 
 /// -----------------------------------------------------------------
@@ -160,6 +152,8 @@ bool Editor::ObjectEditor::EditObjectEngineComp(const std::string& cmpName, Engi
 {
 	if (cmpName == "Renderable")
 		return EditRenderable(reinterpret_cast<Engine::Renderable*>(cmp));
+	if (cmpName == "Camera")
+		return EditCamera(reinterpret_cast<Engine::Camera*>(cmp));
 	
 	//Stop everything
 	return false;
@@ -262,6 +256,25 @@ bool Editor::ObjectEditor::EditRenderable(Engine::Renderable* cmp)
 {
 	bool open = true;
 	if (ImGui::CollapsingHeader("Renderable", &open))
+	{
+	}
+
+	//If it was deleted, delete component
+	if (!open)
+	{
+		mSelectedObj->DeleteEngineComp<Engine::Renderable>();
+		return false;
+	}
+	return true;
+}
+
+/// -----------------------------------------------------------------
+/// Edits camera component
+/// -----------------------------------------------------------------
+bool Editor::ObjectEditor::EditCamera(Engine::Camera* cmp)
+{
+	bool open = true;
+	if (ImGui::CollapsingHeader("Camera", &open))
 	{
 	}
 

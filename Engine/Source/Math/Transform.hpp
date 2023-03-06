@@ -7,9 +7,9 @@
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #pragma once
-
 using glm::vec3;
 using glm::mat4;
+
 namespace Engine
 {
 	class Transform : public Serialized
