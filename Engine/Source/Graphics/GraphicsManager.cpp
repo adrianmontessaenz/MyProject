@@ -32,7 +32,7 @@ void Engine::GraphicsManager::Initialize()
 	}
 
 	//Add shaders
-	mShaders.push_back(new Shader("default.vert", "default.frag"));
+	mShaders.push_back(new Shader("default.vs", "default.fs"));
 	mShaders.back()->SetName("Default");
 }
 

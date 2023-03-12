@@ -8,6 +8,7 @@
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "Window.hpp"
+#include <Core/Time/TimeSystem.hpp>
 
 /// -----------------------------------------------------------------
 /// Window creation and SDL initialization
@@ -50,6 +51,9 @@ void Engine::Window::Update()
 {
 	//Get window events and update
 	auto vector = gSDLSys->GetEventsOfType(SDL_EventType::SDL_WINDOWEVENT);
+	std::string title = "My Project: ";
+	title += std::to_string(gTimeSys->GetFrameRate());
+	SDL_SetWindowTitle(mWindow, title.c_str());
 	for (auto& we : vector)
 	{
 		switch (we.window.event)

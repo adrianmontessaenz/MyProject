@@ -99,6 +99,11 @@ bool Editor::ObjectEditor::ObjectProperties()
 		return false;
 	}
 
+	//Enable or disable selected object
+	bool enabled = mSelectedObj->IsEnabled();
+	ImGui::Checkbox("Is Enabled", &enabled);
+	mSelectedObj->SetEnabled(enabled);
+
 	ImGui::EndChild();
 	return true;
 }
@@ -270,6 +275,25 @@ bool Editor::ObjectEditor::EditRenderable(Engine::Renderable* cmp)
 	bool open = true;
 	if (ImGui::CollapsingHeader("Renderable", &open))
 	{
+		//Enable or disable component
+		bool active = cmp->IsActive();
+		ImGui::Checkbox("Is Active", &active);
+		cmp->SetActive(active);
+
+		//Models
+		std::string new_model = MyStringComboFromPath("Model:", cmp->GetModel(), "../data/models/", true, ".");
+		cmp->SetModel(new_model);
+
+		//Textures
+		std::string new_texture = MyStringComboFromPath("Model:", cmp->GetTexture(), "../data/textures/", true, ".");
+		cmp->SetTexture(new_texture);
+
+		//Edit color
+		glm::vec4 color = cmp->GetColor();
+		ImGui::Text("Color:");
+		ImGui::SameLine();
+		ImGui::ColorEdit4("##", &color[0]);
+		cmp->SetColor(color);
 	}
 
 	//If it was deleted, delete component
@@ -288,6 +312,11 @@ bool Editor::ObjectEditor::EditCamera(Engine::Camera* cmp)
 	bool open = true;
 	if (ImGui::CollapsingHeader("Camera", &open))
 	{
+		//Enable or disable component
+		bool active = cmp->IsActive();
+		ImGui::Checkbox("Is Active", &active);
+		cmp->SetActive(active);
+
 		//Change camera size
 		ImGui::Text("Change Camera Values:");
 		ImGui::Separator();

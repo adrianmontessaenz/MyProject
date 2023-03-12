@@ -32,7 +32,7 @@ namespace Engine
 
 	private:
 		Model* mModel = new Model();
-		Texture* mTexture = nullptr;
+		Texture* mTexture = new Texture("white.jpg", 0);
 		Shader* mShader = nullptr;
 	};
 }

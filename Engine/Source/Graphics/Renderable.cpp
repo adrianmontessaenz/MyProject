@@ -27,22 +27,14 @@ void Engine::Renderable::Initialize()
 void Engine::Renderable::Render()
 {
 	//Don't update if disabled or shutdown
-	if (!IsActive() || IsShutdown())
+	if (!IsActive() || !GetOwner()->IsEnabled())
 		return;
 
-	//Get world matrix of object
-	Transform* trans = GetOwner()->GetTransform();
-	glm::mat4 world = trans->GetWorldMat();
-
 	//Add uniforms to shader and render
-	mShader->UniformMat4(world, "world");
+	mShader->UniformMat4(GetOwner()->GetTransform()->GetWorldMat(), "world");
 	mShader->UniformVec4(mModel->GetColor(), "col");
-	if (mTexture)
-	{
-		mShader->UniformInt(1, "hasTexture");
-		mTexture->Bind();
-		mShader->UniformInt(mTexture->GetType(), "texImage");
-	}
+	mTexture->Bind();
+	mShader->UniformInt(mTexture->GetType(), "texImage");
 	mModel->Render();
 }
 
@@ -52,8 +44,7 @@ void Engine::Renderable::Render()
 void Engine::Renderable::Shutdown()
 {
 	delete mModel;
-	if(mTexture)
-		delete mTexture;
+	delete mTexture;
 	gGfxMgr->RemoveRenderable(this);
 	SetShutdown(true);
 }
@@ -64,6 +55,9 @@ void Engine::Renderable::Shutdown()
 void Engine::Renderable::ToJson(nlohmann::ordered_json& data)
 {
 	data["Component"] = TypeInfo()->GetTypeName();
+	data["Model"] = mModel->GetName();
+	data["Texture"] = mTexture->GetName();
+	data["Color"] << mModel->GetColor();
 }
 
 /// -----------------------------------------------------------------
@@ -71,6 +65,16 @@ void Engine::Renderable::ToJson(nlohmann::ordered_json& data)
 /// -----------------------------------------------------------------
 void Engine::Renderable::FromJson(const nlohmann::ordered_json& data)
 {
+	if (data.find("Model") != data.end())
+		SetModel(data["Model"]);
+	if (data.find("Texture") != data.end())
+		SetTexture(data["Texture"]);
+	if (data.find("Color") != data.end())
+	{
+		glm::vec4 color;
+		data["Color"] >> color;
+		mModel->SetColor(color);
+	}
 }
 
 /// -----------------------------------------------------------------
@@ -110,13 +114,10 @@ const vec4 Engine::Renderable::GetColor() const
 /// -----------------------------------------------------------------
 void Engine::Renderable::SetTexture(const std::string name)
 {
-	if (mTexture != nullptr)
-	{
-		delete mTexture;
-		mTexture = nullptr;
-	}
-	if (name != "none")
-		mTexture = new Texture(name, 0);
+	if (mTexture->GetName() == name)
+		return;
+	delete mTexture;
+	mTexture = new Texture(name, 0);
 }
 
 /// -----------------------------------------------------------------

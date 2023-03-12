@@ -16,4 +16,7 @@ namespace Editor
 
 	//Drag Float helpers
 	void MyDragFloat(const char* txt, float* value, const float size = 100.f, const float min = 0.f, const float max = std::numeric_limits<float>().max(), const float speed = 1.0f);
+
+	//Combo helper
+	std::string MyStringComboFromPath(const char* txt, const std::string& myItem, const std::string& myPath, const bool cutend = false, const std::string& cutpoint = "");
 }

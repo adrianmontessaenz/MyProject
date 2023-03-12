@@ -42,10 +42,7 @@ void Editor::RenderEditor::Update() noexcept
 	//Update object and check if focused in any window
 	mCamObj->Update();
 	if (gEditor->IsFocused())
-	{
-		std::cout << "false" << std::endl;
 		return;
-	}
 
 	//Set mouse position in center if clicked only once
 	glm::vec<2,int> size = gWindow->GetSize();
@@ -59,7 +56,6 @@ void Editor::RenderEditor::Update() noexcept
 	if (gInputMgr->IsMousePressed(SDL_BUTTON_RIGHT))
 	{
 		//Disable and get size and mouse pos
-		std::cout << "true" << std::endl;
 		glm::vec2 mousePos = gInputMgr->GetMousePos();
 		glm::vec2 mouseRot;
 
@@ -67,25 +63,27 @@ void Editor::RenderEditor::Update() noexcept
 		glm::vec3 camPos = mCamObj->GetTransform()->GetWorldPos();
 		glm::vec3 camRot = mCamObj->GetTransform()->GetWorldRot();
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_W))
-			mCamObj->GetTransform()->SetWorldPos(camPos + mSpeed * camRot);
+			camPos += mSpeed * camRot;
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_D))
-			mCamObj->GetTransform()->SetWorldPos(camPos + mSpeed * glm::normalize(mCam->GetRight()));
+			camPos += mSpeed * glm::normalize(mCam->GetRight());
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_A))
-			mCamObj->GetTransform()->SetWorldPos(camPos - mSpeed * glm::normalize(mCam->GetRight()));
+			camPos -= mSpeed * glm::normalize(mCam->GetRight());
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_S))
-			mCamObj->GetTransform()->SetWorldPos(camPos - mSpeed * camRot);
+			camPos -= mSpeed * camRot;
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_SPACE))
-			mCamObj->GetTransform()->SetWorldPos(camPos + mSpeed * mCam->GetUp());
+			camPos += mSpeed * mCam->GetUp();
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_LCTRL))
-			mCamObj->GetTransform()->SetWorldPos(camPos - mSpeed * mCam->GetUp());
+			camPos -= mSpeed * mCam->GetUp();
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_LSHIFT))
-			mSpeed += 0.05f;
+			mSpeed = 0.5f;
 		else
 			mSpeed = 0.1f;
 
+		mCamObj->GetTransform()->SetWorldPos(camPos);
 		//Compute how much to move the mouse and compute rotation in the X
-		mouseRot.x = mSensitivity * (mousePos.y - (float)(size.y / 2.f)) / (float)size.y;
-		mouseRot.y = mSensitivity * (mousePos.x - (float)(size.x / 2.f)) / (float)size.x;
+		mouseRot.x = mSensitivity * (float)(mousePos.y - (size.y / 2)) / size.y;
+		mouseRot.y = mSensitivity * (float)(mousePos.x - (size.x / 2)) / size.x;
+
 		glm::vec3 newRot = glm::rotate(camRot, glm::radians(-mouseRot.x), glm::normalize(mCam->GetRight()));
 		
 		//If rotating, compute also the Y rotation with the new rotation
