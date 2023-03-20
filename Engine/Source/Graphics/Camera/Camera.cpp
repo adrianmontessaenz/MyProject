@@ -2,13 +2,12 @@
 *  File:		Camera.cpp
 *  Brief:		Implementation for camera
 *  Creation:	06/03/2023
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "Camera.hpp"
-#include <Core/Entity-Component/Object.hpp>
 
 /// -----------------------------------------------------------------
 /// Initialize camera
@@ -31,7 +30,6 @@ void Engine::Camera::Initialize() noexcept
 /// -----------------------------------------------------------------
 void Engine::Camera::Update() noexcept
 {
-	
 	UpdateMatrices();
 }
 
@@ -50,20 +48,14 @@ void Engine::Camera::ToJson(nlohmann::ordered_json& data)
 	nlohmann::ordered_json transform;
 	transform["Width"] = mSize[0];
 	transform["Height"] = mSize[1];
-	data["Transform"].push_back(transform);
+	data["Transform"] = transform;
 
 	//Store planes
 	nlohmann::ordered_json planes;
 	planes["FOV"] = mFOV;
 	planes["Near"] = mSize[0];
 	planes["Far"] = mSize[1];
-	data["Planes"].push_back(planes);
-
-	//Store movement
-	nlohmann::ordered_json movement;
-	movement["Speed"] = mSpeed;
-	movement["Sensitivity"] = mSensitiviy;
-	data["Movement"].push_back(movement);
+	data["Planes"] = planes;
 }
 
 /// -----------------------------------------------------------------
@@ -73,19 +65,16 @@ void Engine::Camera::FromJson(const nlohmann::ordered_json& data)
 {	
 	if (data.find("Transform") != data.end())
 	{
-		mSize[0] = data["Transform"]["Width"];
-		mSize[1] = data["Transform"]["Height"];
+		auto transform = data["Transform"];
+		mSize[0] = transform["Width"];
+		mSize[1] = transform["Height"];
 	}
 	if (data.find("Planes") != data.end())
 	{
-		mFOV = data["Planes"]["FOV"];
-		mPlanes[0] = data["Planes"]["Near"];
-		mPlanes[1] = data["Planes"]["Far"];
-	}
-	if (data.find("Movement") != data.end())
-	{
-		mSpeed = data["Movement"]["Speed"];
-		mSensitiviy = data["Movement"]["Sensitivity"];
+		auto planes = data["Planes"];
+		mFOV = planes["FOV"];
+		mPlanes[0] = planes["Near"];
+		mPlanes[1] = planes["Far"];
 	}
 }
 
@@ -127,6 +116,14 @@ glm::vec2 Engine::Camera::GetSize() const
 glm::vec3 Engine::Camera::GetUp() const
 {
 	return mUp;
+}
+
+/// -----------------------------------------------------------------
+/// Get front vector
+/// -----------------------------------------------------------------
+glm::vec3 Engine::Camera::GetFront() const
+{
+	return mFront;
 }
 
 /// -----------------------------------------------------------------
@@ -178,38 +175,6 @@ glm::vec2 Engine::Camera::GetPlanes() const
 }
 
 /// -----------------------------------------------------------------
-/// Set speed of camera
-/// -----------------------------------------------------------------
-void Engine::Camera::SetSpeed(const float speed)
-{
-	mSpeed = speed;
-}
-
-/// -----------------------------------------------------------------
-/// Get speed
-/// -----------------------------------------------------------------
-float Engine::Camera::GetSpeed() const
-{
-	return mSpeed;
-}
-
-/// -----------------------------------------------------------------
-///	Set sensitivity
-/// -----------------------------------------------------------------
-void Engine::Camera::SetSensitivity(const float sens)
-{
-	mSensitiviy = sens;
-}
-
-/// -----------------------------------------------------------------
-/// Get sensitivity
-/// -----------------------------------------------------------------
-float Engine::Camera::GetSensitivity() const
-{
-	return mSensitiviy;
-}
-
-/// -----------------------------------------------------------------
 /// Get view matrix
 /// -----------------------------------------------------------------
 glm::mat4 Engine::Camera::GetView() const
@@ -230,9 +195,16 @@ glm::mat4 Engine::Camera::GetProj() const
 /// -----------------------------------------------------------------
 void Engine::Camera::UpdateMatrices()
 {
-	//Setup view and projection
+	//Get position and rotation of camera
 	glm::vec3 pos = mOwnerTransform->GetWorldPos();
 	glm::vec3 rot = mOwnerTransform->GetWorldRot();
-	mView = glm::lookAt(pos, pos + rot, mUp);
-	mProj = glm::perspective(glm::radians(mFOV), (float)(mSize[0] / mSize[1]), mPlanes[0], mPlanes[1]);	
+
+	//Compute right and up vectors
+	mFront = glm::normalize(rot);
+	mRight = glm::normalize(glm::cross(mFront, { 0.f,1.f,0.f }));
+	mUp = glm::normalize(glm::cross(mRight, mFront));
+
+	//Compute matrices
+	mView = glm::lookAt(pos, pos + mFront, mUp);
+	mProj = glm::perspective(glm::radians(mFOV), (float)mSize[0] / (float)mSize[1], mPlanes[0], mPlanes[1]);
 }

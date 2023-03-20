@@ -2,14 +2,16 @@
 *  File:		Object.cpp
 *  Brief:		Implementation of Object class
 *  Creation:	21/10/2022
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "Object.hpp"
-#include <Graphics/Renderable.hpp>
+#include <Graphics/Renderable/Renderable.hpp>
 #include <Graphics/Camera/Camera.hpp>
+#include <Physics/Components/Collider.hpp>
+#include <Physics/Components/RigidBody.hpp>
 
 /// -----------------------------------------------------------------
 /// Object destructor
@@ -91,7 +93,6 @@ void Engine::Object::Shutdown()
 	//If it has children, shutdown children
 	for (auto child : mChildren)
 		child->Shutdown();
-
 	for (auto comp : mEngineComps)
 		comp->Shutdown();
 	for (auto comp : mLogicComps)
@@ -105,10 +106,15 @@ void Engine::Object::Shutdown()
 void Engine::Object::ToJson(nlohmann::ordered_json& data)
 {
 	data["Object"] = GetName();
+	nlohmann::ordered_json transform;
+	mTransform->ToJson(transform);
+	data["Transform"] = transform;
+
 	nlohmann::ordered_json ecomps;
 	for (auto ecomp : mEngineComps)
 	{
 		nlohmann::ordered_json ecompData;
+		ecompData["Component"] = ecomp->TypeInfo()->GetTypeName();
 		ecomp->ToJson(ecompData);
 		ecomps.push_back(ecompData);
 	}
@@ -117,6 +123,7 @@ void Engine::Object::ToJson(nlohmann::ordered_json& data)
 	for (auto lcomp : mLogicComps)
 	{
 		nlohmann::ordered_json lcompData;
+		lcompData["Component"] = lcomp->TypeInfo()->GetTypeName();
 		lcomp->ToJson(lcompData);
 		lcomps.push_back(lcompData);
 	}
@@ -138,6 +145,12 @@ void Engine::Object::FromJson(const nlohmann::ordered_json& data)
 {
 	if (data.find("Object") != data.end())
 		SetName(data["Object"]);
+	if (data.find("Transform") != data.end())
+	{
+		if(!mTransform)
+			mTransform = new Transform;
+		mTransform->FromJson(data["Transform"]);
+	}
 	if (data.find("Engine Comps") != data.end())
 	{
 		for (auto ecomp : data["Engine Comps"])
@@ -192,6 +205,10 @@ Engine::EngineComp* Engine::Object::AddEngineComp(std::string name)
 		return AddEngineComp<Renderable>();
 	if (name == "Camera")
 		return AddEngineComp<Camera>();
+	if (name == "Collider")
+		return AddEngineComp<Collider>();
+	if (name == "RigidBody")
+		return AddEngineComp<RigidBody>();
 	return nullptr;
 }
 

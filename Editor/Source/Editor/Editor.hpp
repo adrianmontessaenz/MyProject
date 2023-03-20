@@ -2,7 +2,7 @@
 *  File:		Editor.hpp
 *  Brief:		Header of the editor.
 *  Creation:	17/11/2022
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -10,11 +10,10 @@
 #include <pch.h>
 #include "Editor/EditScene.hpp"
 #include "Editor/EditObject.hpp"
-#include <Core/Entity-Component/Object.hpp>
 
 namespace Editor
 {
-	class Editor : public Engine::RunTime, public Engine::Singleton<Editor>
+	class EditorClass : public Engine::RunTime, public Engine::Singleton<EditorClass>
 	{
 	public:
 		virtual void Initialize() override;
@@ -35,4 +34,4 @@ namespace Editor
 		bool mFocused = false;
 	};
 }
-#define gEditor (&Editor::Editor::GetInstance())
+#define gEditor (&Editor::EditorClass::GetInstance())

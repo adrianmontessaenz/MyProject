@@ -25,7 +25,6 @@ void Engine::Transform::Initialize()
 /// -----------------------------------------------------------------
 void Engine::Transform::ToJson(nlohmann::ordered_json& data)
 {
-	data["Component"] = TypeInfo()->GetTypeName();
 	data["World Coords"]["Pos"] << mWPos;
 	data["World Coords"]["Sca"] << mWScale;
 	data["World Coords"]["Rot"] << mWRot;
@@ -52,11 +51,11 @@ void Engine::Transform::FromJson(const nlohmann::ordered_json& data)
 	if (data.find("Local Coords") != data.end())	//Remove in future
 	{
 		if (data["Local Coords"].find("Pos") != data["Local Coords"].end())
-			data["Local Coords"]["Pos"] >> mWPos;
+			data["Local Coords"]["Pos"] >> mLPos;
 		if (data["Local Coords"].find("Sca") != data["Local Coords"].end())
-			data["Local Coords"]["Sca"] >> mWScale;
+			data["Local Coords"]["Sca"] >> mLScale;
 		if (data["Local Coords"].find("Rot") != data["Local Coords"].end())
-			data["Local Coords"]["Rot"] >> mWRot;
+			data["Local Coords"]["Rot"] >> mLRot;
 	}
 }
 

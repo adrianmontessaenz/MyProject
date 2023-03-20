@@ -7,7 +7,7 @@
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #pragma once
-#include <Graphics/Model.hpp>
+#include <Graphics/Renderable/Model.hpp>
 
 namespace Engine
 {

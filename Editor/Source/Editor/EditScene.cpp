@@ -2,14 +2,14 @@
 *  File:		EditScene.cpp
 *  Brief:		Implementation of the editor scene manager.
 *  Creation:	11/12/2022
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include "EditScene.hpp"
-#include <Core/Scene/ObjectManager.hpp>
-#include <Core/Time/TimeSystem.hpp>
+#include "EditorRenderer.hpp"
 #include "Editor.hpp"
+#include <Core/Time/TimeSystem.hpp>
 
 /// -----------------------------------------------------------------
 /// Update scene editor
@@ -52,7 +52,10 @@ void Editor::SceneEditor::Update()
 				{
 					std::string new_path = path + file + ".json";
 					gObjMgr->Shutdown();
+					gRenderEditor->Shutdown();
 					gObjMgr->LoadScene(new_path);
+					gObjMgr->Initialize();
+					gRenderEditor->Initialize();
 					mSelectedObj = nullptr;
 				}
 			}
@@ -64,6 +67,22 @@ void Editor::SceneEditor::Update()
 				mSelectedObj = nullptr;
 			}
 			ImGui::EndMenu();
+		}
+
+		if (ImGui::MenuItem("Play"))
+		{
+			bool playing = gEditor->IsPlaying();
+			if (playing)
+			{
+				std::string path = "../data/levels/";
+				gObjMgr->Shutdown();
+				gRenderEditor->Shutdown();
+				gObjMgr->LoadScene(path + gObjMgr->GetLvlName() + ".json");
+				gObjMgr->Initialize();
+				gRenderEditor->Initialize();
+				mSelectedObj = nullptr;
+			}
+			gEditor->SetPlaying(!playing);
 		}
 		ImGui::EndMainMenuBar();
 	}

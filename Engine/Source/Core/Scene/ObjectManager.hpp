@@ -7,7 +7,6 @@
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #pragma once
-#include <Core/Scene/Space.hpp>
 
 namespace Engine
 {

@@ -225,14 +225,13 @@
     <ClCompile Include="Source\Debug\DebugSystem.cpp" />
     <ClCompile Include="Source\Graphics\Camera\Camera.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsManager.cpp" />
-    <ClCompile Include="Source\Graphics\Model.cpp" />
-    <ClCompile Include="Source\Graphics\Renderable.cpp" />
-    <ClCompile Include="Source\Graphics\Shader.cpp" />
-    <ClCompile Include="Source\Graphics\stbi_image.c">
+    <ClCompile Include="Source\Graphics\Renderable\Model.cpp" />
+    <ClCompile Include="Source\Graphics\Renderable\Renderable.cpp" />
+    <ClCompile Include="Source\Graphics\Utils\Shader.cpp" />
+    <ClCompile Include="Source\Graphics\Utils\stbi_image.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Texture.cpp" />
+    <ClCompile Include="Source\Graphics\Utils\Texture.cpp" />
     <ClCompile Include="Source\Math\Transform.cpp" />
     <ClCompile Include="Source\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -240,6 +239,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Source\Physics\Components\Collider.cpp" />
+    <ClCompile Include="Source\Physics\Components\RigidBody.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsManager.cpp" />
+    <ClCompile Include="Source\Physics\Utils\Collisions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ThirdParty\Includes\imgui\imconfig.h" />
@@ -267,13 +270,17 @@
     <ClInclude Include="Source\Core\Entity-Component\Object.hpp" />
     <ClInclude Include="Source\Graphics\Camera\Camera.hpp" />
     <ClInclude Include="Source\Graphics\GraphicsManager.hpp" />
-    <ClInclude Include="Source\Graphics\Model.hpp" />
-    <ClInclude Include="Source\Graphics\Renderable.hpp" />
-    <ClInclude Include="Source\Graphics\Shader.hpp" />
-    <ClInclude Include="Source\Graphics\Texture.hpp" />
+    <ClInclude Include="Source\Graphics\Renderable\Model.hpp" />
+    <ClInclude Include="Source\Graphics\Renderable\Renderable.hpp" />
+    <ClInclude Include="Source\Graphics\Utils\Shader.hpp" />
+    <ClInclude Include="Source\Graphics\Utils\Texture.hpp" />
     <ClInclude Include="Source\Math\Transform.hpp" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Core\Time\TimeSystem.hpp" />
+    <ClInclude Include="Source\Physics\Components\Collider.hpp" />
+    <ClInclude Include="Source\Physics\Components\RigidBody.hpp" />
+    <ClInclude Include="Source\Physics\PhysicsManager.hpp" />
+    <ClInclude Include="Source\Physics\Utils\Collisions.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Core\Base\RTTI.inl" />

@@ -2,7 +2,7 @@
 *  File:		main.cpp
 *  Brief:		Main of editor
 *  Creation:	11/12/2022
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -11,20 +11,21 @@
 #include "Editor/EditorRenderer.hpp"
 #include <Graphics/GraphicsManager.hpp>
 #include <Core/Time/TimeSystem.hpp>
-#include <Core/Scene/ObjectManager.hpp>
 #include <Core/Platform/InputManager.hpp>
+#include <Physics/PhysicsManager.hpp>
 
 int main(void)
 {
 	//Get all the singletons
 	Engine::Window* window = gWindow;
-	Editor::Editor* editor = gEditor;
+	Editor::EditorClass* editor = gEditor;
 	Editor::RenderEditor* renderEditor = gRenderEditor;
 	Engine::GraphicsManager* graphs = gGfxMgr;
 	Engine::TimeSystem* time = gTimeSys;
 	Engine::SDLEventSystem* SDLeventSys = gSDLSys;
 	Engine::ObjectManager* objMgr = gObjMgr;
 	Engine::InputManager* input = gInputMgr;
+	Engine::PhysicsManager* physics = gPhysics;
 
 	//Initialize
 	window->Initialize();
@@ -32,6 +33,7 @@ int main(void)
 	objMgr->Initialize();
 	renderEditor->Initialize();
 	graphs->Initialize();
+	physics->Initialize();
 	time->Initialize();
 	input->Initialize();
 	
@@ -55,17 +57,20 @@ int main(void)
 		else
 		{
 			objMgr->Update();
-			graphs->Render();
+			physics->Update();
+			renderEditor->Update();
+			renderEditor->Render();
+			//graphs->Render();
 		}
 		editor->Render();
 		window->Render();
-
 	}
 
 	//Shutdown
 	time->Shutdown();
 	objMgr->Shutdown();
 	graphs->Shutdown();
+	physics->Shutdown();
 	renderEditor->Shutdown();
 	editor->Shutdown();
 	window->Shutdown();

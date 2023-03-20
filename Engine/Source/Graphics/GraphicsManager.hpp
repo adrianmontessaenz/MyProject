@@ -2,12 +2,11 @@
 *  File:		GraphicsManager.hpp
 *  Brief:		Header file of graphics manager
 *  Creation:	04/11/2022
-*  Last Update:	10/02/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #pragma once
-#include <Core/Scene/Space.hpp>
 
 namespace Engine
 {

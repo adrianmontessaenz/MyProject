@@ -8,7 +8,6 @@
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "Renderable.hpp"
-#include <Core/Entity-Component/Object.hpp>
 #include <Graphics/GraphicsManager.hpp>
 
 /// -----------------------------------------------------------------
@@ -54,7 +53,6 @@ void Engine::Renderable::Shutdown()
 /// -----------------------------------------------------------------
 void Engine::Renderable::ToJson(nlohmann::ordered_json& data)
 {
-	data["Component"] = TypeInfo()->GetTypeName();
 	data["Model"] = mModel->GetName();
 	data["Texture"] = mTexture->GetName();
 	data["Color"] << mModel->GetColor();

@@ -2,7 +2,7 @@
 *  File:		pch.h
 *  Brief:		Precompiled header for engine
 *  Creation:	16/10/2022
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -56,14 +56,15 @@
 #include "Core/Events/SDLEvents.hpp"
 #include "Core/Serialization/Serialized.hpp"
 #include "Core/Entity-Component/Components.hpp"
+#include "Math/Transform.hpp"
+#include "Core/Entity-Component/Object.hpp"
+#include "Core/Scene/Space.hpp"
+#include "Core/Scene/ObjectManager.hpp"
 #include "Core/Platform/Window.hpp"
 
 //Debug
 #include "Debug/DebugSystem.hpp"
 
-//Math
-#include "Math/Transform.hpp"
-
 //Graphics
-#include "Graphics/Shader.hpp"
-#include "Graphics/Texture.hpp"
+#include "Graphics/Utils/Shader.hpp"
+#include "Graphics/Utils/Texture.hpp"

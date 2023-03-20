@@ -2,13 +2,12 @@
 *  File:		Space.cpp
 *  Brief:		Implementation of Space class
 *  Creation:	07/11/2022
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "Space.hpp"
-#include <Core/Entity-Component/Object.hpp>
 #include <Graphics/Camera/Camera.hpp>
 
 /// -----------------------------------------------------------------

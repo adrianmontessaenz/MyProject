@@ -38,7 +38,6 @@
     <ClCompile Include="Source\Graphics\GraphicsManager.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\stbi_image.c" />
     <ClCompile Include="Source\Core\Scene\Space.cpp">
       <Filter>Core\Scene</Filter>
     </ClCompile>
@@ -75,20 +74,35 @@
     <ClCompile Include="Source\Core\Serialization\Serialized.cpp">
       <Filter>Core\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Model.cpp">
-      <Filter>Graphics\Renderable</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\Renderable.cpp">
-      <Filter>Graphics\Renderable</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\Shader.cpp">
-      <Filter>Graphics\Renderable</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\Texture.cpp">
-      <Filter>Graphics\Renderable</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\Camera\Camera.cpp">
       <Filter>Graphics\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Utils\stbi_image.c">
+      <Filter>Graphics\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Utils\Texture.cpp">
+      <Filter>Graphics\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Renderable\Model.cpp">
+      <Filter>Graphics\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Renderable\Renderable.cpp">
+      <Filter>Graphics\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Utils\Shader.cpp">
+      <Filter>Graphics\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\Components\Collider.cpp">
+      <Filter>Physics\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysicsManager.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\Utils\Collisions.cpp">
+      <Filter>Physics\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\Components\RigidBody.cpp">
+      <Filter>Physics\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +150,18 @@
     </Filter>
     <Filter Include="Graphics\Camera">
       <UniqueIdentifier>{1dbd5557-aaa4-4128-99ea-2c039b25f986}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{ea5bf83a-fcde-409b-9ba8-24ae3b81b1ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Components">
+      <UniqueIdentifier>{724acbf0-d1cb-4855-9e95-3a7f29bbb3d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Utils">
+      <UniqueIdentifier>{ae249d93-33a2-4728-8346-bd902358cd76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Utils">
+      <UniqueIdentifier>{45ec8cfa-7592-4137-858c-9daf2656bc8e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -218,20 +244,32 @@
     <ClInclude Include="Source\Core\Serialization\Serialized.hpp">
       <Filter>Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Model.hpp">
-      <Filter>Graphics\Renderable</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Renderable.hpp">
-      <Filter>Graphics\Renderable</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Shader.hpp">
-      <Filter>Graphics\Renderable</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Texture.hpp">
-      <Filter>Graphics\Renderable</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\Camera\Camera.hpp">
       <Filter>Graphics\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\Components\Collider.hpp">
+      <Filter>Physics\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Utils\Texture.hpp">
+      <Filter>Graphics\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Renderable\Model.hpp">
+      <Filter>Graphics\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Renderable\Renderable.hpp">
+      <Filter>Graphics\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Utils\Shader.hpp">
+      <Filter>Graphics\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysicsManager.hpp">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\Utils\Collisions.hpp">
+      <Filter>Physics\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\Components\RigidBody.hpp">
+      <Filter>Physics\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,14 +2,13 @@
 *  File:		EditorRenderer.hpp
 *  Brief:		Header for editor renderer
 *  Creation:	06/03/2023
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #pragma once
 #include <pch.h>
-#include <Core/Scene/Space.hpp>
-#include <Graphics/Renderable.hpp>
+#include <Graphics/Renderable/Renderable.hpp>
 #include <Graphics/Camera/Camera.hpp>
 
 namespace Editor
@@ -17,10 +16,10 @@ namespace Editor
 	class RenderEditor : public Engine::RunTime, public Engine::Singleton<RenderEditor>
 	{
 	public:
-		virtual void Initialize() noexcept override;
-		virtual void Update() noexcept override;
-		virtual void Render() noexcept override;
-		virtual void Shutdown() noexcept override;
+		virtual void Initialize() override;
+		virtual void Update() override;
+		virtual void Render() override;
+		virtual void Shutdown() override;
 
 		void AddRenderable(Engine::Renderable* renderable);
 		void RemoveRenderable(Engine::Renderable* renderable);

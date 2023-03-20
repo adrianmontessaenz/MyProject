@@ -2,18 +2,17 @@
 *  File:		Editor.cpp
 *  Brief:		Main part of the editor.
 *  Creation:	17/11/2022
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include "Editor.hpp"
-#include <Core/Scene/Space.hpp>
 #include <Core/Scene/ObjectManager.hpp>
 
 /// -----------------------------------------------------------------
 /// Editor initialization
 /// -----------------------------------------------------------------
-void Editor::Editor::Initialize()
+void Editor::EditorClass::Initialize()
 {
 	//Initialize ImGui
 	IMGUI_CHECKVERSION();
@@ -32,7 +31,7 @@ void Editor::Editor::Initialize()
 /// -----------------------------------------------------------------
 /// Update editor
 /// -----------------------------------------------------------------
-void Editor::Editor::Update()
+void Editor::EditorClass::Update()
 {
 	//Deal with SDL events on ImGui
 	auto events = gSDLSys->GetEvents();
@@ -58,7 +57,7 @@ void Editor::Editor::Update()
 /// -----------------------------------------------------------------
 /// Render editor
 /// -----------------------------------------------------------------
-void Editor::Editor::Render()
+void Editor::EditorClass::Render()
 {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -67,7 +66,7 @@ void Editor::Editor::Render()
 /// -----------------------------------------------------------------
 /// Shutdown editor
 /// -----------------------------------------------------------------
-void Editor::Editor::Shutdown()
+void Editor::EditorClass::Shutdown()
 {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
@@ -77,7 +76,7 @@ void Editor::Editor::Shutdown()
 /// -----------------------------------------------------------------
 /// Sets if playing scene or not
 /// -----------------------------------------------------------------
-void Editor::Editor::SetPlaying(const bool play)
+void Editor::EditorClass::SetPlaying(const bool play)
 {
 	mPlaying = play;
 }
@@ -85,7 +84,7 @@ void Editor::Editor::SetPlaying(const bool play)
 /// -----------------------------------------------------------------
 /// Checks if scene playing
 /// -----------------------------------------------------------------
-bool Editor::Editor::IsPlaying() const
+bool Editor::EditorClass::IsPlaying() const
 {
 	return mPlaying;
 }
@@ -93,7 +92,7 @@ bool Editor::Editor::IsPlaying() const
 /// -----------------------------------------------------------------
 /// Sets if any window of editor focused
 /// -----------------------------------------------------------------
-void Editor::Editor::SetFocused(const bool focus)
+void Editor::EditorClass::SetFocused(const bool focus)
 {
 	mFocused = focus;
 }
@@ -101,7 +100,7 @@ void Editor::Editor::SetFocused(const bool focus)
 /// -----------------------------------------------------------------
 /// Checks if focused on editor windows
 /// -----------------------------------------------------------------
-bool Editor::Editor::IsFocused() const
+bool Editor::EditorClass::IsFocused() const
 {
 	return mFocused;
 }

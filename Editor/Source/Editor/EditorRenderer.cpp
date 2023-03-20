@@ -2,21 +2,19 @@
 *  File:		EditorRenderer.cpp
 *  Brief:		Implementation of editor renderer
 *  Creation:	06/03/2023
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include "EditorRenderer.hpp"
-#include <Core/Scene/ObjectManager.hpp>
-#include <Core/Entity-Component/Object.hpp>
-#include <Graphics/Shader.hpp>
 #include <Core/Platform/InputManager.hpp>
+#include <Core/Time/TimeSystem.hpp>
 #include "Editor.hpp"
 
 /// -----------------------------------------------------------------
 /// Initialize editor renderer
 /// -----------------------------------------------------------------
-void Editor::RenderEditor::Initialize() noexcept
+void Editor::RenderEditor::Initialize()
 {
 	//Create camera
 	mCamObj = new Engine::Object();
@@ -37,7 +35,7 @@ void Editor::RenderEditor::Initialize() noexcept
 /// -----------------------------------------------------------------
 /// Update camera of editor
 /// -----------------------------------------------------------------
-void Editor::RenderEditor::Update() noexcept
+void Editor::RenderEditor::Update()
 {
 	//Update object and check if focused in any window
 	mCamObj->Update();
@@ -62,22 +60,27 @@ void Editor::RenderEditor::Update() noexcept
 		//Handle camera movement
 		glm::vec3 camPos = mCamObj->GetTransform()->GetWorldPos();
 		glm::vec3 camRot = mCamObj->GetTransform()->GetWorldRot();
+		glm::vec3 camFront = mCam->GetFront();
+		glm::vec3 camUp = mCam->GetUp();
+		glm::vec3 camRight = mCam->GetRight();
+		float dt = gTimeSys->GetDeltaTime();
+
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_W))
-			camPos += mSpeed * camRot;
+			camPos += mSpeed * camFront * dt;
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_D))
-			camPos += mSpeed * glm::normalize(mCam->GetRight());
+			camPos += mSpeed * camRight * dt;
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_A))
-			camPos -= mSpeed * glm::normalize(mCam->GetRight());
+			camPos -= mSpeed * camRight * dt;
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_S))
-			camPos -= mSpeed * camRot;
+			camPos -= mSpeed * camFront * dt;
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_SPACE))
-			camPos += mSpeed * mCam->GetUp();
+			camPos += mSpeed * camUp * dt;
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_LCTRL))
-			camPos -= mSpeed * mCam->GetUp();
+			camPos -= mSpeed * camUp * dt;
 		if (gInputMgr->IsKeyPressed(SDL_SCANCODE_LSHIFT))
-			mSpeed = 0.5f;
+			mSpeed = 5.f;
 		else
-			mSpeed = 0.1f;
+			mSpeed = 3.f;
 
 		mCamObj->GetTransform()->SetWorldPos(camPos);
 		//Compute how much to move the mouse and compute rotation in the X
@@ -109,14 +112,17 @@ void Editor::RenderEditor::Update() noexcept
 /// -----------------------------------------------------------------
 /// Render scene in editor camera
 /// -----------------------------------------------------------------
-void Editor::RenderEditor::Render() noexcept
+void Editor::RenderEditor::Render()
 {
 	vec2 size = gWindow->GetSize();
 	glViewport(0, 0, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y));
 	glClearColor(0.07f, 0.13f, 0.17f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	//Get view and projection matrices (Temporal)
 	glm::mat4 view = mCam->GetView();
@@ -143,10 +149,11 @@ void Editor::RenderEditor::Render() noexcept
 /// -----------------------------------------------------------------
 /// Delete editor camera on shutdown
 /// -----------------------------------------------------------------
-void Editor::RenderEditor::Shutdown() noexcept
+void Editor::RenderEditor::Shutdown()
 {
 	mCamObj->Shutdown();
 	delete mCamObj;
+	mScene.clear();
 }
 
 /// -----------------------------------------------------------------

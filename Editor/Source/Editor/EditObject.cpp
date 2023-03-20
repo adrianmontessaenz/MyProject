@@ -2,7 +2,7 @@
 *  File:		EditObject.cpp
 *  Brief:		Implementation of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	06/03/2023
+*  Last Update:	19/03/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -153,6 +153,10 @@ bool Editor::ObjectEditor::ObjectEngineComponents()
 			}
 			if (selected && compName == "Camera")
 				mSelectedObj->AddEngineComp<Engine::Camera>()->Initialize();
+			if (selected && compName == "Collider")
+				mSelectedObj->AddEngineComp<Engine::Collider>()->Initialize();
+			if (selected && compName == "RigidBody")
+				mSelectedObj->AddEngineComp<Engine::RigidBody>()->Initialize();
 		}
 		ImGui::EndPopup();
 	}
@@ -169,7 +173,10 @@ bool Editor::ObjectEditor::EditObjectEngineComp(const std::string& cmpName, Engi
 		return EditRenderable(reinterpret_cast<Engine::Renderable*>(cmp));
 	if (cmpName == "Camera")
 		return EditCamera(reinterpret_cast<Engine::Camera*>(cmp));
-	
+	if (cmpName == "Collider")
+		return EditCollider(reinterpret_cast<Engine::Collider*>(cmp));
+	if (cmpName == "RigidBody")
+		return EditRigidBody(reinterpret_cast<Engine::RigidBody*>(cmp));
 	//Stop everything
 	return false;
 }
@@ -346,6 +353,60 @@ bool Editor::ObjectEditor::EditCamera(Engine::Camera* cmp)
 	//If it was deleted, delete component
 	if (!open)
 		mSelectedObj->DeleteEngineComp<Engine::Camera>();
+	ImGui::PopID();
+	return open;
+}
+
+/// -----------------------------------------------------------------
+/// Edits collider component
+/// -----------------------------------------------------------------
+bool Editor::ObjectEditor::EditCollider(Engine::Collider* cmp)
+{
+	ImGui::PushID(&cmp);
+	bool open = true;
+	if (ImGui::CollapsingHeader("Collider", &open))
+	{
+		//Enable or disable component
+		bool active = cmp->IsActive();
+		ImGui::Checkbox("Is Active", &active);
+		cmp->SetActive(active);
+	}
+
+	//If it was deleted, delete component
+	if (!open)
+		mSelectedObj->DeleteEngineComp<Engine::Collider>();
+	ImGui::PopID();
+	return open;
+}
+
+/// -----------------------------------------------------------------
+/// Edits rigidbody component
+/// -----------------------------------------------------------------
+bool Editor::ObjectEditor::EditRigidBody(Engine::RigidBody* cmp)
+{
+	ImGui::PushID(&cmp);
+	bool open = true;
+	if (ImGui::CollapsingHeader("RigidBody", &open))
+	{
+		//Enable or disable component
+		bool active = cmp->IsActive();
+		ImGui::Checkbox("Is Active", &active);
+		cmp->SetActive(active);
+
+		//Set static or dynamic
+		bool stc = cmp->IsStatic();
+		ImGui::Checkbox("Is Static", &stc);
+		cmp->SetStatic(stc);
+
+		//Set gravity mode
+		bool gravity = cmp->HasGravity();
+		ImGui::Checkbox("Has Gravity", &gravity);
+		cmp->SetGravity(gravity);
+	}
+
+	//If it was deleted, delete component
+	if (!open)
+		mSelectedObj->DeleteEngineComp<Engine::RigidBody>();
 	ImGui::PopID();
 	return open;
 }
