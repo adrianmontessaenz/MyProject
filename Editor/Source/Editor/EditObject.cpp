@@ -2,7 +2,7 @@
 *  File:		EditObject.cpp
 *  Brief:		Implementation of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -101,7 +101,7 @@ bool Editor::ObjectEditor::ObjectProperties()
 
 	//Enable or disable selected object
 	bool enabled = mSelectedObj->IsEnabled();
-	ImGui::Checkbox("Is Enabled", &enabled);
+	ImGui::Checkbox("Enabled", &enabled);
 	mSelectedObj->SetEnabled(enabled);
 
 	ImGui::EndChild();
@@ -154,7 +154,11 @@ bool Editor::ObjectEditor::ObjectEngineComponents()
 			if (selected && compName == "Camera")
 				mSelectedObj->AddEngineComp<Engine::Camera>()->Initialize();
 			if (selected && compName == "Collider")
-				mSelectedObj->AddEngineComp<Engine::Collider>()->Initialize();
+			{
+				auto col = mSelectedObj->AddEngineComp<Engine::Collider>();
+				col->Initialize();
+				RenderEditor::GetInstance().AddCollider(col);
+			}
 			if (selected && compName == "RigidBody")
 				mSelectedObj->AddEngineComp<Engine::RigidBody>()->Initialize();
 		}
@@ -284,7 +288,7 @@ bool Editor::ObjectEditor::EditRenderable(Engine::Renderable* cmp)
 	{
 		//Enable or disable component
 		bool active = cmp->IsActive();
-		ImGui::Checkbox("Is Active", &active);
+		ImGui::Checkbox("Active", &active);
 		cmp->SetActive(active);
 
 		//Models
@@ -305,7 +309,10 @@ bool Editor::ObjectEditor::EditRenderable(Engine::Renderable* cmp)
 
 	//If it was deleted, delete component
 	if (!open)
+	{
+		RenderEditor::GetInstance().RemoveRenderable(cmp);
 		mSelectedObj->DeleteEngineComp<Engine::Renderable>();
+	}
 	ImGui::PopID();
 	return open;
 }
@@ -321,7 +328,7 @@ bool Editor::ObjectEditor::EditCamera(Engine::Camera* cmp)
 	{
 		//Enable or disable component
 		bool active = cmp->IsActive();
-		ImGui::Checkbox("Is Active", &active);
+		ImGui::Checkbox("Active", &active);
 		cmp->SetActive(active);
 
 		//Change camera size
@@ -368,13 +375,50 @@ bool Editor::ObjectEditor::EditCollider(Engine::Collider* cmp)
 	{
 		//Enable or disable component
 		bool active = cmp->IsActive();
-		ImGui::Checkbox("Is Active", &active);
+		ImGui::Checkbox("Active", &active);
 		cmp->SetActive(active);
+
+		//Set collider ghost or not
+		bool ghst = cmp->IsGhost();
+		ImGui::Checkbox("Ghost", &ghst);
+		cmp->SetGhost(ghst);
+
+		//Edit collider offsets
+		ImGui::Text("Collider Offsets");
+		glm::vec3 tmp = TransformDisplayCoords(cmp->GetOffsetPosition(), 18, -10000.f, 10000.f);
+		ImGui::Text("Pos");
+		cmp->SetOffsetPosition(tmp);
+		tmp = TransformDisplayCoords(cmp->GetOffsetScale(), 21, 0.f, 10000.f);
+		ImGui::Text("Scale");
+		cmp->SetOffsetScale(tmp);
+		tmp = TransformDisplayCoords(cmp->GetOffsetRotation(), 24, 0.f, 360.f);
+		ImGui::Text("Rot");
+		cmp->SetOffsetRotation(tmp);
+		ImGui::NewLine();
+
+		//Set if draw collider
+		bool draw = cmp->IsColliderDrawn();
+		ImGui::Checkbox("Draw Collider", &draw);
+		cmp->SetDrawCollider(draw);
+
+		//Change collider type
+		if (ImGui::TreeNode("Set Collider Type"))
+		{
+			int type = cmp->GetColliderType();
+			if (ImGui::RadioButton("AABB", type == 1))
+				cmp->SetColliderType(Engine::Collider::COLLIDER_AABB);
+			ImGui::RadioButton("Sphere", type == 2);
+			ImGui::RadioButton("OOBB", type == 4);
+			ImGui::TreePop();
+		}
 	}
 
 	//If it was deleted, delete component
 	if (!open)
+	{
+		RenderEditor::GetInstance().RemoveCollider(cmp);
 		mSelectedObj->DeleteEngineComp<Engine::Collider>();
+	}
 	ImGui::PopID();
 	return open;
 }
@@ -402,6 +446,17 @@ bool Editor::ObjectEditor::EditRigidBody(Engine::RigidBody* cmp)
 		bool gravity = cmp->HasGravity();
 		ImGui::Checkbox("Has Gravity", &gravity);
 		cmp->SetGravity(gravity);
+
+		//Set mass
+		float mass = cmp->GetMass();
+		MyDragFloat("Mass:   ", &mass, 60.f, 0.f, 1000.f);
+		cmp->SetMass(mass);
+		
+		//Show velocity
+		ImGui::Separator();
+		ImGui::Text("Debug Velocity");
+		glm::vec3 tmp = TransformDisplayCoords(cmp->GetVelocity(), 27, -10000.f, 10000.f);
+		ImGui::NewLine();
 	}
 
 	//If it was deleted, delete component

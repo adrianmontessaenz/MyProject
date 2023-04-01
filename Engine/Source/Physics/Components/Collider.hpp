@@ -2,11 +2,12 @@
 *  File:		Collider.hpp
 *  Brief:		Header file of collider
 *  Creation:	19/03/2023
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #pragma once
+#include <Graphics/Renderable/Model.hpp>
 
 namespace Engine
 {
@@ -21,6 +22,7 @@ namespace Engine
 			COLLIDER_OBB = 4
 		};
 		virtual void Initialize() override;
+		virtual void Render() override;
 		virtual void Shutdown() override;
 		virtual void ToJson(nlohmann::ordered_json& data) override;
 		virtual void FromJson(const nlohmann::ordered_json& data) override;
@@ -50,7 +52,11 @@ namespace Engine
 
 		//Other collider data
 		bool mGhost = false;
-		bool mDraw = false;
 		ColliderType mType = COLLIDER_AABB;
+
+		//Draw data
+		bool mDraw = false;
+		Model* mModel = nullptr;
+		void UpdateModel();
 	};
 }

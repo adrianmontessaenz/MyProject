@@ -2,12 +2,14 @@
 *  File:		PhysicsManager.cpp
 *  Brief:		Implementation of physics manager
 *  Creation:	19/03/2023
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "PhysicsManager.hpp"
+#include <Graphics/GraphicsManager.hpp>
+#include <Graphics/Camera/Camera.hpp>
 
 /// -----------------------------------------------------------------
 /// Initialize physics manager
@@ -30,6 +32,7 @@ void Engine::PhysicsManager::Update()
 		rb->ApplyForces();
 
 	//Setup contact variables
+	mPreviousContact = mCurrentContact;
 	mCurrentContact.clear();
 	Contact contact;
 
@@ -84,11 +87,28 @@ void Engine::PhysicsManager::Update()
 	//Update contact collisions (resolve and call events)
 	for (auto& contact : mCurrentContact)
 	{
+		//Check if it's still in contact or if new collision
+		auto isInPrev = std::find(mPreviousContact.begin(), mPreviousContact.end(), contact);
+		
+		//Continuous collision
+		//----When collision events, add collision persisted here----//
+		if (isInPrev != mPreviousContact.end())
+			mPreviousContact.erase(isInPrev);
+		//----When collision events, add collision started here----//
+
 		if (contact.mP1->IsGhost() || contact.mP2->IsGhost())
 			continue;
 
 		ResolveContactPenetration(contact.mP1, contact.mP2, &contact);
 		ResolveContactVelocity(contact.mP1, contact.mP2, &contact);
+	}
+
+	//Remove contact collision from the ones not colliding anymore
+	//----When collision events, add collision ended here----//
+	for (auto& endedContact : mPreviousContact)
+	{
+		endedContact.mP1->GetOwner()->GetEngineComp<RigidBody>()->RemoveForce("ContactCollision");
+		endedContact.mP2->GetOwner()->GetEngineComp<RigidBody>()->RemoveForce("ContactCollision");
 	}
 }
 
@@ -97,6 +117,27 @@ void Engine::PhysicsManager::Update()
 /// -----------------------------------------------------------------
 void Engine::PhysicsManager::Render()
 {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	Shader* shader = gGfxMgr->GetShader("Default");
+	shader->Activate();
+	for (const auto& space : mStaticObjs)
+	{
+		//Set shader values
+		Camera* cam = space.first->GetObjectByName("Main Camera")->GetEngineComp<Camera>();
+		shader->UniformMat4(cam->GetProj(), "proj");
+		shader->UniformMat4(cam->GetView(), "view");
+
+		//iterate first static objects
+		for (const auto& staticObj : space.second)
+			if (staticObj->IsColliderDrawn())
+				staticObj->Render();
+
+		//iterate first static objects
+		for (const auto& dynamicObj : mDynamicObjs[space.first])
+			if (dynamicObj->IsColliderDrawn())
+				dynamicObj->Render();
+	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 /// -----------------------------------------------------------------
@@ -106,6 +147,8 @@ void Engine::PhysicsManager::Shutdown()
 {
 	mStaticObjs.clear();
 	mDynamicObjs.clear();
+	mCurrentContact.clear();
+	mPreviousContact.clear();
 }
 
 /// -----------------------------------------------------------------
@@ -224,14 +267,30 @@ void Engine::PhysicsManager::ResolveContactPenetration(Collider* p1, Collider* p
 	//compute the new positions
 	Transform* t1 = p1->GetOwner()->GetTransform();
 	Transform* t2 = p2->GetOwner()->GetTransform();
-	glm::vec3 pos1 = t1->GetWorldPos() - contact->mNormal * contact->mPen * massInfluence1;
-	glm::vec3 pos2 = t2->GetWorldPos() + contact->mNormal * contact->mPen * massInfluence2;
+	glm::vec3 pos1 = t1->GetWorldPos();
+	glm::vec3 pos2 = t2->GetWorldPos();
 
+	//Only update when penetration value is significant
+	if (contact->mPen >= 0.016f)
+	{
+		pos1 -= contact->mNormal * contact->mPen * massInfluence1;
+		pos2 += contact->mNormal * contact->mPen * massInfluence2;
+	}
+
+	glm::vec3 invNorm = glm::abs(glm::abs(contact->mNormal) - glm::vec3(1.f));
 	//Update if they are dynamic
 	if (rb1 && !rb1->IsStatic())
+	{
 		t1->SetWorldPos(pos1);
+		rb1->RemoveForce("CollisionContact");
+		rb1->AddForce("CollisionContact", rb1->GetTotalForces() * contact->mNormal);
+	}
 	if (rb2 && !rb2->IsStatic())
+	{
 		t2->SetWorldPos(pos2);
+		rb2->RemoveForce("CollisionContact");
+		rb2->AddForce("CollisionContact", rb2->GetTotalForces() * contact->mNormal);
+	}
 }
 
 /// -----------------------------------------------------------------

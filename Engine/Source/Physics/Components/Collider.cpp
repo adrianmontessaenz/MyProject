@@ -2,13 +2,14 @@
 *  File:		Collider.cpp
 *  Brief:		Implementation of collider
 *  Creation:	19/03/2023
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "Collider.hpp"
 #include <Physics/PhysicsManager.hpp>
+#include <Graphics/GraphicsManager.hpp>
 
 /// -----------------------------------------------------------------
 /// Collider initialize
@@ -21,11 +22,33 @@ void Engine::Collider::Initialize()
 }
 
 /// -----------------------------------------------------------------
+/// Render Collider
+/// -----------------------------------------------------------------
+void Engine::Collider::Render()
+{
+	//Don't update if disabled or shutdown
+	if (!IsActive() || !GetOwner()->IsEnabled())
+		return;
+
+	//Add uniforms to shader and render
+	Shader* shader = gGfxMgr->GetShader("Default");
+	Texture* tex = new Texture("white.jpg", 0);
+	shader->UniformMat4(GetOwner()->GetTransform()->GetWorldMat() * mMat, "world");
+	shader->UniformVec4(mModel->GetColor(), "col");
+	tex->Bind();
+	shader->UniformInt(tex->GetType(), "texImage");
+	mModel->Render();
+	delete tex;
+}
+
+/// -----------------------------------------------------------------
 /// Empty shutdown
 /// -----------------------------------------------------------------
 void Engine::Collider::Shutdown()
 {
 	gPhysics->RemoveCollider(this);
+	if (mModel)
+		delete mModel;
 }
 
 /// -----------------------------------------------------------------
@@ -140,6 +163,7 @@ bool Engine::Collider::IsGhost() const
 void Engine::Collider::SetDrawCollider(const bool draw)
 {
 	mDraw = draw;
+	UpdateModel();
 }
 
 /// -----------------------------------------------------------------
@@ -156,6 +180,7 @@ bool Engine::Collider::IsColliderDrawn() const
 void Engine::Collider::SetColliderType(ColliderType type)
 {
 	mType = type;
+	UpdateModel();
 }
 
 /// -----------------------------------------------------------------
@@ -176,4 +201,33 @@ void Engine::Collider::ComputeMyMatrix()
 	mMat *= glm::rotate(glm::radians(mRot.y), glm::vec3(0.f, 0.f, 1.f));
 	mMat *= glm::rotate(glm::radians(mRot.z), glm::vec3(1.f, 0.f, 0.f));
 	mMat *= glm::scale(mSca);
+}
+
+/// -----------------------------------------------------------------
+/// Update draw model
+/// -----------------------------------------------------------------
+void Engine::Collider::UpdateModel()
+{
+	if (!mDraw && mModel)
+	{
+		delete mModel;
+		mModel = nullptr;
+	}
+	else if (mDraw)
+	{
+		if (!mModel)
+		{
+			mModel = new Model();
+			mModel->SetColor(glm::vec4(0.f, 0.f, 0.f, 1.f));
+		}
+		switch (mType)
+		{
+		case COLLIDER_SPHERE:
+			mModel->SetModel("sphere.obj");
+			break;
+		default:
+			mModel->SetModel("cube.obj");
+			break;
+		}
+	}
 }

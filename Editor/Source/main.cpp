@@ -2,7 +2,7 @@
 *  File:		main.cpp
 *  Brief:		Main of editor
 *  Creation:	11/12/2022
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -58,9 +58,10 @@ int main(void)
 		{
 			objMgr->Update();
 			physics->Update();
-			renderEditor->Update();
-			renderEditor->Render();
-			//graphs->Render();
+			//renderEditor->Update();
+			//renderEditor->Render();
+			graphs->Render();
+			physics->Render();
 		}
 		editor->Render();
 		window->Render();

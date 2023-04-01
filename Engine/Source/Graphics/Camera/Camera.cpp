@@ -2,7 +2,7 @@
 *  File:		Camera.cpp
 *  Brief:		Implementation for camera
 *  Creation:	06/03/2023
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -53,8 +53,8 @@ void Engine::Camera::ToJson(nlohmann::ordered_json& data)
 	//Store planes
 	nlohmann::ordered_json planes;
 	planes["FOV"] = mFOV;
-	planes["Near"] = mSize[0];
-	planes["Far"] = mSize[1];
+	planes["Near"] = mPlanes[0];
+	planes["Far"] = mPlanes[1];
 	data["Planes"] = planes;
 }
 

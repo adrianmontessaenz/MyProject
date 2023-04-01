@@ -9,6 +9,9 @@
 #include <pch.h>
 #include "Collisions.hpp"
 
+/// -----------------------------------------------------------------
+/// Resolves AABB vs AABB if collision happens
+/// -----------------------------------------------------------------
 bool Engine::AABBvsAABBEx(Collider* p1, Collider* p2, Contact* c)
 {
 	//Get transforms of each collider
@@ -59,6 +62,9 @@ bool Engine::AABBvsAABBEx(Collider* p1, Collider* p2, Contact* c)
 	return result;
 }
 
+/// -----------------------------------------------------------------
+/// Checks if aabb vs aabb happens
+/// -----------------------------------------------------------------
 bool Engine::AABBvsAABB(glm::vec3 pos1, glm::vec3 sca1, glm::vec3 pos2, glm::vec3 sca2)
 {
 	//Compute minkowski difference box and get min and max values
@@ -77,6 +83,9 @@ bool Engine::AABBvsAABB(glm::vec3 pos1, glm::vec3 sca1, glm::vec3 pos2, glm::vec
 	return false;
 }
 
+/// -----------------------------------------------------------------
+/// Checks if contact is the same
+/// -----------------------------------------------------------------
 bool Engine::Contact::operator==(const Contact& other)
 {
 	return (mP1 == other.mP1 && mP2 == other.mP2) || (mP1 == other.mP2 && mP2 == other.mP1);

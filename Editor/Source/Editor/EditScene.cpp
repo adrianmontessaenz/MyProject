@@ -2,7 +2,7 @@
 *  File:		EditScene.cpp
 *  Brief:		Implementation of the editor scene manager.
 *  Creation:	11/12/2022
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -10,6 +10,7 @@
 #include "EditorRenderer.hpp"
 #include "Editor.hpp"
 #include <Core/Time/TimeSystem.hpp>
+#include <Physics/PhysicsManager.hpp>
 
 /// -----------------------------------------------------------------
 /// Update scene editor
@@ -77,6 +78,7 @@ void Editor::SceneEditor::Update()
 				std::string path = "../data/levels/";
 				gObjMgr->Shutdown();
 				gRenderEditor->Shutdown();
+				gPhysics->Shutdown();
 				gObjMgr->LoadScene(path + gObjMgr->GetLvlName() + ".json");
 				gObjMgr->Initialize();
 				gRenderEditor->Initialize();

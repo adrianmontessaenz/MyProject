@@ -2,7 +2,7 @@
 *  File:		EditorRenderer.hpp
 *  Brief:		Header for editor renderer
 *  Creation:	06/03/2023
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -10,6 +10,7 @@
 #include <pch.h>
 #include <Graphics/Renderable/Renderable.hpp>
 #include <Graphics/Camera/Camera.hpp>
+#include <Physics/Components/Collider.hpp>
 
 namespace Editor
 {
@@ -24,8 +25,12 @@ namespace Editor
 		void AddRenderable(Engine::Renderable* renderable);
 		void RemoveRenderable(Engine::Renderable* renderable);
 
+		void AddCollider(Engine::Collider* collider);
+		void RemoveCollider(Engine::Collider* collider);
+
 	private:
-		std::unordered_map<Engine::Space*, std::vector<Engine::Renderable*>> mScene;
+		std::unordered_map<Engine::Space*, std::vector<Engine::Renderable*>> mRenderableScene;
+		std::unordered_map<Engine::Space*, std::vector<Engine::Collider*>> mColliderScene;
 
 		//Camera
 		Engine::Object* mCamObj = nullptr;

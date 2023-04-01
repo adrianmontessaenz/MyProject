@@ -2,7 +2,7 @@
 *  File:		PhysicsManager.hpp
 *  Brief:		Header file of physics manager
 *  Creation:	19/03/2023
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -10,6 +10,7 @@
 #include <Physics/Components/Collider.hpp>
 #include <Physics/Utils/Collisions.hpp>
 #include <Physics/Components/RigidBody.hpp>
+#include <Graphics/Renderable/Model.hpp>
 
 namespace Engine
 {
@@ -35,14 +36,12 @@ namespace Engine
 		std::map<Space*, std::vector<Collider*>> mStaticObjs;
 		std::map<Space*, std::vector<Collider*>> mDynamicObjs;
 		std::vector<Contact> mCurrentContact;
+		std::vector<Contact> mPreviousContact;
 		void ResolveContactPenetration(Collider* p1, Collider* p2, Contact* contact);
 		void ResolveContactVelocity(Collider* p1, Collider* p2, Contact* contact);
 
 		//RigidBody data
 		std::vector<RigidBody*> mRigidBodies;
-
-		//Draw data
-		
 	};
 }
 #define gPhysics (&Engine::PhysicsManager::GetInstance())

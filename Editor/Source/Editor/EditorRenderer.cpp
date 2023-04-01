@@ -2,12 +2,13 @@
 *  File:		EditorRenderer.cpp
 *  Brief:		Implementation of editor renderer
 *  Creation:	06/03/2023
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include "EditorRenderer.hpp"
 #include <Core/Platform/InputManager.hpp>
+#include <Graphics/GraphicsManager.hpp>
 #include <Core/Time/TimeSystem.hpp>
 #include "Editor.hpp"
 
@@ -26,8 +27,10 @@ void Editor::RenderEditor::Initialize()
 	{
 		for (auto obj : space->GetObjects())
 		{
-			if (auto cmp = obj->GetEngineComp<Engine::Renderable>())
-				mScene[space].push_back(cmp);
+			if (auto cmp1 = obj->GetEngineComp<Engine::Renderable>())
+				mRenderableScene[space].push_back(cmp1);
+			if (auto cmp2 = obj->GetEngineComp<Engine::Collider>())
+				mColliderScene[space].push_back(cmp2);
 		}
 	}
 }
@@ -129,7 +132,7 @@ void Editor::RenderEditor::Render()
 	glm::mat4 proj = mCam->GetProj();
 
 	Engine::Shader* currShader = nullptr;
-	for (auto space : mScene)
+	for (auto space : mRenderableScene)
 	{
 		for (auto rend : space.second)
 		{
@@ -143,6 +146,17 @@ void Editor::RenderEditor::Render()
 			}
 			rend->Render();
 		}
+
+		//Draw colliders in editor mode
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		currShader = gGfxMgr->GetShader("Default");
+		currShader->Activate();
+		currShader->UniformMat4(proj, "proj");
+		currShader->UniformMat4(view, "view");
+		for (auto collider : mColliderScene[space.first])
+			if (collider->IsColliderDrawn())
+				collider->Render();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 }
 
@@ -153,7 +167,8 @@ void Editor::RenderEditor::Shutdown()
 {
 	mCamObj->Shutdown();
 	delete mCamObj;
-	mScene.clear();
+	mRenderableScene.clear();
+	mColliderScene.clear();
 }
 
 /// -----------------------------------------------------------------
@@ -162,8 +177,8 @@ void Editor::RenderEditor::Shutdown()
 void Editor::RenderEditor::AddRenderable(Engine::Renderable* renderable)
 {
 	Engine::Space* space = renderable->GetOwner()->GetSpace();
-	if (std::find(mScene[space].begin(), mScene[space].end(), renderable) == mScene[space].end())
-		mScene[space].push_back(renderable);
+	if (std::find(mRenderableScene[space].begin(), mRenderableScene[space].end(), renderable) == mRenderableScene[space].end())
+		mRenderableScene[space].push_back(renderable);
 }
 
 /// -----------------------------------------------------------------
@@ -172,7 +187,28 @@ void Editor::RenderEditor::AddRenderable(Engine::Renderable* renderable)
 void Editor::RenderEditor::RemoveRenderable(Engine::Renderable* renderable)
 {
 	Engine::Space* space = renderable->GetOwner()->GetSpace();
-	auto it = std::find(mScene[space].begin(), mScene[space].end(), renderable);
-	if (it != mScene[space].end())
-		mScene[space].erase(it);
+	auto it = std::find(mRenderableScene[space].begin(), mRenderableScene[space].end(), renderable);
+	if (it != mRenderableScene[space].end())
+		mRenderableScene[space].erase(it);
+}
+
+/// -----------------------------------------------------------------
+/// Adds collider to editor renderer
+/// -----------------------------------------------------------------
+void Editor::RenderEditor::AddCollider(Engine::Collider* collider)
+{
+	Engine::Space* space = collider->GetOwner()->GetSpace();
+	if (std::find(mColliderScene[space].begin(), mColliderScene[space].end(), collider) == mColliderScene[space].end())
+		mColliderScene[space].push_back(collider);
+}
+
+/// -----------------------------------------------------------------
+/// Removes collider from editor renderer
+/// -----------------------------------------------------------------
+void Editor::RenderEditor::RemoveCollider(Engine::Collider* collider)
+{
+	Engine::Space* space = collider->GetOwner()->GetSpace();
+	auto it = std::find(mColliderScene[space].begin(), mColliderScene[space].end(), collider);
+	if (it != mColliderScene[space].end())
+		mColliderScene[space].erase(it);
 }

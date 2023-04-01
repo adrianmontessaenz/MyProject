@@ -2,7 +2,7 @@
 *  File:		RigidBody.cpp
 *  Brief:		Implementation of RigidBody
 *  Creation:	19/03/2023
-*  Last Update:	19/03/2023
+*  Last Update:	01/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -19,7 +19,8 @@ void Engine::RigidBody::Initialize()
 	RTTI::AddParentedType<RigidBody, EngineComp>();
 	if (GetOwner())
 		gPhysics->AddRigidBody(this);
-	AddForce({ 0.f, -9.8f,0.f });
+	if(mGravity)
+		AddForce("Gravity", { 0.f, -9.8f, 0.f });
 }
 
 /// -----------------------------------------------------------------
@@ -69,15 +70,12 @@ void Engine::RigidBody::ApplyForces()
 	float dt = gTimeSys->GetDeltaTime();
 
 	//Get forces and compute velocity of object
-	glm::vec3 totalForces = glm::vec3(0.f);
-	for (auto it : mForces)
-		totalForces += it;
+	glm::vec3 totalForces = GetTotalForces();
 	totalForces += totalForces * mMass;
 	totalForces /= mMass;
 
 	//Compute velocity and update position
-	mVelocity += totalForces * dt;
-	mVelocity *= mDrag;
+	mVelocity += totalForces * dt * mDrag;
 
 	//Update position with velocity
 	glm::vec3 newPos = GetOwner()->GetTransform()->GetWorldPos() + mVelocity * dt;
@@ -87,20 +85,57 @@ void Engine::RigidBody::ApplyForces()
 /// -----------------------------------------------------------------
 /// Add non existing force
 /// -----------------------------------------------------------------
-void Engine::RigidBody::AddForce(const glm::vec3& force)
+void Engine::RigidBody::AddForce(const std::string& name, const glm::vec3& force)
 {
-	if (std::find(mForces.begin(), mForces.end(), force) == mForces.end())
-		mForces.push_back(force);
+	//If exists, update and return
+	for (auto& myForces : mForces)
+	{
+		if (myForces.first == name)
+		{
+			myForces.second = force;
+			return;
+		}
+	}
+
+	//Otherwise just create it
+	mForces.push_back({ name, force });
 }
 
 /// -----------------------------------------------------------------
 /// Remove existing force
 /// -----------------------------------------------------------------
-void Engine::RigidBody::RemoveForce(const glm::vec3& force)
+void Engine::RigidBody::RemoveForce(const std::string& name)
 {
-	auto it = std::find(mForces.begin(), mForces.end(), force);
-	if (it != mForces.end())
-		mForces.erase(it);
+	for (auto force = mForces.begin(); force != mForces.end(); force++)
+	{
+		if (force->first == name)
+		{
+			mForces.erase(force);
+			return;
+		}
+	}
+}
+
+/// -----------------------------------------------------------------
+/// Checks if force exists
+/// -----------------------------------------------------------------
+bool Engine::RigidBody::HasForce(const std::string& name)
+{
+	for (auto forces : mForces)
+		if (forces.first == name)
+			return true;
+	return false;
+}
+
+/// -----------------------------------------------------------------
+/// Sum all forces
+/// -----------------------------------------------------------------
+glm::vec3 Engine::RigidBody::GetTotalForces()
+{
+	glm::vec3 result = glm::vec3(0.f);
+	for (auto forces : mForces)
+		result += forces.second;
+	return result;
 }
 
 /// -----------------------------------------------------------------
@@ -127,9 +162,9 @@ void Engine::RigidBody::SetGravity(const bool gravity)
 {
 	//Add or remove gravity, then set
 	if (!mGravity && gravity)
-		AddForce({ 0.f, -9.8f, 0.f });
+		AddForce("Gravity", { 0.f, -9.8f, 0.f });
 	else if (mGravity && !gravity)
-		RemoveForce({ 0.f, -9.8f, 0.f });
+		RemoveForce("Gravity");
 	mGravity = gravity;
 }
 
