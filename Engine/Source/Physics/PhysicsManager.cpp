@@ -2,7 +2,7 @@
 *  File:		PhysicsManager.cpp
 *  Brief:		Implementation of physics manager
 *  Creation:	19/03/2023
-*  Last Update:	01/04/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -28,56 +28,70 @@ void Engine::PhysicsManager::Initialize()
 void Engine::PhysicsManager::Update()
 {
 	//Update rigid bodies first
-	for (auto& rb : mRigidBodies)
-		rb->ApplyForces();
+	size_t rigidBodyCount = mRigidBodies.size();
+	for (size_t rb = 0; rb < rigidBodyCount; rb++)
+		mRigidBodies[rb]->ApplyForces();
 
 	//Setup contact variables
 	mPreviousContact = mCurrentContact;
 	mCurrentContact.clear();
 	Contact contact;
 
+	//Setup collider variables
+	Collider* sObj = nullptr;
+	Collider* dObj1 = nullptr;
+	Collider* dObj2 = nullptr;
+
 	//Update collisions per space
 	for (auto& space : mDynamicObjs)
 	{
+		//Get dynamic and static objects of space
+		std::vector<Collider*>& dynamicObjs = space.second;
+		std::vector<Collider*>& staticObjs = mStaticObjs[space.first];
+		size_t staticObjCount = staticObjs.size();
+		size_t dynamicObjCount = dynamicObjs.size();
+
 		//Update dynamic objects
-		for (auto dObjs = space.second.begin(); dObjs != space.second.end(); dObjs++)
+		for (size_t dIdx1 = 0; dIdx1 < dynamicObjCount; dIdx1++)
 		{
 			//Update dynamic vs dynamic
-			for (auto dObjs2 = dObjs; dObjs2 != space.second.end(); dObjs2++)
+			dObj1 = dynamicObjs[dIdx1];
+			for (size_t dIdx2 = dIdx1 + 1; dIdx2 < dynamicObjCount; dIdx2++)
 			{
 				//If not active or enabled skip
-				if (dObjs2 == dObjs)
+				dObj2 = dynamicObjs[dIdx2];
+				if (!dObj1->GetOwner()->IsEnabled() || !dObj2->GetOwner()->IsEnabled())
 					continue;
-				if (!(*dObjs)->GetOwner()->IsEnabled() || !(*dObjs2)->GetOwner()->IsEnabled())
-					continue;
-				if (!(*dObjs)->IsActive() || !(*dObjs2)->IsActive())
+				if (!dObj1->IsActive() || !dObj2->IsActive())
 					continue;
 
 				//If collided, add contact to collision
-				CollisionFn func = mCollisionFns.find((*dObjs)->GetColliderType() | (*dObjs2)->GetColliderType())->second;
-				if (func(*dObjs, *dObjs2, &contact))
+				uint8_t collFuncID = static_cast<uint8_t>(dObj1->GetColliderType() | dObj2->GetColliderType());
+				CollisionFn func = mCollisionFns.find(collFuncID)->second;
+				if (func(dObj1, dObj2, &contact))
 				{
-					contact.mP1 = *dObjs;
-					contact.mP2 = *dObjs2;
+					contact.mP1 = dObj1;
+					contact.mP2 = dObj2;
 					mCurrentContact.push_back(contact);
 				}
 			}
 
 			//Update dynamic vs static
-			for (auto sObjs = mStaticObjs[space.first].begin(); sObjs != mStaticObjs[space.first].end(); sObjs++)
+			for (size_t sIdx = 0; sIdx < staticObjCount; sIdx++)
 			{
+				sObj = staticObjs[sIdx];
 				//If not active or enabled skip
-				if (!(*dObjs)->GetOwner()->IsEnabled() || !(*sObjs)->GetOwner()->IsEnabled())
+				if (!dObj1->GetOwner()->IsEnabled() || !sObj->GetOwner()->IsEnabled())
 					continue;
-				if (!(*dObjs)->IsActive() || !(*sObjs)->IsActive())
+				if (!dObj1->IsActive() || !sObj->IsActive())
 					continue;
 
-				//If collided, add contact to collision
-				CollisionFn func = mCollisionFns.find((*dObjs)->GetColliderType() | (*sObjs)->GetColliderType())->second;
-				if (func(*dObjs, *sObjs, &contact))
+				uint8_t collFuncID = static_cast<uint8_t>(dObj1->GetColliderType() | sObj->GetColliderType());
+				CollisionFn func = mCollisionFns.find(collFuncID)->second;
+				if (func(dObj1, sObj, &contact))
 				{
-					contact.mP1 = *dObjs;
-					contact.mP2 = *sObjs;
+					contact.mP1 = dObj1;
+					contact.mP2 = sObj;
 					mCurrentContact.push_back(contact);
 				}
 			}
@@ -85,10 +99,11 @@ void Engine::PhysicsManager::Update()
 	}
 
 	//Update contact collisions (resolve and call events)
-	for (auto& contact : mCurrentContact)
+	size_t currentContactCount = mCurrentContact.size();
+	for (size_t idx = 0; idx < currentContactCount; idx++)
 	{
 		//Check if it's still in contact or if new collision
-		auto isInPrev = std::find(mPreviousContact.begin(), mPreviousContact.end(), contact);
+		auto isInPrev = std::find(mPreviousContact.begin(), mPreviousContact.end(), mCurrentContact[idx]);
 		
 		//Continuous collision
 		//----When collision events, add collision persisted here----//
@@ -96,19 +111,20 @@ void Engine::PhysicsManager::Update()
 			mPreviousContact.erase(isInPrev);
 		//----When collision events, add collision started here----//
 
-		if (contact.mP1->IsGhost() || contact.mP2->IsGhost())
+		if (mCurrentContact[idx].mP1->IsGhost() || mCurrentContact[idx].mP2->IsGhost())
 			continue;
 
-		ResolveContactPenetration(contact.mP1, contact.mP2, &contact);
-		ResolveContactVelocity(contact.mP1, contact.mP2, &contact);
+		ResolveContactPenetration(mCurrentContact[idx].mP1, mCurrentContact[idx].mP2, &mCurrentContact[idx]);
+		ResolveContactVelocity(mCurrentContact[idx].mP1, mCurrentContact[idx].mP2, &mCurrentContact[idx]);
 	}
 
 	//Remove contact collision from the ones not colliding anymore
 	//----When collision events, add collision ended here----//
-	for (auto& endedContact : mPreviousContact)
+	size_t previousContactCount = mPreviousContact.size();
+	for (size_t idx = 0; idx < previousContactCount; idx++)
 	{
-		endedContact.mP1->GetOwner()->GetEngineComp<RigidBody>()->RemoveForce("ContactCollision");
-		endedContact.mP2->GetOwner()->GetEngineComp<RigidBody>()->RemoveForce("ContactCollision");
+		mPreviousContact[idx].mP1->GetOwner()->GetEngineComp<RigidBody>()->RemoveForce("CollisionContact");
+		mPreviousContact[idx].mP2->GetOwner()->GetEngineComp<RigidBody>()->RemoveForce("CollisionContact");
 	}
 }
 
@@ -120,6 +136,9 @@ void Engine::PhysicsManager::Render()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	Shader* shader = gGfxMgr->GetShader("Default");
 	shader->Activate();
+	Collider* sObj = nullptr;
+	Collider* dObj = nullptr;
+
 	for (const auto& space : mStaticObjs)
 	{
 		//Set shader values
@@ -127,15 +146,27 @@ void Engine::PhysicsManager::Render()
 		shader->UniformMat4(cam->GetProj(), "proj");
 		shader->UniformMat4(cam->GetView(), "view");
 
-		//iterate first static objects
-		for (const auto& staticObj : space.second)
-			if (staticObj->IsColliderDrawn())
-				staticObj->Render();
+		//Get dynamic and static objects of space
+		const std::vector<Collider*>& dynamicObjs = space.second;
+		const std::vector<Collider*>& staticObjs = mStaticObjs[space.first];
+		size_t staticObjCount = staticObjs.size();
+		size_t dynamicObjCount = dynamicObjs.size();
 
-		//iterate first static objects
-		for (const auto& dynamicObj : mDynamicObjs[space.first])
-			if (dynamicObj->IsColliderDrawn())
-				dynamicObj->Render();
+		//iterate on static objects
+		for (size_t sIdx = 0; sIdx < staticObjCount; sIdx++)
+		{
+			sObj = staticObjs[sIdx];
+			if (sObj->IsColliderDrawn())
+				sObj->Render();
+		}
+
+		//iterate on dynamic objects
+		for (size_t dIdx = 0; dIdx < dynamicObjCount; dIdx++)
+		{
+			dObj = dynamicObjs[dIdx];
+			if (dObj->IsColliderDrawn())
+				dObj->Render();
+		}
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
@@ -327,15 +358,18 @@ void Engine::PhysicsManager::ResolveContactVelocity(Collider* p1, Collider* p2, 
 	}
 
 	// Compute the squares of the mass influences
-	float massInfSq1 = massInfluence1 * massInfluence1;
-	float massInfSq2 = massInfluence2 * massInfluence2;
+	float massInfSq1 = massInfluence1;
+	float massInfSq2 = massInfluence2;
 
 	// Compute the new velocities of the objects and set to them if not static
-	glm::vec3 newvel1 = vel1 - contact->mNormal * -sepV * massInfSq1;
-	glm::vec3 newvel2 = vel2 + contact->mNormal * -sepV * massInfSq2;
+	if (contact->mPen >= 0.03f)
+	{
+		glm::vec3 newvel1 = -contact->mNormal * -sepV * massInfSq2;
+		glm::vec3 newvel2 = contact->mNormal * -sepV * massInfSq1;
 
-	if (rb1 && !rb1->IsStatic())
-		rb1->SetVelocity(newvel1);
-	if (rb2 && !rb2->IsStatic())
-		rb2->SetVelocity(newvel2);
+		if (rb1 && !rb1->IsStatic())
+			rb1->SetVelocity(newvel1);
+		if (rb2 && !rb2->IsStatic())
+			rb2->SetVelocity(newvel2);
+	}
 }

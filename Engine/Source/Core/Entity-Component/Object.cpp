@@ -2,7 +2,7 @@
 *  File:		Object.cpp
 *  Brief:		Implementation of Object class
 *  Creation:	21/10/2022
-*  Last Update:	19/03/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -18,10 +18,12 @@
 /// -----------------------------------------------------------------
 Engine::Object::~Object()
 {
-	for (auto comp : mEngineComps)
-		delete comp;
-	for (auto comp : mLogicComps)
-		delete comp;
+	size_t engineCompCount = mEngineComps.size();
+	size_t logicCompCount = mLogicComps.size();
+	for (size_t idx = 0; idx < engineCompCount; idx++)
+		delete mEngineComps[idx];
+	for (size_t idx = 0; idx < logicCompCount; idx++)
+		delete mLogicComps[idx];
 }
 
 /// -----------------------------------------------------------------
@@ -37,10 +39,12 @@ void Engine::Object::Initialize()
 	mTransform->Initialize();
 
 	//Initialize comps
-	for (auto comp : mEngineComps)
-		comp->Initialize();
-	for (auto comp : mLogicComps)
-		comp->Initialize();
+	size_t engineCompCount = mEngineComps.size();
+	size_t logicCompCount = mLogicComps.size();
+	for (size_t idx = 0; idx < engineCompCount; idx++)
+		mEngineComps[idx]->Initialize();
+	for (size_t idx = 0; idx < logicCompCount; idx++)
+		mLogicComps[idx]->Initialize();
 }
 
 /// -----------------------------------------------------------------
@@ -52,15 +56,18 @@ void Engine::Object::Update()
 	if (!IsEnabled() || IsShutdown())
 		return;
 
-	for (size_t idx = 0; idx < mEngineComps.size(); idx++)
+	size_t engineCompCount = mEngineComps.size();
+	EngineComp* comp = nullptr;
+	for (size_t idx = 0; idx < engineCompCount; idx++)
 	{
-		if (mEngineComps[idx]->IsShutdown())
+		comp = mEngineComps[idx];
+		if (comp->IsShutdown())
 		{
 			mEngineComps.erase(mEngineComps.begin() + idx);
 			idx--;
 		}
-		else if(mEngineComps[idx]->IsActive())
-			mEngineComps[idx]->Update();
+		else if(comp->IsActive())
+			comp->Update();
 	}
 }
 
@@ -73,15 +80,18 @@ void Engine::Object::LogicUpdate()
 	if (!IsEnabled() || IsShutdown())
 		return;
 
-	for (size_t idx = 0; idx < mLogicComps.size(); idx++)
+	size_t logicCompCount = mLogicComps.size();
+	LogicComp* comp = nullptr;
+	for (size_t idx = 0; idx < logicCompCount; idx++)
 	{
-		if (mLogicComps[idx]->IsShutdown())
+		comp = mLogicComps[idx];
+		if (comp->IsShutdown())
 		{
 			mLogicComps.erase(mLogicComps.begin() + idx);
 			idx--;
 		}
-		else if (mLogicComps[idx]->IsActive())
-			mLogicComps[idx]->Update();
+		else if (comp->IsActive())
+			comp->Update();
 	}
 }
 
@@ -91,12 +101,17 @@ void Engine::Object::LogicUpdate()
 void Engine::Object::Shutdown()
 {
 	//If it has children, shutdown children
-	for (auto child : mChildren)
-		child->Shutdown();
-	for (auto comp : mEngineComps)
-		comp->Shutdown();
-	for (auto comp : mLogicComps)
-		comp->Shutdown();
+	size_t engineCompCount = mEngineComps.size();
+	size_t logicCompCount = mLogicComps.size();
+	size_t childCount = mChildren.size();
+
+	//Shutdown and set shutdown
+	for (size_t idx = 0; idx < childCount; idx++)
+		mChildren[idx]->Shutdown();
+	for (size_t idx = 0; idx < engineCompCount; idx++)
+		mEngineComps[idx]->Shutdown();
+	for (size_t idx = 0; idx < logicCompCount; idx++)
+		mLogicComps[idx]->Shutdown();
 	SetShutdown(true);
 }
 
@@ -277,9 +292,12 @@ void Engine::Object::RemoveChild(Object* child)
 /// -----------------------------------------------------------------
 Engine::Object* Engine::Object::GetChildByName(const std::string name) const
 {
-	//Find
-	for (auto child : mChildren)
+	//Find child
+	size_t childCount = mChildren.size();
+	Object* child = nullptr;
+	for (size_t idx = 0; idx < childCount; idx++)
 	{
+		child = mChildren[idx];
 		if (strcmp(child->GetName().c_str(), name.c_str()) == 0)
 			return child;
 	}
@@ -293,10 +311,13 @@ Engine::Object* Engine::Object::GetChildByName(const std::string name) const
 /// -----------------------------------------------------------------
 std::vector<Engine::Object*> Engine::Object::GetChildrenByName(const std::string name) const
 {
-	//Find
+	//Find child
+	size_t childCount = mChildren.size();
+	Object* child = nullptr;
 	std::vector<Object*> list;
-	for (auto child : mChildren)
+	for (size_t idx = 0; idx < childCount; idx++)
 	{
+		child = mChildren[idx];
 		if (strcmp(child->GetName().c_str(), name.c_str()) == 0)
 			list.push_back(child);
 	}
@@ -357,4 +378,20 @@ void Engine::Object::SetSpace(Engine::Space* space_)
 Engine::Space* Engine::Object::GetSpace() const
 {
 	return mSpace;
+}
+
+/// -----------------------------------------------------------------
+/// Set tag to object
+/// -----------------------------------------------------------------
+void Engine::Object::SetTag(const std::string tag)
+{
+	mTag = tag;
+}
+
+/// -----------------------------------------------------------------
+/// Get object tag
+/// -----------------------------------------------------------------
+const std::string Engine::Object::GetTag() const
+{
+	return mTag;
 }

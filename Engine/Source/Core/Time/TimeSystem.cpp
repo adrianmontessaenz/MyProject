@@ -2,7 +2,7 @@
 *  File:		TimeSystem.cpp
 *  Brief:		Implementation of TimeSystem class
 *  Creation:	17/10/2022
-*  Last Update:	04/11/2022
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -16,7 +16,7 @@ void Engine::TimeSystem::Initialize()
 {
 	//Start timer
 	mStarted = true;
-	mTicks = SDL_GetTicks();
+	mTicks = static_cast<Uint32>(SDL_GetPerformanceCounter());
 }
 
 /// -----------------------------------------------------------------
@@ -28,15 +28,10 @@ void Engine::TimeSystem::Update()
 	if (mPaused)
 		return;
 	mPrevTicks = mTicks;
-	mTicks = SDL_GetTicks();
-
-	//Update frame rate
-	mFrameCounter += static_cast<float>(mTicks - mPrevTicks) / 1000.f;
-	if (mFrameCounter >= 1.f)
-	{
-		mFrameRate = (mFrameCounter * 1000.f) / static_cast<float>(mTicks - mPrevTicks);
-		mFrameCounter = 0;
-	}
+	mTicks = static_cast<Uint32>(SDL_GetPerformanceCounter());
+	mDT = static_cast<float>(mTicks - mPrevTicks) / static_cast<float>(SDL_GetPerformanceFrequency());
+	std::cout << "DT: " << std::to_string(mDT) << std::endl;
+	mFrameRate = 1 / mDT;
 }
 
 /// -----------------------------------------------------------------
@@ -56,7 +51,7 @@ void Engine::TimeSystem::Pause()
 	if (mPaused == false)
 	{
 		mPaused = true;
-		mPausedTicks = SDL_GetTicks() - mTicks;
+		mDT = ((static_cast<Uint32>(SDL_GetPerformanceCounter()) - mTicks) * 1000.f) / SDL_GetPerformanceFrequency();
 		mTicks = 0;
 	}
 }
@@ -69,8 +64,7 @@ void Engine::TimeSystem::UnPause()
 	if (mPaused == true)
 	{
 		mPaused = false;
-		mTicks = SDL_GetTicks() - mPausedTicks;
-		mPausedTicks = 0;
+		mTicks = static_cast<Uint32>(SDL_GetPerformanceCounter());
 	}
 }
 
@@ -79,10 +73,7 @@ void Engine::TimeSystem::UnPause()
 /// -----------------------------------------------------------------
 float Engine::TimeSystem::GetDeltaTime()
 {
-	float toSeconds = 1 / 1000.f;
-	if (mPaused)
-		return (mPausedTicks * toSeconds);
-	return ((mTicks - mPrevTicks) * toSeconds);
+	return mDT;
 }
 
 /// -----------------------------------------------------------------

@@ -2,7 +2,7 @@
 *  File:		Camera.cpp
 *  Brief:		Implementation for camera
 *  Creation:	06/03/2023
-*  Last Update:	01/04/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -17,12 +17,8 @@ void Engine::Camera::Initialize() noexcept
 	RTTI::AddParentedType<Camera, EngineComp>();
 	if(mSize == glm::vec<2,int>(0,0))
 		mSize = gWindow->GetSize();
-	if (GetOwner() != nullptr)
-	{
+	if (GetOwner())
 		mOwnerTransform = GetOwner()->GetTransform();
-		mOwnerTransform->SetWorldPos({ 0.f,0.f,2.f });
-		mOwnerTransform->SetWorldRot({ 0.f,0.f,-1.f });
-	}
 }
 
 /// -----------------------------------------------------------------
@@ -37,7 +33,9 @@ void Engine::Camera::Update() noexcept
 /// Empty shutdown
 /// -----------------------------------------------------------------
 void Engine::Camera::Shutdown() noexcept
-{}
+{
+	SetShutdown(true);
+}
 
 /// -----------------------------------------------------------------
 /// Write to json

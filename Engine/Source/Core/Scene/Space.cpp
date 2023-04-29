@@ -2,7 +2,7 @@
 *  File:		Space.cpp
 *  Brief:		Implementation of Space class
 *  Creation:	07/11/2022
-*  Last Update:	19/03/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -24,8 +24,9 @@ void Engine::Space::Initialize()
 	}
 
 	//Initialize objects
-	for (auto obj : mObjects)
-		obj->Initialize();
+	size_t objCount = mObjects.size();
+	for (size_t idx = 0; idx < objCount; idx++)
+		mObjects[idx]->Initialize();
 }
 
 /// -----------------------------------------------------------------
@@ -38,17 +39,20 @@ void Engine::Space::Update()
 		return;
 
 	//Update objects
-	for (int i = 0; i < mObjects.size();)
+	size_t objCount = mObjects.size();
+	Object* obj = nullptr;
+	for (size_t idx = 0; idx < objCount; idx++)
 	{
 		//Remove object if shutdown
-		if (mObjects[i]->IsShutdown())
+		obj = mObjects[idx];
+		if (obj->IsShutdown())
 		{
-			DeleteObject(mObjects[i]);
+			idx--;
+			DeleteObject(obj);
 			continue;
 		}
-		else if(mObjects[i]->IsEnabled())
-			mObjects[i]->Update();
-		i++;
+		else if(obj->IsEnabled())
+			obj->Update();
 	}
 }
 
@@ -62,17 +66,20 @@ void Engine::Space::LogicUpdate()
 		return;
 
 	//Update objects
-	for (unsigned i = 0; i < mObjects.size();)
+	size_t objCount = mObjects.size();
+	Object* obj = nullptr;
+	for (size_t idx = 0; idx < objCount; idx++)
 	{
 		//Remove object if shutdown
-		if (mObjects[i]->IsShutdown())
+		obj = mObjects[idx];
+		if (obj->IsShutdown())
 		{
-			DeleteObject(mObjects[i]);
+			idx--;
+			DeleteObject(obj);
 			continue;
 		}
-		else if (mObjects[i]->IsEnabled())
-			mObjects[i]->LogicUpdate();
-		i++;
+		else if (obj->IsEnabled())
+			obj->LogicUpdate();
 	}
 }
 
@@ -82,9 +89,10 @@ void Engine::Space::LogicUpdate()
 void Engine::Space::Shutdown()
 {
 	//Delete objects and components
+	Object* obj = nullptr;
 	while (mObjects.empty() == false)
 	{
-		auto obj = *(mObjects.begin());
+		obj = mObjects[0];
 		obj->Shutdown();
 		DeleteObject(obj);
 	}
@@ -167,8 +175,10 @@ void Engine::Space::AddObject(Object* obj_)
 	mObjects.push_back(obj_);
 
 	//Add children to space too
-	for (auto child : obj_->GetChildren())
-		AddObjectRecursive(child);
+	const std::vector<Object*>& children = obj_->GetChildren();
+	size_t childCount = children.size();
+	for (size_t idx = 0; idx < childCount; idx++)
+		AddObjectRecursive(children[idx]);
 }
 
 /// -----------------------------------------------------------------
@@ -181,8 +191,10 @@ void Engine::Space::RemoveObject(Object* obj_)
 		return;
 
 	//First remove children
-	for (auto child : obj_->GetChildren())
-		RemoveObject(child);
+	const std::vector<Object*>& children = obj_->GetChildren();
+	size_t childCount = children.size();
+	for (size_t idx = 0; idx < childCount; idx++)
+		RemoveObject(children[idx]);
 
 	//Remove from list
 	auto it = std::find(mObjects.begin(), mObjects.end(), obj_);
@@ -200,8 +212,10 @@ void Engine::Space::DeleteObject(Object* obj_)
 		return;
 
 	//First delete children
-	for (auto child : obj_->GetChildren())
-		DeleteObjectRecursive(child);
+	const std::vector<Object*>& children = obj_->GetChildren();
+	size_t childCount = children.size();
+	for (size_t idx = 0; idx < childCount; idx++)
+		DeleteObjectRecursive(children[idx]);
 	
 	//Then remove from parent
 	if (obj_->GetParent())
@@ -232,8 +246,11 @@ void Engine::Space::SwapObjects(const size_t& l_idx, const size_t& r_idx)
 /// -----------------------------------------------------------------
 Engine::Object* Engine::Space::GetObjectByName(const std::string name_)
 {
-	for (auto obj : mObjects)
+	size_t objCount = mObjects.size();
+	Object* obj = nullptr;
+	for (size_t idx = 0; idx < objCount; idx++)
 	{
+		obj = mObjects[idx];
 		if (strcmp(name_.c_str(), obj->GetName().c_str()) == 0)
 			return obj;
 	}
@@ -246,8 +263,11 @@ Engine::Object* Engine::Space::GetObjectByName(const std::string name_)
 std::vector<Engine::Object*> Engine::Space::GetObjectsByName(const std::string name_)
 {
 	std::vector<Object*> result;
-	for (auto obj : mObjects)
+	size_t objCount = mObjects.size();
+	Object* obj = nullptr;
+	for (size_t idx = 0; idx < objCount; idx++)
 	{
+		obj = mObjects[idx];
 		if (strcmp(name_.c_str(), obj->GetName().c_str()) == 0)
 			result.push_back(obj);
 	}
@@ -259,8 +279,11 @@ std::vector<Engine::Object*> Engine::Space::GetObjectsByName(const std::string n
 /// -----------------------------------------------------------------
 Engine::Object* Engine::Space::GetObjectByID(const unsigned id_)
 {
-	for (auto obj : mObjects)
+	size_t objCount = mObjects.size();
+	Object* obj = nullptr;
+	for (size_t idx = 0; idx < objCount; idx++)
 	{
+		obj = mObjects[idx];
 		if (obj->GetUniqueID() == id_)
 			return obj;
 	}
@@ -285,8 +308,10 @@ void Engine::Space::AddObjectRecursive(Object* obj_)
 	mObjects.push_back(obj_);
 
 	//Add children to space too
-	for (auto child : obj_->GetChildren())
-		AddObjectRecursive(child);
+	const std::vector<Object*>& children = obj_->GetChildren();
+	size_t childCount = children.size();
+	for (size_t idx = 0; idx < childCount; idx++)
+		AddObjectRecursive(children[idx]);
 }
 
 /// -----------------------------------------------------------------
@@ -295,8 +320,10 @@ void Engine::Space::AddObjectRecursive(Object* obj_)
 void Engine::Space::DeleteObjectRecursive(Object* obj_)
 {
 	//First remove children
-	for (auto child : obj_->GetChildren())
-		DeleteObjectRecursive(child);
+	const std::vector<Object*>& children = obj_->GetChildren();
+	size_t childCount = children.size();
+	for (size_t idx = 0; idx < childCount; idx++)
+		DeleteObjectRecursive(children[idx]);
 
 	//If parent, update from parent and remove object from parent
 	if (obj_->IsShutdown() == false)

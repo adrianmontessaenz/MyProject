@@ -2,7 +2,7 @@
 *  File:		RTTI.hpp
 *  Brief:		Implementation for RTTI
 *  Creation:	21/10/2022
-*  Last Update:	10/02/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -57,9 +57,10 @@ const std::vector<std::string> Engine::TypeInfo::GetParentNames() const
 bool Engine::TypeInfo::HasParent(const std::string name) const
 {
 	//If found, it is child of
-	for (auto parents : mParentNames)
+	size_t parentCount = mParentNames.size();
+	for (size_t idx = 0; idx < parentCount; idx++)
 	{
-		if (strcmp(name.c_str(), parents.c_str()) == 0)
+		if (strcmp(name.c_str(), mParentNames[idx].c_str()) == 0)
 			return true;
 	}
 
@@ -73,8 +74,11 @@ bool Engine::TypeInfo::HasParent(const std::string name) const
 std::vector<std::string> Engine::RTTI::GetTypesWithParent(const std::string name)
 {
 	std::vector<std::string> result;
-	for (auto type : sTypes)
+	size_t typeCount = sTypes.size();
+	TypeInfo* type = nullptr;
+	for (size_t idx = 0; idx < typeCount; idx++)
 	{
+		type = sTypes[idx];
 		if (type->HasParent(name))
 			result.push_back(type->GetTypeName());
 	}
@@ -86,8 +90,9 @@ std::vector<std::string> Engine::RTTI::GetTypesWithParent(const std::string name
 /// -----------------------------------------------------------------
 void Engine::RTTI::FreeTypeInfos()
 {
-	for (auto type : sTypes)
-		delete type;
+	size_t typeCount = sTypes.size();
+	for (size_t idx = 0; idx < typeCount; idx++)
+		delete sTypes[idx];
 	sTypes.clear();
 	sTypes.shrink_to_fit();
 }

@@ -2,7 +2,7 @@
 *  File:		Object.hpp
 *  Brief:		Header of Object class
 *  Creation:	21/10/2022
-*  Last Update:	05/03/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -17,12 +17,11 @@ namespace Engine
 	public:
 		~Object();
 
-		//Runtime
+		//Runtime and serialization
 		virtual void Initialize() override;
 		virtual void Update() override;
 		virtual void LogicUpdate() override;
 		virtual void Shutdown() override;
-
 		virtual void ToJson(nlohmann::ordered_json& data) override;
 		virtual void FromJson(const nlohmann::ordered_json& data) override;
 
@@ -66,15 +65,23 @@ namespace Engine
 		void SetSpace(Space* space_);
 		Space* GetSpace() const;
 
+		//Tag option
+		void SetTag(const std::string tag);
+		const std::string GetTag() const;
+
 	private:
+		//Components and enabling
 		bool mEnabled = true;
 		Transform* mTransform = nullptr;
 		std::vector<EngineComp*> mEngineComps;
 		std::vector<LogicComp*> mLogicComps;
 
+		//Hierarchy and space
 		Object* mParent = nullptr;
 		std::vector<Object*> mChildren;
 		Space* mSpace = nullptr;
+
+		std::string mTag;
 	};
 }
 #include "Object.inl"

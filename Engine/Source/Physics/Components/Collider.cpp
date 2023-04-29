@@ -2,7 +2,7 @@
 *  File:		Collider.cpp
 *  Brief:		Implementation of collider
 *  Creation:	19/03/2023
-*  Last Update:	01/04/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -49,6 +49,7 @@ void Engine::Collider::Shutdown()
 	gPhysics->RemoveCollider(this);
 	if (mModel)
 		delete mModel;
+	SetShutdown(true);
 }
 
 /// -----------------------------------------------------------------

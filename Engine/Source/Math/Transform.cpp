@@ -2,7 +2,7 @@
 *  File:		Transform.cpp
 *  Brief:		Implementation of Transform Component
 *  Creation:	04/11/2022
-*  Last Update:	05/03/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -237,8 +237,9 @@ void Engine::Transform::UpdateWorld()
 	ComputeWorldMat();
 
 	//Update children world
-	for (auto child : mChildren)
-		child->UpdateWorld();
+	size_t childCount = mChildren.size();
+	for (size_t idx = 0; idx < childCount; idx++)
+		mChildren[idx]->UpdateWorld();
 }
 
 /// -----------------------------------------------------------------
@@ -275,7 +276,8 @@ void Engine::Transform::UpdateLocal()
 		mLRot = mWRot - mParent->mWRot;
 	}
 
-	//Update children local
-	for (auto child : mChildren)
-		child->UpdateWorld();
+	//Update children world
+	size_t childCount = mChildren.size();
+	for (size_t idx = 0; idx < childCount; idx++)
+		mChildren[idx]->UpdateWorld();
 }

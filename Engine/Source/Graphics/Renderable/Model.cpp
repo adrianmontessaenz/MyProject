@@ -2,7 +2,7 @@
 *  File:		Model.cpp
 *  Brief:		Implementation of models, vertices and meshes
 *  Creation:	04/11/2022
-*  Last Update:	04/11/2022
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -81,8 +81,9 @@ Engine::Model::Model()
 /// -----------------------------------------------------------------
 void Engine::Model::Render()
 {
-	for (auto mesh : mMeshes)
-		mesh.Render();
+	size_t meshCount = mMeshes.size();
+	for (size_t idx = 0; idx < meshCount; idx++)
+		mMeshes[idx].Render();
 }
 
 /// -----------------------------------------------------------------
@@ -135,7 +136,7 @@ const vec4 Engine::Model::GetColor() const
 void Engine::Model::LoadMeshes(const aiNode* node, const aiScene* scene)
 {
 	//Create all the meshes from this node
-	for (unsigned i = 0; i < node->mNumMeshes; i++)
+	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		Mesh mesh = CreateMesh(scene->mMeshes[node->mMeshes[i]]);
 		mMeshes.push_back(mesh);

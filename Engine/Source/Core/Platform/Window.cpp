@@ -2,7 +2,7 @@
 *  File:		Window.cpp
 *  Brief:		Implementation of Engine Window
 *  Creation:	13/10/2022
-*  Last Update:	05/03/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -25,8 +25,6 @@ void Engine::Window::Initialize()
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	mWindow = SDL_CreateWindow("MyProject", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mSize.x, mSize.y, window_flags);
-	if (mWindow == nullptr)
-		throw "Could not create window %s\n", SDL_GetError();
 	
 	//Create renderer. If errow, throw
 	mContext = SDL_GL_CreateContext(mWindow);
@@ -50,28 +48,35 @@ void Engine::Window::Initialize()
 void Engine::Window::Update()
 {
 	//Get window events and update
-	auto vector = gSDLSys->GetEventsOfType(SDL_EventType::SDL_WINDOWEVENT);
+	const std::vector<SDL_Event>& windowEvents = gSDLSys->GetEventsOfType(SDL_EventType::SDL_WINDOWEVENT);
+	size_t windowEventCount = windowEvents.size();
+
+	//Set window title to frames for reference
 	std::string title = "My Project: ";
 	title += std::to_string(gTimeSys->GetFrameRate());
 	SDL_SetWindowTitle(mWindow, title.c_str());
-	for (auto& we : vector)
+
+	//Update window with events
+	SDL_WindowEvent windowEv;
+	for (size_t idx = 0; idx < windowEventCount; idx++)
 	{
-		switch (we.window.event)
+		windowEv = windowEvents[idx].window;
+		switch (windowEv.event)
 		{
 			case SDL_WINDOWEVENT_CLOSE:
 				mActive = false;
 				return;
 			case SDL_WINDOWEVENT_RESIZED:
-				mSize.x = we.window.data1;
-				mSize.y = we.window.data2;
+				mSize.x = windowEv.data1;
+				mSize.y = windowEv.data2;
 				break;
 			case SDL_WINDOWEVENT_MOVED:
-				mPos.x = we.window.data1;
-				mPos.y = we.window.data2;
+				mPos.x = windowEv.data1;
+				mPos.y = windowEv.data2;
 				break;
 			case SDL_WINDOWEVENT_DISPLAY_CHANGED:
 				gDebugSys->Log("Window Changed Screen", "Window");
-				mDisplayIdx = we.window.data1;
+				mDisplayIdx = windowEv.data1;
 				SDL_GetCurrentDisplayMode(mDisplayIdx, &mDisplay);
 				break;
 		}
@@ -94,7 +99,6 @@ void Engine::Window::Shutdown()
 	//Destroy sdl window
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
-	SetShutdown(true);
 }
 
 /// -----------------------------------------------------------------

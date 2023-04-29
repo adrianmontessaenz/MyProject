@@ -2,7 +2,7 @@
 *  File:		EditObject.cpp
 *  Brief:		Implementation of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	01/04/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -80,11 +80,13 @@ bool Editor::ObjectEditor::ObjectProperties()
 	ImGui::Text("Properties");
 	ImGui::BeginChild("Properties", { ImGui::GetContentRegionAvail().x, 150 }, false, ImGuiWindowFlags_HorizontalScrollbar);
 	std::string objName = mSelectedObj->GetName();
+	ImGui::PushID(&objName);
 	ImGui::Text("Name:");
 	ImGui::SameLine();
 	if (ImGui::InputText("##", &objName, ImGuiInputTextFlags_EnterReturnsTrue))
 		mSelectedObj->SetName(objName);
 	ImGui::SameLine();
+	ImGui::PopID();
 
 	ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0, 0.7f, 0.7f));
@@ -98,6 +100,15 @@ bool Editor::ObjectEditor::ObjectProperties()
 		ImGui::EndChild();
 		return false;
 	}
+
+	//Change object tag
+	std::string objTag = mSelectedObj->GetTag();
+	ImGui::PushID(&objTag);
+	ImGui::Text("Tag:");
+	ImGui::SameLine();
+	if (ImGui::InputText("##", &objTag, ImGuiInputTextFlags_EnterReturnsTrue))
+		mSelectedObj->SetTag(objTag);
+	ImGui::PopID();
 
 	//Enable or disable selected object
 	bool enabled = mSelectedObj->IsEnabled();
@@ -207,7 +218,7 @@ bool Editor::ObjectEditor::EditTransform(Engine::Transform* cmp)
 		if (tmp != sca)
 			cmp->SetWorldScale(tmp);
 		ImGui::Text("Scale");
-		tmp = TransformDisplayCoords(rot, 6, 0.f, 360.f);
+		tmp = TransformDisplayCoords(rot, 6, -360.f, 360.f);
 		if(tmp != rot)
 			cmp->SetWorldRot(tmp);
 		ImGui::Text("Rot");
@@ -230,7 +241,7 @@ bool Editor::ObjectEditor::EditTransform(Engine::Transform* cmp)
 			if(tmp != sca)
 				cmp->SetLocalScale(tmp);
 			ImGui::Text("Scale");
-			tmp = TransformDisplayCoords(rot, 15, 0.f, 360.f);
+			tmp = TransformDisplayCoords(rot, 15, -360.f, 360.f);
 			if(tmp != rot)
 				cmp->SetLocalRot(tmp);
 			ImGui::Text("Rot");

@@ -2,7 +2,7 @@
 *  File:		InputManager.cpp
 *  Brief:		Implementation of Engine Input Manager
 *  Creation:	16/10/2022
-*  Last Update:	06/03/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -25,43 +25,50 @@ void Engine::InputManager::Update()
 	mPrevMouse = mMouse;
 
 	//Get new events
-	auto keysDown = gSDLSys->GetEventsOfType(SDL_KEYDOWN);
-	auto keysUp = gSDLSys->GetEventsOfType(SDL_KEYUP);
+	const std::vector<SDL_Event>& keysDown = gSDLSys->GetEventsOfType(SDL_KEYDOWN);
+	const std::vector<SDL_Event>& keysUp = gSDLSys->GetEventsOfType(SDL_KEYUP);
+	size_t keyDownCount = keysDown.size();
+	size_t keyUpCount = keysUp.size();
 
 	//Update keydown events (change with timer events)
-	for (const auto& k : keysDown)
+	SDL_Scancode keyCode = SDL_SCANCODE_0;
+	for (size_t idx = 0; idx < keyDownCount; idx++)
 	{
-		if (mKeyboard[k.key.keysym.scancode] == 0.f)
-			mKeyboard[k.key.keysym.scancode] = gTimeSys->GetDeltaTime();
+		keyCode = keysDown[idx].key.keysym.scancode;
+		if (mKeyboard[keyCode] == 0.f)
+			mKeyboard[keyCode] = gTimeSys->GetDeltaTime();
 		else
-			mKeyboard[k.key.keysym.scancode] += gTimeSys->GetDeltaTime();
+			mKeyboard[keyCode] += gTimeSys->GetDeltaTime();
 	}
 
 	//Update key up keys
-	for (const auto& k : keysUp)
-	{
-		if (k.key.keysym.scancode == SDL_SCANCODE_LSHIFT)
-			int a = 0;
-		mKeyboard[k.key.keysym.scancode] = 0.f;
-	}
+	for (size_t idx = 0; idx < keyUpCount; idx++)
+		mKeyboard[keysUp[idx].key.keysym.scancode] = 0.f;
 
 	//Get mouse events and update
-	auto mouseDown = gSDLSys->GetEventsOfType(SDL_MOUSEBUTTONDOWN);
-	auto mouseUp = gSDLSys->GetEventsOfType(SDL_MOUSEBUTTONUP);
+	const std::vector<SDL_Event>& mouseDown = gSDLSys->GetEventsOfType(SDL_MOUSEBUTTONDOWN);
+	const std::vector<SDL_Event>& mouseUp = gSDLSys->GetEventsOfType(SDL_MOUSEBUTTONUP);
+	size_t mouseDownCount = mouseDown.size();
+	size_t mouseUpCount = mouseUp.size();
 	SDL_GetMouseState(&mMousePos.x, &mMousePos.y);
 
 	//Update keydown events (change with timer events)
-	for (const auto& m : mouseDown)
+	Uint8 mouseButton = 0;
+	for (size_t idx = 0; idx < mouseDownCount; idx++)
 	{
-		if (mMouse[m.button.button] == 0.f)
-			mMouse[m.button.button] = gTimeSys->GetDeltaTime();
+		mouseButton = mouseDown[idx].button.button;
+		if (mMouse[mouseButton] == 0.f)
+			mMouse[mouseButton] = gTimeSys->GetDeltaTime();
 		else
-			mMouse[m.button.button] += gTimeSys->GetDeltaTime();
+			mMouse[mouseButton] += gTimeSys->GetDeltaTime();
 	}
 
 	//Update key up keys
-	for (const auto& m : mouseUp)
-		mMouse[m.button.button] = 0.f;
+	for (size_t idx = 0; idx < mouseUpCount; idx++)
+	{
+		mouseButton = mouseUp[idx].button.button;
+		mMouse[mouseButton] = 0.f;
+	}
 }
 
 /// -----------------------------------------------------------------

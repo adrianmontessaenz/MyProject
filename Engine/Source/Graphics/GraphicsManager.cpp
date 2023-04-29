@@ -2,7 +2,7 @@
 *  File:		GraphicsManager.cpp
 *  Brief:		Implementation file of graphics manager
 *  Creation:	04/11/2022
-*  Last Update:	19/03/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -19,12 +19,17 @@ void Engine::GraphicsManager::Initialize()
 	RTTI::AddParentedType<Renderable, EngineComp>();
 
 	//Add all renderables of initial scene
-	auto spaces = gObjMgr->GetSpaces();
-	for (auto space : spaces)
+	const std::vector<Space*>& spaces = gObjMgr->GetSpaces();
+	size_t spaceCount = spaces.size();
+	Space* space = nullptr;
+	Object* obj = nullptr;
+	for (size_t sIdx = 0; sIdx < spaceCount; sIdx++)
 	{
-		auto objs = space->GetObjects();
-		for (auto obj : objs)
+		const std::vector<Object*>& objs = space->GetObjects();
+		size_t objCount = objs.size();
+		for (size_t objIdx = 0; objIdx < objCount; objIdx++)
 		{
+			obj = objs[objIdx];
 			auto rend = obj->GetEngineComp<Renderable>();
 			if (rend)
 				AddRenderable(rend);
@@ -52,15 +57,24 @@ void Engine::GraphicsManager::Render()
 	glCullFace(GL_BACK);
 
 	Shader* currShader = nullptr;
-	for (auto space : mRenderables)
+	Space* space = nullptr;
+	Camera* cam = nullptr;
+	Renderable* rend = nullptr;
+	for (auto& rendSpace : mRenderables)
 	{
 		//Get view and projection matrices (Temporal)
-		Camera* cam = space.first->GetObjectByName("Main Camera")->GetEngineComp<Camera>();
+		space = rendSpace.first;
+		cam = space->GetObjectByName("Main Camera")->GetEngineComp<Camera>();
+		if (!cam)
+			continue;
 		glm::mat4 view = cam->GetView();
 		glm::mat4 proj = cam->GetProj();
 
-		for (auto rend : space.second)
+		const std::vector<Renderable*>& renderables = rendSpace.second;
+		size_t renderableCount = renderables.size();
+		for (size_t rIdx = 0; rIdx < renderableCount; rIdx++)
 		{
+			rend = renderables[rIdx];
 			//Activate shader and set matrices
 			if (rend->GetShader() != currShader)
 			{
@@ -79,9 +93,10 @@ void Engine::GraphicsManager::Render()
 /// -----------------------------------------------------------------
 void Engine::GraphicsManager::Shutdown()
 {
+	size_t shaderCount = mShaders.size();
+	for (size_t idx = 0; idx < shaderCount; idx++)
+		delete mShaders[idx];
 	mRenderables.clear();
-	for (auto shader : mShaders)
-		delete shader;
 	mShaders.clear();
 	mShaders.shrink_to_fit();
 }
@@ -91,8 +106,11 @@ void Engine::GraphicsManager::Shutdown()
 /// -----------------------------------------------------------------
 Engine::Shader* Engine::GraphicsManager::GetShader(const std::string name)
 {
-	for (auto shader : mShaders)
+	size_t shaderCount = mShaders.size();
+	Shader* shader = nullptr;
+	for (size_t idx = 0; idx < shaderCount; idx++)
 	{
+		shader = mShaders[idx];
 		if (strcmp(name.c_str(), shader->GetName().c_str()) == 0)
 			return shader;
 	}

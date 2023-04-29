@@ -2,7 +2,7 @@
 *  File:		RigidBody.cpp
 *  Brief:		Implementation of RigidBody
 *  Creation:	19/03/2023
-*  Last Update:	01/04/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -29,6 +29,7 @@ void Engine::RigidBody::Initialize()
 void Engine::RigidBody::Shutdown()
 {
 	gPhysics->RemoveRigidBody(this);
+	SetShutdown(true);
 }
 
 /// -----------------------------------------------------------------
@@ -88,11 +89,13 @@ void Engine::RigidBody::ApplyForces()
 void Engine::RigidBody::AddForce(const std::string& name, const glm::vec3& force)
 {
 	//If exists, update and return
-	for (auto& myForces : mForces)
+	size_t forceCount = mForces.size();
+	for (size_t idx = 0; idx < forceCount; idx++)
 	{
-		if (myForces.first == name)
+		std::pair<std::string, glm::vec3>& myForce = mForces[idx];
+		if (myForce.first == name)
 		{
-			myForces.second = force;
+			myForce.second = force;
 			return;
 		}
 	}
@@ -106,11 +109,13 @@ void Engine::RigidBody::AddForce(const std::string& name, const glm::vec3& force
 /// -----------------------------------------------------------------
 void Engine::RigidBody::RemoveForce(const std::string& name)
 {
-	for (auto force = mForces.begin(); force != mForces.end(); force++)
+	size_t forceCount = mForces.size();
+	for (size_t idx = 0; idx < forceCount; idx++)
 	{
-		if (force->first == name)
+		std::pair<std::string, glm::vec3>& myForce = mForces[idx];
+		if (myForce.first == name)
 		{
-			mForces.erase(force);
+			mForces.erase(mForces.begin() + idx);
 			return;
 		}
 	}
@@ -121,8 +126,9 @@ void Engine::RigidBody::RemoveForce(const std::string& name)
 /// -----------------------------------------------------------------
 bool Engine::RigidBody::HasForce(const std::string& name)
 {
-	for (auto forces : mForces)
-		if (forces.first == name)
+	size_t forceCount = mForces.size();
+	for (size_t idx = 0; idx < forceCount; idx++)
+		if (mForces[idx].first == name)
 			return true;
 	return false;
 }
@@ -133,8 +139,9 @@ bool Engine::RigidBody::HasForce(const std::string& name)
 glm::vec3 Engine::RigidBody::GetTotalForces()
 {
 	glm::vec3 result = glm::vec3(0.f);
-	for (auto forces : mForces)
-		result += forces.second;
+	size_t forceCount = mForces.size();
+	for (size_t idx = 0; idx < forceCount; idx++)
+		result += mForces[idx].second;
 	return result;
 }
 

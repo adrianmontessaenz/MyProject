@@ -2,7 +2,7 @@
 *  File:		ObjectManager.cpp
 *  Brief:		Implementation file of ObjectManager class
 *  Creation:	07/11/2022
-*  Last Update:	10/02/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -14,10 +14,11 @@
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::Initialize()
 {
+	size_t spaceCount = mSpaces.size();
 	if (mSpaces.empty())
 		return;
-	for (auto space : mSpaces)
-		space->Initialize();
+	for (size_t idx = 0; idx < spaceCount; idx++)
+		mSpaces[idx]->Initialize();
 }
 
 /// -----------------------------------------------------------------
@@ -25,16 +26,19 @@ void Engine::ObjectManager::Initialize()
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::Update()
 {
-	for (int i = 0; i < mSpaces.size(); i++)
+	size_t spaceCount = mSpaces.size();
+	Space* space = nullptr;
+	for (size_t idx = 0; idx < spaceCount; idx++)
 	{
-		if (mSpaces[i]->IsShutdown())
+		space = mSpaces[idx];
+		if (space->IsShutdown())
 		{
-			i--;
-			DeleteSpace(mSpaces[i]);
+			idx--;
+			DeleteSpace(space);
 			continue;
 		}
-		if (mSpaces[i]->IsEnabled())
-			mSpaces[i]->Update();
+		if (space->IsEnabled())
+			space->Update();
 	}
 }
 
@@ -43,16 +47,19 @@ void Engine::ObjectManager::Update()
 /// -----------------------------------------------------------------
 void Engine::ObjectManager::LogicUpdate()
 {
-	for (int i = 0; i < mSpaces.size(); i++)
+	size_t spaceCount = mSpaces.size();
+	Space* space = nullptr;
+	for (size_t idx = 0; idx < spaceCount; idx++)
 	{
-		if (mSpaces[i]->IsShutdown())
+		space = mSpaces[idx];
+		if (space->IsShutdown())
 		{
-			i--;
-			DeleteSpace(mSpaces[i]);
+			idx--;
+			DeleteSpace(space);
 			continue;
 		}
-		if (mSpaces[i]->IsEnabled())
-			mSpaces[i]->LogicUpdate();
+		if (space->IsEnabled())
+			space->LogicUpdate();
 	}
 }
 
@@ -144,8 +151,11 @@ void Engine::ObjectManager::DeleteSpace(Space* space_)
 /// -----------------------------------------------------------------
 Engine::Space* Engine::ObjectManager::GetSpaceByName(const std::string name_)
 {
-	for (auto space : mSpaces)
+	size_t spaceCount = mSpaces.size();
+	Space* space = nullptr;
+	for (size_t idx = 0; idx < spaceCount; idx++)
 	{
+		space = mSpaces[idx];
 		if (strcmp(space->GetName().c_str(), name_.c_str()) == 0)
 			return space;
 	}
@@ -158,8 +168,11 @@ Engine::Space* Engine::ObjectManager::GetSpaceByName(const std::string name_)
 std::vector<Engine::Space*> Engine::ObjectManager::GetSpacesByName(const std::string name_)
 {
 	std::vector<Space*> result;
-	for (auto space : mSpaces)
+	size_t spaceCount = mSpaces.size();
+	Space* space = nullptr;
+	for (size_t idx = 0; idx < spaceCount; idx++)
 	{
+		space = mSpaces[idx];
 		if (strcmp(space->GetName().c_str(), name_.c_str()) == 0)
 			result.push_back(space);
 	}
@@ -171,8 +184,11 @@ std::vector<Engine::Space*> Engine::ObjectManager::GetSpacesByName(const std::st
 /// -----------------------------------------------------------------
 Engine::Space* Engine::ObjectManager::GetSpaceByID(const unsigned id_)
 {
-	for (auto space : mSpaces)
+	size_t spaceCount = mSpaces.size();
+	Space* space = nullptr;
+	for (size_t idx = 0; idx < spaceCount; idx++)
 	{
+		space = mSpaces[idx];
 		if (space->GetUniqueID() == id_)
 			return space;
 	}

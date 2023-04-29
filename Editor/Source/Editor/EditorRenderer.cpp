@@ -2,7 +2,7 @@
 *  File:		EditorRenderer.cpp
 *  Brief:		Implementation of editor renderer
 *  Creation:	06/03/2023
-*  Last Update:	01/04/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -21,6 +21,8 @@ void Editor::RenderEditor::Initialize()
 	mCamObj = new Engine::Object();
 	mCam = mCamObj->AddEngineComp<Engine::Camera>();
 	mCamObj->Initialize();
+	mCamObj->GetTransform()->SetWorldPos({ 0.f,0.f,2.f });
+	mCamObj->GetTransform()->SetWorldRot({ 0.f,0.f,-1.f });
 
 	//Get all renderables at the beginning (if scene was loaded)
 	for (auto space : gObjMgr->GetSpaces())

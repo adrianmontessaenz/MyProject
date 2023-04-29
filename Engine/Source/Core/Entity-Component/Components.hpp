@@ -2,7 +2,7 @@
 *  File:		Components.hpp
 *  Brief:		Header for components (Both engine and logic)
 *  Creation:	21/10/2022
-*  Last Update:	05/03/2023
+*  Last Update:	28/04/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -17,6 +17,7 @@ namespace Engine
 	public:
 		virtual void Initialize() override = 0;
 		virtual void Shutdown() override = 0;
+		virtual ~Component() {};
 
 		virtual void ToJson(nlohmann::ordered_json& data) = 0;
 		virtual void FromJson(const nlohmann::ordered_json& data) = 0;
