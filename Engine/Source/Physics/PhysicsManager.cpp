@@ -302,7 +302,7 @@ void Engine::PhysicsManager::ResolveContactPenetration(Collider* p1, Collider* p
 	glm::vec3 pos2 = t2->GetWorldPos();
 
 	//Only update when penetration value is significant
-	if (contact->mPen >= 0.016f)
+	if (contact->mPen >= 0.02f)
 	{
 		pos1 -= contact->mNormal * contact->mPen * massInfluence1;
 		pos2 += contact->mNormal * contact->mPen * massInfluence2;
@@ -362,7 +362,7 @@ void Engine::PhysicsManager::ResolveContactVelocity(Collider* p1, Collider* p2, 
 	float massInfSq2 = massInfluence2;
 
 	// Compute the new velocities of the objects and set to them if not static
-	if (contact->mPen >= 0.03f)
+	if (contact->mPen >= 0.02f)
 	{
 		glm::vec3 newvel1 = -contact->mNormal * -sepV * massInfSq2;
 		glm::vec3 newvel2 = contact->mNormal * -sepV * massInfSq1;
