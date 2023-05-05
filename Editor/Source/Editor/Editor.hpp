@@ -2,7 +2,7 @@
 *  File:		Editor.hpp
 *  Brief:		Header of the editor.
 *  Creation:	17/11/2022
-*  Last Update:	19/03/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -18,7 +18,7 @@ namespace Editor
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;
-		virtual void Render() override;
+		void Render();
 		virtual void Shutdown() override;
 
 		void SetPlaying(const bool play);

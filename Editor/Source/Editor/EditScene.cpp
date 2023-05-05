@@ -2,7 +2,7 @@
 *  File:		EditScene.cpp
 *  Brief:		Implementation of the editor scene manager.
 *  Creation:	11/12/2022
-*  Last Update:	01/04/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -11,6 +11,7 @@
 #include "Editor.hpp"
 #include <Core/Time/TimeSystem.hpp>
 #include <Physics/PhysicsManager.hpp>
+#include <Sound/SoundManager.hpp>
 
 /// -----------------------------------------------------------------
 /// Update scene editor
@@ -70,6 +71,7 @@ void Editor::SceneEditor::Update()
 			ImGui::EndMenu();
 		}
 
+		//Play scene
 		if (ImGui::MenuItem("Play"))
 		{
 			bool playing = gEditor->IsPlaying();
@@ -85,6 +87,33 @@ void Editor::SceneEditor::Update()
 				mSelectedObj = nullptr;
 			}
 			gEditor->SetPlaying(!playing);
+		}
+
+		//Manage volume of audio
+		if (ImGui::BeginMenu("Audio Settings"))
+		{
+			float volume = gSndMgr->GetMainVolume();
+			ImGui::SliderFloat("Main Volume ", &volume, 0.f, 1.f);
+			gSndMgr->SetMainVolume(volume);
+			ImGui::SameLine();
+			bool muted = gSndMgr->IsMainVolumeMuted();
+			ImGui::Checkbox("Main Volume Muted", &muted);
+			gSndMgr->SetMainVolumeMuted(muted);
+			volume = gSndMgr->GetMusicVolume();
+			ImGui::SliderFloat("Music Volume", &volume, 0.f, 1.f);
+			gSndMgr->SetMusicVolume(volume);
+			ImGui::SameLine();
+			muted = gSndMgr->IsMusicVolumeMuted();
+			ImGui::Checkbox("Music Volume Muted", &muted);
+			gSndMgr->SetMusicVolumeMuted(muted);
+			volume = gSndMgr->GetSoundVolume();
+			ImGui::SliderFloat("Sound Volume", &volume, 0.f, 1.f);
+			gSndMgr->SetSoundVolume(volume);
+			ImGui::SameLine();
+			muted = gSndMgr->IsSoundVolumeMuted();
+			ImGui::Checkbox("Sound Volume Muted", &muted);
+			gSndMgr->SetSoundVolumeMuted(muted);
+			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}

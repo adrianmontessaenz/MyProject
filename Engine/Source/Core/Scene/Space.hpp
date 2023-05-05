@@ -2,7 +2,7 @@
 *  File:		Space.hpp
 *  Brief:		Header file of Space class
 *  Creation:	07/11/2022
-*  Last Update:	05/03/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -15,7 +15,7 @@ namespace Engine
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;
-		virtual void LogicUpdate() override;
+		void LogicUpdate();
 		virtual void Shutdown() override;
 
 		virtual void ToJson(nlohmann::ordered_json& data) override;

@@ -104,6 +104,15 @@
     <ClCompile Include="Source\Physics\Components\RigidBody.cpp">
       <Filter>Physics\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Sound\SoundManager.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sound\AudioEmitter.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sound\AudioListener.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -162,6 +171,9 @@
     </Filter>
     <Filter Include="Physics\Utils">
       <UniqueIdentifier>{45ec8cfa-7592-4137-858c-9daf2656bc8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{b94442d4-6431-4b23-9b78-8987af006746}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -271,6 +283,12 @@
     <ClInclude Include="Source\Physics\Components\RigidBody.hpp">
       <Filter>Physics\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Sound\SoundManager.hpp">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sound\AudioListener.hpp">
+      <Filter>Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Core\Entity-Component\Object.inl">
@@ -281,6 +299,9 @@
     </None>
     <None Include="Source\Core\Serialization\Serialized.inl">
       <Filter>Core\Serialization</Filter>
+    </None>
+    <None Include="Source\Sound\AudioEmitter.hpp">
+      <Filter>Sound</Filter>
     </None>
   </ItemGroup>
 </Project>

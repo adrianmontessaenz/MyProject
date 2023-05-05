@@ -2,7 +2,7 @@
 *  File:		EditorRenderer.hpp
 *  Brief:		Header for editor renderer
 *  Creation:	06/03/2023
-*  Last Update:	01/04/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -19,7 +19,7 @@ namespace Editor
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;
-		virtual void Render() override;
+		void Render();
 		virtual void Shutdown() override;
 
 		void AddRenderable(Engine::Renderable* renderable);

@@ -2,7 +2,7 @@
 *  File:		EditObject.cpp
 *  Brief:		Implementation of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	28/04/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -172,6 +172,10 @@ bool Editor::ObjectEditor::ObjectEngineComponents()
 			}
 			if (selected && compName == "RigidBody")
 				mSelectedObj->AddEngineComp<Engine::RigidBody>()->Initialize();
+			if (selected && compName == "AudioEmitter")
+				mSelectedObj->AddEngineComp<Engine::AudioEmitter>()->Initialize();
+			if (selected && compName == "AudioListener")
+				mSelectedObj->AddEngineComp<Engine::AudioListener>()->Initialize();
 		}
 		ImGui::EndPopup();
 	}
@@ -192,6 +196,10 @@ bool Editor::ObjectEditor::EditObjectEngineComp(const std::string& cmpName, Engi
 		return EditCollider(reinterpret_cast<Engine::Collider*>(cmp));
 	if (cmpName == "RigidBody")
 		return EditRigidBody(reinterpret_cast<Engine::RigidBody*>(cmp));
+	if (cmpName == "AudioEmitter")
+		return EditAudioEmitter(reinterpret_cast<Engine::AudioEmitter*>(cmp));
+	if (cmpName == "AudioListener")
+		return EditAudioListener(reinterpret_cast<Engine::AudioListener*>(cmp));
 	//Stop everything
 	return false;
 }
@@ -307,7 +315,7 @@ bool Editor::ObjectEditor::EditRenderable(Engine::Renderable* cmp)
 		cmp->SetModel(new_model);
 
 		//Textures
-		std::string new_texture = MyStringComboFromPath("Model:", cmp->GetTexture(), "../data/textures/", true, ".");
+		std::string new_texture = MyStringComboFromPath("Texture:", cmp->GetTexture(), "../data/textures/", true, ".");
 		cmp->SetTexture(new_texture);
 
 		//Edit color
@@ -473,6 +481,90 @@ bool Editor::ObjectEditor::EditRigidBody(Engine::RigidBody* cmp)
 	//If it was deleted, delete component
 	if (!open)
 		mSelectedObj->DeleteEngineComp<Engine::RigidBody>();
+	ImGui::PopID();
+	return open;
+}
+
+/// -----------------------------------------------------------------
+/// Edits audio emitter
+/// -----------------------------------------------------------------
+bool Editor::ObjectEditor::EditAudioEmitter(Engine::AudioEmitter* cmp)
+{
+	ImGui::PushID(&cmp);
+	bool open = true;
+	if (ImGui::CollapsingHeader("AudioEmitter", &open))
+	{
+		//Enable or disable component
+		bool active = cmp->IsActive();
+		ImGui::Checkbox("Is Active", &active);
+		cmp->SetActive(active);
+
+		//Change emitter type
+		Engine::AudioEmitter::AudioEmitterTypes type = cmp->GetAudioType();
+		if (ImGui::TreeNode("Set Emitter Type"))
+		{
+			if (ImGui::RadioButton("Default", type == Engine::AudioEmitter::AudioEmitterTypes::AUDIO_DEFAULT))
+				cmp->SetAudioType(Engine::AudioEmitter::AudioEmitterTypes::AUDIO_DEFAULT);
+			else if (ImGui::RadioButton("Music", type == Engine::AudioEmitter::AudioEmitterTypes::AUDIO_MUSIC))
+				cmp->SetAudioType(Engine::AudioEmitter::AudioEmitterTypes::AUDIO_MUSIC);
+			else if (ImGui::RadioButton("Sound", type == Engine::AudioEmitter::AudioEmitterTypes::AUDIO_SOUND))
+				cmp->SetAudioType(Engine::AudioEmitter::AudioEmitterTypes::AUDIO_SOUND);
+			ImGui::TreePop();
+		}
+		type = cmp->GetAudioType();
+		std::string mySound = cmp->GetSoundName();
+		
+		//Change sound name depending on type
+		if (type == Engine::AudioEmitter::AudioEmitterTypes::AUDIO_MUSIC)
+			mySound = MyStringComboFromPath("Music:", mySound, "../Data/Audio/Music/", true, ".");
+		else
+			mySound = MyStringComboFromPath("Sound:", mySound, "../Data/Audio/Sounds/", true, ".");
+		cmp->SetSoundName(mySound);
+
+		//Pause
+		bool paused = cmp->IsSoundPaused();
+		ImGui::Checkbox("Pause", &paused);
+		cmp->SetSoundPaused(paused);
+
+		//Loop
+		bool loop = cmp->IsLooping();
+		ImGui::Checkbox("Loop", &loop);
+		cmp->SetLooping(loop);
+		
+		//Volume
+		float volume = cmp->GetVolume();
+		ImGui::SliderFloat("Volume", &volume, 0.f, 1.f);
+		cmp->SetVolume(volume);
+
+		if (ImGui::Button("Play Emitter"))
+			cmp->PlaySound();
+		ImGui::SameLine();
+		if (ImGui::Button("Stop Emitter"))
+			cmp->StopSound();
+	}
+
+	//If it was deleted, delete component
+	if (!open)
+		mSelectedObj->DeleteEngineComp<Engine::AudioEmitter>();
+	ImGui::PopID();
+	return open;
+}
+
+/// -----------------------------------------------------------------
+/// Edits audio listener
+/// -----------------------------------------------------------------
+bool Editor::ObjectEditor::EditAudioListener(Engine::AudioListener* cmp)
+{
+	ImGui::PushID(&cmp);
+	bool open = true;
+	if (ImGui::CollapsingHeader("AudioListener", &open))
+	{
+
+	}
+
+	//If it was deleted, delete component
+	if (!open)
+	mSelectedObj->DeleteEngineComp<Engine::AudioListener>();
 	ImGui::PopID();
 	return open;
 }

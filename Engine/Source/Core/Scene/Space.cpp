@@ -2,13 +2,14 @@
 *  File:		Space.cpp
 *  Brief:		Implementation of Space class
 *  Creation:	07/11/2022
-*  Last Update:	28/04/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
 #include <pch.h>
 #include "Space.hpp"
 #include <Graphics/Camera/Camera.hpp>
+#include <Sound/AudioListener.hpp>
 
 /// -----------------------------------------------------------------
 /// Space initialization.
@@ -20,6 +21,7 @@ void Engine::Space::Initialize()
 	{
 		Object* obj = AddObject();
 		obj->AddEngineComp<Camera>();
+		obj->AddEngineComp<AudioListener>();
 		obj->SetName("Main Camera");
 	}
 

@@ -2,7 +2,7 @@
 *  File:		EditObject.hpp
 *  Brief:		Header of the object editor.
 *  Creation:	11/12/2022
-*  Last Update:	19/03/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -12,6 +12,8 @@
 #include <Graphics/Camera/Camera.hpp>
 #include <Physics/Components/Collider.hpp>
 #include <Physics/Components/RigidBody.hpp>
+#include <Sound/AudioEmitter.hpp>
+#include <Sound/AudioListener.hpp>
 
 namespace Editor
 {
@@ -37,5 +39,7 @@ namespace Editor
 		bool EditCamera(Engine::Camera* cmp);
 		bool EditCollider(Engine::Collider* cmp);
 		bool EditRigidBody(Engine::RigidBody* cmp);
+		bool EditAudioEmitter(Engine::AudioEmitter* cmp);
+		bool EditAudioListener(Engine::AudioListener* cmp);
 	};
 }

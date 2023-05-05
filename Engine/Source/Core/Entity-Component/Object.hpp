@@ -2,7 +2,7 @@
 *  File:		Object.hpp
 *  Brief:		Header of Object class
 *  Creation:	21/10/2022
-*  Last Update:	28/04/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -20,7 +20,7 @@ namespace Engine
 		//Runtime and serialization
 		virtual void Initialize() override;
 		virtual void Update() override;
-		virtual void LogicUpdate() override;
+		void LogicUpdate();
 		virtual void Shutdown() override;
 		virtual void ToJson(nlohmann::ordered_json& data) override;
 		virtual void FromJson(const nlohmann::ordered_json& data) override;

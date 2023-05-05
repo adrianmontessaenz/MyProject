@@ -74,7 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui;$(SolutionDir)ThirdParty\Includes\json</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui;$(SolutionDir)ThirdParty\Includes\json;$(SolutionDir)ThirdParty\Includes\fmod</IncludePath>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -87,7 +87,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\obj\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui;$(SolutionDir)ThirdParty\Includes\json</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui;$(SolutionDir)ThirdParty\Includes\json;$(SolutionDir)ThirdParty\Includes\fmod</IncludePath>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -105,12 +105,13 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui;$(SolutionDir)ThirdParty\Includes\json;$(SolutionDir)ThirdParty\Includes\fmod</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\Libraries\$(Platform)\SDL2;$(SolutionDir)ThirdParty\Libraries\$(Platform)\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\Libraries\$(Platform)\SDL2;$(SolutionDir)ThirdParty\Libraries\$(Platform)\assimp;$(SolutionDir)ThirdParty\Libraries\$(Platform)\fmod;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;SDL2.lib;assimp.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
       <OutputFile>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\Engine.lib</OutputFile>
@@ -142,14 +143,15 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\Includes\SDL2\;$(SolutionDir)ThirdParty\Includes\glm\;$(ProjectDir)Source\;$(SolutionDir)ThirdParty\Includes\glad\;$(SolutionDir)ThirdParty\Includes\assimp\;$(SolutionDir)ThirdParty\Includes\;$(SolutionDir)ThirdParty\Includes\stbi;$(SolutionDir)ThirdParty\Includes\imgui;$(SolutionDir)ThirdParty\Includes\json;$(SolutionDir)ThirdParty\Includes\fmod</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\Libraries\$(Platform)\SDL2;$(SolutionDir)ThirdParty\Libraries\$(Platform)\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\Libraries\$(Platform)\SDL2;$(SolutionDir)ThirdParty\Libraries\$(Platform)\assimp;$(SolutionDir)ThirdParty\Libraries\$(Platform)\fmod;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;SDL2.lib;assimp.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
       <OutputFile>$(SolutionDir)Build\$(Configuration)\$(Platform)\$(ProjectName)\Engine.lib</OutputFile>
@@ -263,6 +265,9 @@
     <ClCompile Include="Source\Physics\Components\RigidBody.cpp" />
     <ClCompile Include="Source\Physics\PhysicsManager.cpp" />
     <ClCompile Include="Source\Physics\Utils\Collisions.cpp" />
+    <ClCompile Include="Source\Sound\AudioEmitter.cpp" />
+    <ClCompile Include="Source\Sound\AudioListener.cpp" />
+    <ClCompile Include="Source\Sound\SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ThirdParty\Includes\imgui\imconfig.h" />
@@ -301,11 +306,14 @@
     <ClInclude Include="Source\Physics\Components\RigidBody.hpp" />
     <ClInclude Include="Source\Physics\PhysicsManager.hpp" />
     <ClInclude Include="Source\Physics\Utils\Collisions.hpp" />
+    <ClInclude Include="Source\Sound\AudioListener.hpp" />
+    <ClInclude Include="Source\Sound\SoundManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Core\Base\RTTI.inl" />
     <None Include="Source\Core\Entity-Component\Object.inl" />
     <None Include="Source\Core\Serialization\Serialized.inl" />
+    <None Include="Source\Sound\AudioEmitter.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

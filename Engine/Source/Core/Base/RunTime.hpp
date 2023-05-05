@@ -2,7 +2,7 @@
 *  File:		RunTime.hpp
 *  Brief:		Header of runtime functions
 *  Creation:	13/10/2022
-*  Last Update:	05/03/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -15,8 +15,6 @@ namespace Engine
 	public:
 		virtual void Initialize() = 0;
 		virtual void Update();
-		virtual void LogicUpdate();
-		virtual void Render();
 		virtual void Shutdown() = 0;
 
 		void SetShutdown(const bool shutdown);

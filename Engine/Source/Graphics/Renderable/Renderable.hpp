@@ -2,7 +2,7 @@
 *  File:		Renderable.hpp
 *  Brief:		Header file of renderable component
 *  Creation:	04/11/2022
-*  Last Update:	10/02/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -16,7 +16,7 @@ namespace Engine
 		RTTI_BASE(Renderable)
 	public:
 		virtual void Initialize() override;
-		virtual void Render() override;
+		void Render();
 		virtual void Shutdown() override;
 		virtual void ToJson(nlohmann::ordered_json& data) override;
 		virtual void FromJson(const nlohmann::ordered_json& data) override;

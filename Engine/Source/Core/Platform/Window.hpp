@@ -2,7 +2,7 @@
 *  File:		Window.hpp
 *  Brief:		Header of Window class
 *  Creation:	13/10/2022
-*  Last Update:	05/03/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -22,7 +22,7 @@ namespace Engine
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;
-		virtual void Render() override;
+		void Render();
 		virtual void Shutdown() override;
 
 		void SetWindowMode(WindowMode state);

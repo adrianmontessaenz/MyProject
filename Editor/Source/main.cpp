@@ -2,7 +2,7 @@
 *  File:		main.cpp
 *  Brief:		Main of editor
 *  Creation:	11/12/2022
-*  Last Update:	01/04/2023
+*  Last Update:	05/05/2023
 *
 *  © 2022 Adrian Montes. All right reserved
 // -----------------------------------------------------------------*/
@@ -13,6 +13,7 @@
 #include <Core/Time/TimeSystem.hpp>
 #include <Core/Platform/InputManager.hpp>
 #include <Physics/PhysicsManager.hpp>
+#include <Sound/SoundManager.hpp>
 
 int main(void)
 {
@@ -26,10 +27,12 @@ int main(void)
 	Engine::ObjectManager* objMgr = gObjMgr;
 	Engine::InputManager* input = gInputMgr;
 	Engine::PhysicsManager* physics = gPhysics;
+	Engine::SoundManager* sound = gSndMgr;
 
 	//Initialize
 	window->Initialize();
 	editor->Initialize();
+	sound->Initialize();
 	objMgr->Initialize();
 	renderEditor->Initialize();
 	graphs->Initialize();
@@ -43,6 +46,7 @@ int main(void)
 		//Normal updates
 		SDLeventSys->Update();
 		window->Update();
+		sound->Update();
 		time->Update();
 		editor->Update();
 		input->Update();
@@ -73,6 +77,7 @@ int main(void)
 	graphs->Shutdown();
 	physics->Shutdown();
 	renderEditor->Shutdown();
+	sound->Shutdown();
 	editor->Shutdown();
 	window->Shutdown();
 	return 0;
